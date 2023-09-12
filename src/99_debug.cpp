@@ -1,23 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   00_main.cpp                                        :+:      :+:    :+:   */
+/*   99_debug.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/12 15:53:16 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/12 20:28:34 by isojo-go         ###   ########.fr       */
+/*   Created: 2023/09/12 19:51:59 by isojo-go          #+#    #+#             */
+/*   Updated: 2023/09/12 20:41:51 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/webserv.hpp"
 
-int		main(int argc, const char** argv)
+void	debug(const std::string & str)
 {
-	if (syntaxCorrect(argc, argv))
-	{
-		// This is where the main program goes
-		std::cout << "Hello webserv" << std::endl;
-	}
-	return (0);
+	if (DEBUG == 1)
+		std::cout << GREY << "[DEBUG: " << str << "]" << DEF_COL << std::endl;
 }
