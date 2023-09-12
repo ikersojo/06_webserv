@@ -1,34 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   00_main.cpp                                        :+:      :+:    :+:   */
+/*   02_confFileCorrect.cpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/12 15:53:16 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/12 21:52:50 by isojo-go         ###   ########.fr       */
+/*   Created: 2023/09/12 21:34:37 by isojo-go          #+#    #+#             */
+/*   Updated: 2023/09/12 21:54:33 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/webserv.hpp"
 
-int		main(int argc, const char** argv)
+static bool	configOK(void)
 {
-	if (syntaxCorrect(argc, argv) && confFileCorrect(argv))
-	{
-		debug("starting main program");
+	debug("Config File OK");
+	return (true);
+}
 
-		/*
-		Main Program:
-		- 
-		-
-		-
-		-
-		-
-		-
-		-
-		*/
-		
-	}
-	return (0);
+static bool	configError(void)
+{
+	error("Error: Config File: the provided file is not valid");
+	return (false);
+}
+
+/*
+TODO:
+Check the config file:
+ - 
+ -
+ -
+ -
+ -
+ -
+ -
+
+*/
+bool confFileCorrect(const char **argv)
+{
+	std::string filename(argv[1]);
+
+	if (1)
+			return (configOK());
+	return (configError());
 }

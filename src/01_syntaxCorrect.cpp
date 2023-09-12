@@ -6,23 +6,21 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 19:12:16 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/12 20:39:23 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/12 21:44:31 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/webserv.hpp"
 
-// Syntax error
 static bool	syntaxError(void)
 {
 	std::cout << RED << "Error: Syntax: use ./bin/webserv XXXXX" << EXT << DEF_COL << std::endl;
 	return (false);
 }
 
-// Syntax OK
 static bool	syntaxOK(void)
 {
-	debug("Syntax ok!");
+	debug("Syntax OK");
 	return (true);
 }
 
