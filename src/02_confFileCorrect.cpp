@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 21:34:37 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/12 21:54:33 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/12 21:55:30 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,23 +24,23 @@ static bool	configError(void)
 	return (false);
 }
 
-/*
-TODO:
-Check the config file:
- - 
- -
- -
- -
- -
- -
- -
-
-*/
 bool confFileCorrect(const char **argv)
 {
 	std::string filename(argv[1]);
 
 	if (1)
+		/*
+		TODO:
+		Check the config file:
+		- 
+		-
+		-
+		-
+		-
+		-
+		-
+
+		*/
 			return (configOK());
 	return (configError());
 }
