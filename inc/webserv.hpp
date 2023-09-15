@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:54:15 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/12 21:48:01 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/15 12:27:44 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,6 @@
 
 	// KEY macros:
 	#define EXT		".conf"
-
-	// AUX macros
-	#define RED		"\033[0;31m"
-	#define GREEN	"\033[0;92m"
-	#define YELLOW	"\033[0;93m"
-	#define GREY	"\033[0;90m"
-	#define DEF_COL	"\033[0;39m"
 
 	// Debug option on/off: check Makefile
 	#ifndef DEBUG
@@ -32,9 +25,14 @@
 	#include <iostream>
 	#include <string>
 
-	// Custom Class Includes:
-	// #include "../classes/inc/template.hpp"
+	#include "../lib/aux/inc/aux.hpp"
 
+	// Custom Class Includes:
+	#include "../lib/classes/inc/Connection.hpp"
+	#include "../lib/classes/inc/Request.hpp"
+	#include "../lib/classes/inc/Response.hpp"
+	#include "../lib/classes/inc/Server.hpp"
+	#include "../lib/classes/inc/Socket.hpp"
 
 	// --- MAIN FUNCTIONS --- //
 
@@ -45,11 +43,4 @@
 		bool confFileCorrect(const char **argv);
 
 
-	// --- AUX FUNCTIONS --- //
-
-		// 99_printToConsole.cpp
-		void	debug(const std::string & str);
-		void	error(const std::string & str);
-
 #endif // WEBSERV_HPP
-

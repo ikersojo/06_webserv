@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:53:16 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/12 21:52:50 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/15 18:22:55 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int		main(int argc, const char** argv)
 	{
 		debug("starting main program");
 
+		Server	server(51000);
 		/*
 		Main Program:
 		- 
@@ -28,7 +29,6 @@ int		main(int argc, const char** argv)
 		-
 		-
 		*/
-		
 	}
 	return (0);
 }
