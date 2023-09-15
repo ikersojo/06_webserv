@@ -62,7 +62,7 @@ struct addrinfo
 	int			ai_family;	// AF_INET for IPv4 (others: AF_INET6, AF_UNSPEC)
 	int			ai_socktype;	// SOCK_STREAM, SOCK_DGRAM
 	int			ai_protocol;	// use 0 for "any"
-	size_t			ai_addrlen;		// size of ai_addr in bytes: use sizeof()
+	size_t			ai_addrlen;	// size of ai_addr in bytes: use sizeof()
 	struct sockaddr *	ai_addr;	// struct sockaddr_in or _in6
 	char *			ai_canonname;	// full canonical hostname
 
@@ -72,7 +72,7 @@ struct addrinfo
 
 struct sockaddr
 {
-	unsigned short	sa_family;		// AF_INET for IPv4 
+	unsigned short	sa_family;	// AF_INET for IPv4 
 	char		sa_data[14];	// 14 bytes of protocol address
 }; 
 ```
@@ -81,9 +81,9 @@ A pointer to a ```struct sockaddr_in``` can be cast to a pointer to a ```struct 
 ```c
 struct sockaddr_in // for IPv4 only
 {
-	short int			sin_family;		// AF_INET for IPv4 
-	unsigned short int	sin_port;		// Port number
-	struct in_addr		sin_addr;		// Internet address
+	short int		sin_family;		// AF_INET for IPv4 
+	unsigned short int	sin_port;	// Port number
+	struct in_addr		sin_addr;	// Internet address
 	unsigned char		sin_zero[8];	// to maintain same size as struct sockaddr. should be set to all zeros.
 };
 
