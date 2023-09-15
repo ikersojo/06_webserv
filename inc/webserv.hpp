@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:54:15 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/15 12:27:44 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/15 18:25:30 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,7 @@
 	#include "../lib/aux/inc/aux.hpp"
 
 	// Custom Class Includes:
-	#include "../lib/classes/inc/Connection.hpp"
-	#include "../lib/classes/inc/Request.hpp"
-	#include "../lib/classes/inc/Response.hpp"
 	#include "../lib/classes/inc/Server.hpp"
-	#include "../lib/classes/inc/Socket.hpp"
 
 	// --- MAIN FUNCTIONS --- //
 

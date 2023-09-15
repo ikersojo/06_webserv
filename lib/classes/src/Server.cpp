@@ -76,11 +76,8 @@ void	Server::acceptConnections()
 		return ;
 	}
 
-	std::string requestString(buffer, static_cast<size_t>(bytesRead));
-
-	// Parse the request (You'll need to implement the Request class for this)
-	// Request request(requestString);
-	std::cout << "Received: " << requestString << std::endl;
+	// std::string requestString(buffer, static_cast<size_t>(bytesRead));
+	std::cout << "Received: " << buffer << std::endl;
 
 	// Handle the request and generate a response
 	std::string responseStr =	"HTTP/1.1 200 OK\r\n"
