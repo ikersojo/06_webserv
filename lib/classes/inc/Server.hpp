@@ -9,22 +9,28 @@
 	#include <sys/socket.h>
 	#include <arpa/inet.h>
 	#include <unistd.h>
+	#include <vector>
+	#include <sys/select.h>
+	#include <pthread.h>
 
 	#include "../../aux/inc/aux.hpp"
 
 	class Server
 	{
 		public:
-			Server(int port);
+			Server(void);
 			~Server(void);
 
+			void loadConfig(const std::string & configFile);
+			void init(void);
+
 		private:
-			Server(void);
+			std::vector < int >			_ports;
+			std::vector < int >			_serverSockets;
+			size_t						_maxPorts;
 
-			int		_port;
-			int		_serverSocket;
-
-			void acceptConnections(void);
+			void			startListeningOnAllPorts(void);
+			void			acceptConnections(int threadIndex);
 	};
 
 #endif // SERVER_HPP
