@@ -1,7 +1,8 @@
 #ifndef SERVER_HPP
 	#define SERVER_HPP
 
-	#define BACKLOG 10
+	#define BACKLOG		10
+	#define	BUFFSIZE	4096
 
 	#include <iostream>
 	#include <string>
@@ -11,7 +12,6 @@
 	#include <unistd.h>
 	#include <vector>
 	#include <sys/select.h>
-	#include <pthread.h>
 
 	#include "../../aux/inc/aux.hpp"
 
@@ -21,16 +21,16 @@
 			Server(void);
 			~Server(void);
 
-			void loadConfig(const std::string & configFile);
-			void init(void);
+			void	loadConfig(const std::string & configFile);
+			void	init(void);
 
 		private:
-			std::vector < int >			_ports;
-			std::vector < int >			_serverSockets;
-			size_t						_maxPorts;
+			size_t					_maxPorts;
+			std::vector < int >		_ports;
+			std::vector < int >		_serverSockets;
 
-			void			startListeningOnAllPorts(void);
-			void			acceptConnections(int threadIndex);
+			void	startListening(void);
+			void	acceptConnections(int serverSocket);
 	};
 
 #endif // SERVER_HPP

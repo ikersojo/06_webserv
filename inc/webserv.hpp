@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:54:15 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/15 18:25:30 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/17 11:44:18 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,5 +38,10 @@
 		// 02_confFileCorrect.cpp 
 		bool confFileCorrect(const char **argv);
 
+
+	// --- AUX FUNCTIONS --- //
+
+		// 99_printLogo.cpp
+		void	printLogo(void);
 
 #endif // WEBSERV_HPP

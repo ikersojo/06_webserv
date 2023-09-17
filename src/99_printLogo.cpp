@@ -1,30 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   00_main.cpp                                        :+:      :+:    :+:   */
+/*   99_printLogo.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/12 15:53:16 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/17 11:45:43 by isojo-go         ###   ########.fr       */
+/*   Created: 2023/09/17 11:43:09 by isojo-go          #+#    #+#             */
+/*   Updated: 2023/09/17 11:46:59 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/webserv.hpp"
 
-int		main(int argc, const char** argv)
+void	printLogo(void)
 {
-	printLogo();
-	debug("starting main program");
-	if (syntaxCorrect(argc, argv) && confFileCorrect(argv))
-	{
-		debug("syntax and config file are valid");
-		std::string configFile(argv[1]);
+	system("clear");
+	std::cout << "----------------- WEBSERV 42 -----------------" << std::endl;
 
-		Server	server;
-		server.loadConfig(configFile);
-		server.init();
-
-	}
-	return (0);
 }
