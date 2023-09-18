@@ -12,6 +12,7 @@
 	#include <unistd.h>
 	#include <vector>
 	#include <sys/select.h>
+	#include <csignal>
 
 	#include "../../aux/inc/aux.hpp"
 
@@ -21,10 +22,13 @@
 			Server(void);
 			~Server(void);
 
+			static void		SignalHandler(int signal);
+
 			void	loadConfig(const std::string & configFile);
 			void	init(void);
 
 		private:
+			static bool				_shutdownRequested;
 			size_t					_maxPorts;
 			std::vector < int >		_ports;
 			std::vector < int >		_serverSockets;

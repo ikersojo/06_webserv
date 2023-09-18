@@ -1,21 +1,38 @@
 #include "../inc/Server.hpp"
 
+bool Server::_shutdownRequested = false;
+
+bool SetSocketReuseAddr(int socket)
+{
+	int yes = 1;
+	if (setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
+		return false;
+	return true;
+}
+
+
 Server::Server(void)
 {
+	this->_maxPorts = 0;
+	signal(SIGINT, SignalHandler);
+	signal(SIGTERM, SignalHandler);
 	debug("Server Object Created");
 }
 
 Server::~Server()
 {
-	debug("Server Object Destroyed");
 
 	size_t i = 0;
 	while (i < this->_maxPorts)
 	{
 		if (this->_serverSockets[i] != -1)
+		{
 			close(this->_serverSockets[i]);
+			debug("...socket closed");
+		}
 		i++;
 	}
+	debug("Server Object Destroyed");
 }
 
 //dummy function, to be replaced by one loading all private variables from file TODO
@@ -60,6 +77,13 @@ void	Server::init(void)
 		}
 		debug("...server socket defined");
 
+		if (!SetSocketReuseAddr(this->_serverSockets[i]))
+		{
+			error("Failed to set socket as re-ussable");
+			exit (EXIT_FAILURE);
+		}
+		debug("...server socket re-usage allowed");
+
 		// Bind the server address to the socket
 		if (bind(this->_serverSockets[i], (struct sockaddr *) &serverAddr, sizeof(serverAddr)) == -1)
 		{
@@ -103,14 +127,15 @@ void Server::startListening(void)
 	}
 	debug("...FD_SET ready with the listening ports");
 
-	while (true)
+	while (!_shutdownRequested)
 	{
 		debug("Listening...");
 		fd_set tmpSet = readSet;
 		if (select(maxSocket + 1, &tmpSet, nullptr, nullptr, nullptr) == -1)
 		{
 			error("Select failed");
-			exit(EXIT_FAILURE);
+			continue; // Continue running the server after a select error
+
 		}
 		debug("...select identified an event");
 
@@ -181,4 +206,14 @@ void	Server::acceptConnections(int serverSocket)
 	// Close the client socket
 	close(clientSocket);
 	debug("...conection closed to client");
+}
+
+
+void	Server::SignalHandler(int signal)
+{
+	if (signal == SIGINT || signal == SIGTERM)
+	{
+		debug("Requested shutdown...");
+		_shutdownRequested = true;
+	}
 }
