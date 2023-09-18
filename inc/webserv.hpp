@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:54:15 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/17 11:44:18 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/18 22:11:26 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 
 	// Custom Class Includes:
 	#include "../lib/classes/inc/Server.hpp"
+	#include "../lib/classes/inc/Connection.hpp"
 
 	// --- MAIN FUNCTIONS --- //
 

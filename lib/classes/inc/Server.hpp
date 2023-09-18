@@ -2,7 +2,7 @@
 	#define SERVER_HPP
 
 	#define BACKLOG		10
-	#define	BUFFSIZE	4096
+
 
 	#include <iostream>
 	#include <string>
@@ -15,6 +15,9 @@
 	#include <csignal>
 
 	#include "../../aux/inc/aux.hpp"
+	#include "../inc/Connection.hpp"
+
+	class Connection;
 
 	class Server
 	{

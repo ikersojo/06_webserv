@@ -101,7 +101,6 @@ void	Server::init(void)
 		debug("...server socket listening");
 
 		std::cout << "Server listening in http://localhost:" << this->_ports[i] << std::endl;
-
 		i++;
 	}
 	debug("Server initialized");
@@ -144,70 +143,13 @@ void Server::startListening(void)
 		{
 			if (FD_ISSET(this->_serverSockets[i], &tmpSet))
 			{
-				debug("...event on listening socket identified.");
-				acceptConnections(this->_serverSockets[i]);
+				debug("...event on listening socket identified");
+				Connection conn(this->_serverSockets[i]);
 			}
 			i++;
 		}
 	}
 }
-
-void	Server::acceptConnections(int serverSocket)
-{
-	sockaddr_in	clientAddr;
-	socklen_t	clientAddrLen = sizeof(clientAddr);
-	int			clientSocket;
-
-	clientSocket = accept(serverSocket, (struct sockaddr *) &clientAddr, &clientAddrLen);
-	if (clientSocket == -1)
-	{
-		error("Failed to accept connections.");
-		exit (EXIT_FAILURE);
-	}
-	debug("Client Connected. Awaiting request...");
-
-
-
-
-	// -------  TO BE EXTRACTED------------
-
-	// Read the HTTP request from the client
-	char	buffer[BUFFSIZE];
-	ssize_t	bytesRead;
-
-	bzero(&buffer, BUFFSIZE);
-	if ((bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0)) <= 0)
-	{
-		close(clientSocket);
-		return ;
-	}
-	debug("...request received.");
-
-	std::string requestString(buffer);
-	std::cout << "Received from client:\n------------------------------------\n" << requestString << std::endl;
-
-	// Generate a response
-	std::string responseStr =	"HTTP/1.1 200 OK\r\n"
-								"Content-Type: text/plain\r\n"
-								"Content-Length: 23\r\n"
-								"\r\n"
-								"Hello, Andoni and John!";
-
-	// Send the response back to the client
-	ssize_t bytesSent = send(clientSocket, responseStr.c_str(), responseStr.size(), 0);
-	if (bytesSent == -1)
-		error("Failed to send response.");
-	debug("...response sent");
-
-
-	// -------  
-
-
-	// Close the client socket
-	close(clientSocket);
-	debug("...conection closed to client");
-}
-
 
 void	Server::SignalHandler(int signal)
 {
