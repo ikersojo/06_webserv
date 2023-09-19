@@ -13,6 +13,7 @@
 	#include <vector>
 	#include <sys/select.h>
 	#include <csignal>
+	#include <cstdlib>
 
 	#include "../../aux/inc/aux.hpp"
 	#include "../inc/Connection.hpp"

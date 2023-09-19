@@ -130,7 +130,7 @@ void Server::startListening(void)
 	{
 		debug("Listening...");
 		fd_set tmpSet = readSet;
-		if (select(maxSocket + 1, &tmpSet, nullptr, nullptr, nullptr) == -1)
+		if (select(maxSocket + 1, &tmpSet, NULL, NULL, NULL) == -1)
 		{
 			error("Select failed");
 			continue; // Continue running the server after a select error
