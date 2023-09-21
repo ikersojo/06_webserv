@@ -1,44 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Connection.hpp                                     :+:      :+:    :+:   */
+/*   Config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/20 21:16:50 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/20 21:36:30 by isojo-go         ###   ########.fr       */
+/*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
+/*   Updated: 2023/09/20 22:30:52 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CONNECTION_HPP
-	#define CONNECTION_HPP
-
-	#define	BUFFSIZE	4096
+#ifndef CONFIG_HPP
+	#define CONFIG_HPP
 
 	#include <iostream>
 	#include <string>
-	#include <cstring>
-	#include <sys/socket.h>
-	#include <arpa/inet.h>
-	#include <unistd.h>
-	#include <cstdlib>
+	#include <vector>
 
 	#include "../../aux/inc/aux.hpp"
 
-	class Connection
+	class Config
 	{
 		public:
-			Connection(int serverSocket);
-			~Connection(void);
+			Config(const std::string & configFile);
+			~Config(void);
+
+			size_t					getMaxPorts(void);
+			std::vector < int >		getPorts(void);
 
 		private:
-			Connection(void);
-			int					_serverSocket;
-			int					_clientSocket;
-			sockaddr_in			_clientAddr;
-			socklen_t			_clientAddrLen;
+			Config(void);
 
-			void	receiveRequest(void);
+			int						_configFileFD;
+			size_t					_maxPorts;
+			std::vector < int >		_ports;
 	};
 
-#endif // CONNECTION_HPP
+#endif // CONFIG_HPP

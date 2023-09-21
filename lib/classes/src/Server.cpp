@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
+/*   Updated: 2023/09/20 23:07:22 by isojo-go         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/Server.hpp"
 
 bool Server::_shutdownRequested = false;
@@ -9,7 +21,6 @@ bool SetSocketReuseAddr(int socket)
 		return false;
 	return true;
 }
-
 
 Server::Server(void)
 {
@@ -36,20 +47,15 @@ Server::~Server()
 }
 
 //dummy function, to be replaced by one loading all private variables from file TODO
-void	Server::loadConfig(const std::string & configFile)
+void	Server::loadConfig(Config config)
 {
-
-	std::cout << "Loading " << configFile << "..." << std::endl;
-
-	this->_maxPorts = 3;
-	this->_ports.push_back(61000);
-	this->_ports.push_back(61001);
-	this->_ports.push_back(61002);
+	this->_maxPorts = config.getMaxPorts();
 	
 	size_t	i = 0;
 	while (i < this->_maxPorts)
 	{
 		this->_serverSockets.push_back(-1);
+		this->_ports.push_back((config.getMaxPorts()).pop_back())
 		i++;
 	}
 }

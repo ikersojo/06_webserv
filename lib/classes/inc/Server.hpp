@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Server.hpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/20 21:17:04 by isojo-go          #+#    #+#             */
+/*   Updated: 2023/09/20 22:27:14 by isojo-go         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef SERVER_HPP
 	#define SERVER_HPP
 
@@ -17,8 +29,10 @@
 
 	#include "../../aux/inc/aux.hpp"
 	#include "../inc/Connection.hpp"
+	#include "../inc/Config.hpp"
 
 	class Connection;
+	class Config;
 
 	class Server
 	{
@@ -28,7 +42,7 @@
 
 			static void		SignalHandler(int signal);
 
-			void	loadConfig(const std::string & configFile);
+			void	loadConfig(Config config);
 			void	init(void);
 
 		private:

@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:53:16 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/17 11:45:43 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/20 22:27:14 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,10 @@ int		main(int argc, const char** argv)
 		debug("syntax and config file are valid");
 		std::string configFile(argv[1]);
 
+		Config	config(configFile);
 		Server	server;
-		server.loadConfig(configFile);
+	
+		server.loadConfig(config);
 		server.init();
 
 	}
