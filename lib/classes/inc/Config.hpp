@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/20 22:30:52 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/22 11:34:33 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,12 @@
 		private:
 			Config(void);
 
-			int						_configFileFD;
-			size_t					_maxPorts;
-			std::vector < int >		_ports;
+			int							_configFileFD;
+			size_t						_maxPorts;
+			std::vector < int >			_ports;
+
+			std::vector < std::string >	_responseRootDir;
+			std::vector < std::string >	_responseFile;
 	};
 
 #endif // CONFIG_HPP

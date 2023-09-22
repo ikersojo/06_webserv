@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/22 08:39:06 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/22 11:43:54 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,8 @@ void Server::startListening(void)
 	debug("...FD_SET ready with the listening ports");
 
 	while (!_shutdownRequested)
-	{
+	{	if (DEBUG)
+			std::cout << std::endl;
 		debug("Listening...");
 		fd_set tmpSet = readSet;
 		if (select(maxSocket + 1, &tmpSet, NULL, NULL, NULL) == -1)

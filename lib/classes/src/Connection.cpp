@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/22 08:39:06 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/22 12:12:49 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ Connection::Connection(int serverSocket, Config * config)
 		exit (EXIT_FAILURE);
 	}
 	debug("Client Connected. Awaiting request...");
-	this->assessRequest();
+	this->manageRequest();
 }
 
 Connection::~Connection()
@@ -50,49 +50,86 @@ Connection::~Connection()
 	debug("Connection destroyed");
 }
 
-void	Connection::assessRequest(void)
+void	Connection::manageRequest(void)
+{
+	this->_ok = true;
+
+	if (this->_ok)
+		this->readRequest();
+	debug("...request received and saved");
+
+	if (this->_ok)
+		this->buildResponse();
+	debug("...respose built");
+
+	if (this->_ok)
+		this->sendResponse();
+	debug("...response sent");
+
+	close(this->_clientSocket);
+	debug("...conection closed to client");
+}
+
+void	Connection::readRequest(void)
 {
 	char	buffer[BUFFSIZE];
 	ssize_t	bytesRead;
 
 	bzero(&buffer, BUFFSIZE);
 
-	// Read the HTTP request from the client
 	if ((bytesRead = recv(this->_clientSocket, buffer, sizeof(buffer), 0)) <= 0)
 	{
-		close(this->_clientSocket);
+		this->_ok = false;
 		return ;
 	}
-	std::cout << YELLOW << "bytes read: " << bytesRead << DEF_COL << std::endl;
+	if (DEBUG)
+		std::cout << GREY << "[DEBUG: ...bytes read: " << bytesRead << "]" << DEF_COL << std::endl;
+
 	std::string requestString(buffer);
 	this->_requestString = requestString;
-	debug("...request received and saved");
 
-	// ------- 
-
-	std::cout << YELLOW << "Received from client:\n------------------------------------\n" << requestString << DEF_COL << std::endl;
-
-
-	// -------  
-
-	// Generate a response
-	this->buildResponse();
-
-	// Send the response
-	this->sendResponse();
-
-	// Close the client socket
-	close(this->_clientSocket);
-	debug("...conection closed to client");
+	std::istringstream	iss(buffer);
+	std::string			item;
+	while (iss >> item)
+		this->_requestParams.push_back(item);
+	if (this->_requestParams.size() != 3)
+	{
+		error("HTTP request header is not correct");
+		this->_ok = false;
+		return ;
+	}
+	int i = -1;
+	while (++i < 3)
+	{
+		if (this->_requestParams[i].empty())
+		{
+			error("HTTP request header content is not correct");
+			this->_ok = false;
+			return ;
+		}
+		// if (DEBUG)
+		// 	std::cout << GREY << "[DEBUG: request:\n------------------------------------\n"
+		// 		<< this->_requestString << "]" << DEF_COL << std::endl << std::endl;
+	}
+	if (this->_requestParams[2] != "HTTP/1.1")
+	{
+		error("webserv only work with HTTP/1.1 requests");
+		this->_ok = false;
+		return ;
+	}
+	if (DEBUG)
+		std::cout << GREY << "[DEBUG:Received from client:\n------------------------------------\n"
+				<< this->_requestString << "]" << DEF_COL << std::endl << std::endl;
 }
 
 void	Connection::buildResponse(void)
 {
-	this->_responseStr =		"HTTP/1.1 200 OK\r\n"
-								"Content-Type: text/plain\r\n"
-								"Content-Length: 23\r\n"
-								"\r\n"
-								"Hello, Andoni and John!";
+
+	this->_responseStr =	"HTTP/1.1 200 OK\r\n"
+							"Content-Type: text/plain\r\n"
+							"Content-Length: 23\r\n"
+							"\r\n"
+							"Hello, Andoni and John!";
 }
 
 void	Connection::sendResponse(void)
@@ -100,5 +137,4 @@ void	Connection::sendResponse(void)
 	ssize_t bytesSent = send(this->_clientSocket, this->_responseStr.c_str(), this->_responseStr.size(), 0);
 	if (bytesSent == -1)
 		error("Failed to send response");
-	debug("...response sent");
 }

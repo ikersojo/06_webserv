@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:50 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/22 08:32:39 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/22 12:04:10 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 	#include <arpa/inet.h>
 	#include <unistd.h>
 	#include <cstdlib>
+	#include <sstream>
 
 	#include "../../aux/inc/aux.hpp"
 	#include "../inc/Config.hpp"
@@ -41,16 +42,19 @@
 
 			static bool			_shutdownRequested;
 
+			bool				_ok;
 			int					_serverSocket;
 			int					_clientSocket;
 			sockaddr_in			_clientAddr;
 			socklen_t			_clientAddrLen;
 			Config * 			_config;
 
-			std::string			_requestString;
-			std::string			_responseStr;
+			std::string					_requestString;
+			std::vector < std::string >	_requestParams;
+			std::string					_responseStr;
 
-			void	assessRequest(void);
+			void	manageRequest(void);
+			void	readRequest(void);
 			void	buildResponse(void);
 			void	sendResponse(void);
 	};
