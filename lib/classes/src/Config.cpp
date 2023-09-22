@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/20 22:31:57 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/22 09:48:32 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Config::Config(const std::string & configFile)
 {
-	std::cout << "Loading " << configFile << "..." << std::endl;
+	std::cout << "Loading " << configFile << "..." << std::endl << std::endl;
 	
 	// to be replaced by an actual json/yml parser
 	this->_configFileFD = 5;

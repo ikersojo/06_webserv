@@ -3,18 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/20 21:36:30 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/22 08:39:06 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Connection.hpp"
 
-Connection::Connection(int serverSocket)
+/* CLASS AUX FUNCTIONS AND INITIALIZING */
+
+bool	Connection::_shutdownRequested = false;
+
+void	Connection::SignalHandler(int signal)
+{
+	if (signal == SIGINT || signal == SIGTERM)
+	{
+		debug("Requested shutdown on Connection...");
+		_shutdownRequested = true;
+	}
+}
+
+
+/* MAIN CLASS METHODS */
+
+Connection::Connection(int serverSocket, Config * config)
 {
 	debug("Connection Object Created");
+	this->_config = config;
 	this->_clientAddrLen = sizeof(this->_clientAddr);
 	this->_serverSocket = serverSocket;
 	this->_clientAddrLen = sizeof(this->_clientAddrLen);
@@ -25,7 +42,7 @@ Connection::Connection(int serverSocket)
 		exit (EXIT_FAILURE);
 	}
 	debug("Client Connected. Awaiting request...");
-	this->receiveRequest();
+	this->assessRequest();
 }
 
 Connection::~Connection()
@@ -33,7 +50,7 @@ Connection::~Connection()
 	debug("Connection destroyed");
 }
 
-void	Connection::receiveRequest(void)
+void	Connection::assessRequest(void)
 {
 	char	buffer[BUFFSIZE];
 	ssize_t	bytesRead;
@@ -46,29 +63,42 @@ void	Connection::receiveRequest(void)
 		close(this->_clientSocket);
 		return ;
 	}
-	debug("...request received");
-
+	std::cout << YELLOW << "bytes read: " << bytesRead << DEF_COL << std::endl;
 	std::string requestString(buffer);
-	std::cout << "Received from client:\n------------------------------------\n" << requestString << std::endl;
+	this->_requestString = requestString;
+	debug("...request received and saved");
 
-	// Generate a response
-	std::string responseStr =	"HTTP/1.1 200 OK\r\n"
-								"Content-Type: text/plain\r\n"
-								"Content-Length: 23\r\n"
-								"\r\n"
-								"Hello, Andoni and John!";
+	// ------- 
 
-	// Send the response back to the client
-	ssize_t bytesSent = send(this->_clientSocket, responseStr.c_str(), responseStr.size(), 0);
-	if (bytesSent == -1)
-		error("Failed to send response");
-	debug("...response sent");
+	std::cout << YELLOW << "Received from client:\n------------------------------------\n" << requestString << DEF_COL << std::endl;
 
 
 	// -------  
 
+	// Generate a response
+	this->buildResponse();
+
+	// Send the response
+	this->sendResponse();
 
 	// Close the client socket
 	close(this->_clientSocket);
 	debug("...conection closed to client");
+}
+
+void	Connection::buildResponse(void)
+{
+	this->_responseStr =		"HTTP/1.1 200 OK\r\n"
+								"Content-Type: text/plain\r\n"
+								"Content-Length: 23\r\n"
+								"\r\n"
+								"Hello, Andoni and John!";
+}
+
+void	Connection::sendResponse(void)
+{
+	ssize_t bytesSent = send(this->_clientSocket, this->_responseStr.c_str(), this->_responseStr.size(), 0);
+	if (bytesSent == -1)
+		error("Failed to send response");
+	debug("...response sent");
 }

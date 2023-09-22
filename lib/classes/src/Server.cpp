@@ -3,18 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/20 23:07:22 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/22 08:39:06 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Server.hpp"
 
-bool Server::_shutdownRequested = false;
+/* CLASS AUX FUNCTIONS AND INITIALIZING */
 
-bool SetSocketReuseAddr(int socket)
+bool	Server::_shutdownRequested = false;
+
+bool	SetSocketReuseAddr(int socket)
 {
 	int yes = 1;
 	if (setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
@@ -22,11 +24,36 @@ bool SetSocketReuseAddr(int socket)
 	return true;
 }
 
-Server::Server(void)
+void	Server::SignalHandler(int signal)
 {
-	this->_maxPorts = 0;
+	if (signal == SIGINT || signal == SIGTERM)
+	{
+		debug("Requested shutdown on Server...");
+		_shutdownRequested = true;
+	}
+}
+
+
+/* MAIN CLASS METHODS */
+
+Server::Server(Config * config)
+{
+	int temp;
+	this->_config = config;
+
+	this->_maxPorts = this->_config->getMaxPorts();
+	size_t	i = 0;
+	while (i < this->_maxPorts)
+	{
+		this->_serverSockets.push_back(-1);
+		temp = this->_config->getPorts()[i];
+		this->_ports.push_back(temp);
+		i++;
+	}
+
 	signal(SIGINT, SignalHandler);
 	signal(SIGTERM, SignalHandler);
+
 	debug("Server Object Created");
 }
 
@@ -44,20 +71,6 @@ Server::~Server()
 		i++;
 	}
 	debug("Server Object Destroyed");
-}
-
-//dummy function, to be replaced by one loading all private variables from file TODO
-void	Server::loadConfig(Config config)
-{
-	this->_maxPorts = config.getMaxPorts();
-	
-	size_t	i = 0;
-	while (i < this->_maxPorts)
-	{
-		this->_serverSockets.push_back(-1);
-		this->_ports.push_back((config.getMaxPorts()).pop_back())
-		i++;
-	}
 }
 
 void	Server::init(void)
@@ -138,8 +151,9 @@ void Server::startListening(void)
 		fd_set tmpSet = readSet;
 		if (select(maxSocket + 1, &tmpSet, NULL, NULL, NULL) == -1)
 		{
-			error("Select failed");
-			continue; // Continue running the server after a select error
+			if (!_shutdownRequested) // only print error if there is no shutdown request
+				error("Select failed");
+			continue; // continue running the server after a select error
 
 		}
 		debug("...select identified an event");
@@ -150,18 +164,9 @@ void Server::startListening(void)
 			if (FD_ISSET(this->_serverSockets[i], &tmpSet))
 			{
 				debug("...event on listening socket identified");
-				Connection conn(this->_serverSockets[i]);
+				Connection conn(this->_serverSockets[i], this->_config);
 			}
 			i++;
 		}
-	}
-}
-
-void	Server::SignalHandler(int signal)
-{
-	if (signal == SIGINT || signal == SIGTERM)
-	{
-		debug("Requested shutdown...");
-		_shutdownRequested = true;
 	}
 }
