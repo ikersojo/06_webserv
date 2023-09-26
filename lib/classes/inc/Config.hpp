@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/26 22:57:18 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/26 23:10:30 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@
 	#include <iostream>
 	#include <string>
 	#include <vector>
+	#include <fstream>
+	#include <sstream>
+
 
 	#include "../../aux/inc/aux.hpp"
 

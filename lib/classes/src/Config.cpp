@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/26 22:57:18 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/26 23:22:20 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,21 @@ Config::Config(const std::string & configFile)
 	this->_responseFiles.push_back("index.html");
 	this->_responseFiles.push_back("index.html");
 
+
+	// Actual code
+	std::ifstream	inFile(configFile);
+	std::string		line;
+
+	if (!inFile.is_open())
+	{
+		error("Failed to open configuration file");
+		exit(EXIT_FAILURE);
+	}
+
+	while (getline(inFile, line))
+	{
+		std::cout << "extracted line: " << line << std::endl;
+	}
 	debug("Config Object Created");
 }
 

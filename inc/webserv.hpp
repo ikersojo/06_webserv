@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:54:15 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/20 22:20:17 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/26 23:22:20 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 	#define WEBSERV_HPP
 
 	// KEY macros:
-	#define EXT		".conf"
+	#define EXT		".yml"
 
 	// Debug option on/off: check Makefile
 	#ifndef DEBUG
