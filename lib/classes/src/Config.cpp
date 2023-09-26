@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/22 09:48:32 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/26 22:57:18 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,14 @@ Config::Config(const std::string & configFile)
 	this->_ports.push_back(61000);
 	this->_ports.push_back(61001);
 	this->_ports.push_back(61002);
+
+	this->_responseDirs.push_back("./www/site1");
+	this->_responseDirs.push_back("./www/site2");
+	this->_responseDirs.push_back("./www/site3");
+
+	this->_responseFiles.push_back("index.html");
+	this->_responseFiles.push_back("index.html");
+	this->_responseFiles.push_back("index.html");
 
 	debug("Config Object Created");
 }
@@ -39,4 +47,14 @@ size_t	Config::getMaxPorts(void)
 std::vector < int >		Config::getPorts(void)
 {
 	return (this->_ports);
+}
+
+std::vector < std::string >		Config::getDirs(void)
+{
+	return (this->_responseDirs);
+}
+
+std::vector < std::string >		Config::getFiles(void)
+{
+	return (this->_responseFiles);
 }

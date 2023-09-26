@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/22 11:43:54 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/22 15:29:08 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ void Server::startListening(void)
 			if (FD_ISSET(this->_serverSockets[i], &tmpSet))
 			{
 				debug("...event on listening socket identified");
-				Connection conn(this->_serverSockets[i], this->_config);
+				Connection conn(this->_serverSockets[i], this->_config, i);
 			}
 			i++;
 		}

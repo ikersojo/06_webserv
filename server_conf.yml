@@ -1,0 +1,50 @@
+server:
+  listen:
+    - port: 61000
+      address: 127.0.0.1
+    - port: 61001
+      address: 127.0.0.1
+  root_directory: "./www/site1"
+  locations:
+    - path: "/"
+      file: "index.html"
+    - path: "/favicon.ico"
+      file: "icon1.png"
+    - path: "/images"
+      file: "sample_image1.jpg"
+    - path: "/cgi-bin"
+      script_directory: "cgi-bin"
+
+server:
+  listen:
+    - port: 62000
+      address: 127.0.0.1
+    - port: 62001
+      address: 127.0.0.1
+  root_directory: "./www/site2"
+  locations:
+    - path: "/"
+      file: "index.html"
+    - path: "/favicon.ico"
+      file: "icon2.png"
+    - path: "/images"
+      file: "sample_image2.jpg"
+    - path: "/cgi-bin"
+      script_directory: "cgi-bin"
+
+server:
+  listen:
+    - port: 63000
+      address: 127.0.0.1
+    - port: 63001
+      address: 127.0.0.1
+  root_directory: "./www/site3"
+  locations:
+    - path: "/"
+      file: "index.html"
+    - path: "/favicon.ico"
+      file: "icon3.png"
+    - path: "/images"
+      file: "sample_image3.jpg"
+    - path: "/cgi-bin"
+      script_directory: "cgi-bin"

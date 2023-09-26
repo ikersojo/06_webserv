@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/22 11:34:33 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/26 22:57:18 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,10 @@
 			Config(const std::string & configFile);
 			~Config(void);
 
-			size_t					getMaxPorts(void);
-			std::vector < int >		getPorts(void);
+			size_t						getMaxPorts(void);
+			std::vector < int >			getPorts(void);
+			std::vector < std::string >	getDirs(void);
+			std::vector < std::string >	getFiles(void);
 
 		private:
 			Config(void);
@@ -35,8 +37,9 @@
 			size_t						_maxPorts;
 			std::vector < int >			_ports;
 
-			std::vector < std::string >	_responseRootDir;
-			std::vector < std::string >	_responseFile;
+			std::vector < std::string >	_responseDirs;
+			std::vector < std::string >	_responseFiles;
+			std::vector < std::string >	_responseFullPathFiles;
 	};
 
 #endif // CONFIG_HPP

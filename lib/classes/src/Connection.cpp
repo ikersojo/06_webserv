@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/22 12:12:49 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/23 11:36:34 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,11 @@ void	Connection::SignalHandler(int signal)
 
 /* MAIN CLASS METHODS */
 
-Connection::Connection(int serverSocket, Config * config)
+Connection::Connection(int serverSocket, Config * config, int location)
 {
 	debug("Connection Object Created");
 	this->_config = config;
+	this->_location = location;
 	this->_clientAddrLen = sizeof(this->_clientAddr);
 	this->_serverSocket = serverSocket;
 	this->_clientAddrLen = sizeof(this->_clientAddrLen);
@@ -83,7 +84,8 @@ void	Connection::readRequest(void)
 		return ;
 	}
 	if (DEBUG)
-		std::cout << GREY << "[DEBUG: ...bytes read: " << bytesRead << "]" << DEF_COL << std::endl;
+		std::cout << GREY << "[DEBUG: ...bytes read: " << bytesRead << "]"
+				<< DEF_COL << std::endl;
 
 	std::string requestString(buffer);
 	this->_requestString = requestString;
@@ -92,7 +94,7 @@ void	Connection::readRequest(void)
 	std::string			item;
 	while (iss >> item)
 		this->_requestParams.push_back(item);
-	if (this->_requestParams.size() != 3)
+	if (this->_requestParams.size() < 3)
 	{
 		error("HTTP request header is not correct");
 		this->_ok = false;
@@ -107,9 +109,9 @@ void	Connection::readRequest(void)
 			this->_ok = false;
 			return ;
 		}
-		// if (DEBUG)
-		// 	std::cout << GREY << "[DEBUG: request:\n------------------------------------\n"
-		// 		<< this->_requestString << "]" << DEF_COL << std::endl << std::endl;
+		if (DEBUG)
+			std::cout << GREY << "[DEBUG: ...param " << i << ": "
+					<< this->_requestParams[i] << "]" << DEF_COL << std::endl;
 	}
 	if (this->_requestParams[2] != "HTTP/1.1")
 	{
@@ -117,19 +119,59 @@ void	Connection::readRequest(void)
 		this->_ok = false;
 		return ;
 	}
-	if (DEBUG)
-		std::cout << GREY << "[DEBUG:Received from client:\n------------------------------------\n"
-				<< this->_requestString << "]" << DEF_COL << std::endl << std::endl;
+	// if (DEBUG)
+	// 	std::cout << GREY << "[DEBUG:Received from client:\n------------------------------------\n"
+	// 			<< this->_requestString << "]" << DEF_COL << std::endl << std::endl;
 }
 
 void	Connection::buildResponse(void)
 {
 
+	// find the html file from config
+	std::string	filepath;
+
+	filepath = this->_config->getDirs()[this->_location];
+	filepath.append("/");
+	filepath.append(this->_config->getFiles()[this->_location]);
+	if (DEBUG)
+		std::cout << GREY << "[DEBUG: ...importing location " << this->_location << ": "
+				<< filepath << "]" << DEF_COL << std::endl;
+
+	// read the html file
+	std::ifstream		inFile;
+	std::string			line;
+	std::ostringstream	oss;
+	int					charCounter = 0;
+
+	// reponse header
 	this->_responseStr =	"HTTP/1.1 200 OK\r\n"
 							"Content-Type: text/plain\r\n"
-							"Content-Length: 23\r\n"
-							"\r\n"
-							"Hello, Andoni and John!";
+							"Content-Length: ";
+	inFile.open(filepath);
+	if (!inFile.is_open())
+	{
+		error("html file not found"); // TO BE REPLACED BY 404
+		this->_ok = false;
+		return ;
+	}
+
+
+	while (getline(inFile, line))
+	{
+		oss << line;
+		charCounter += line.size();
+	}
+
+	oss << charCounter;
+
+	oss << "\r\n\r\n";
+
+	oss << "\r\n\r\n";
+
+	std::string result = oss.str();
+
+	inFile.close();
+
 }
 
 void	Connection::sendResponse(void)
