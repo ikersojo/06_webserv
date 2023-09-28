@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:04 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/22 08:14:49 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/28 20:28:04 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,10 @@
 	#include <cstdlib>
 
 	#include "../../aux/inc/aux.hpp"
-	#include "../inc/Connection.hpp"
+	#include "../inc/Communication.hpp"
 	#include "../inc/Config.hpp"
 
-	class Connection;
+	class Communication;
 	class Config;
 
 	class Server

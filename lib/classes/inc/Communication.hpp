@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Connection.hpp                                     :+:      :+:    :+:   */
+/*   Communication.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:50 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/22 15:38:31 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/28 20:29:00 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CONNECTION_HPP
-	#define CONNECTION_HPP
+#ifndef COMMUNICATION_HPP
+	#define COMMUNICATION_HPP
 
 	#define	BUFFSIZE	4096
 
@@ -30,16 +30,16 @@
 
 	class Config;
 
-	class Connection
+	class Communication
 	{
 		public:
-			Connection(int serverSocket, Config * config, int location);
-			~Connection(void);
+			Communication(int serverSocket, Config * config, int location);
+			~Communication(void);
 
 			static void		SignalHandler(int signal);
 
 		private:
-			Connection(void);
+			Communication(void);
 
 			static bool			_shutdownRequested;
 
@@ -61,4 +61,4 @@
 			void	sendResponse(void);
 	};
 
-#endif // CONNECTION_HPP
+#endif // COMMUNICATION_HPP

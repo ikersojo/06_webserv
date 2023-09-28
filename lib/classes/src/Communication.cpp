@@ -1,26 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Connection.cpp                                     :+:      :+:    :+:   */
+/*   Communication.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/27 23:09:50 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/28 20:49:16 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/Connection.hpp"
+#include "../inc/Communication.hpp"
 
 /* CLASS AUX FUNCTIONS AND INITIALIZING */
 
-bool	Connection::_shutdownRequested = false;
+bool	Communication::_shutdownRequested = false;
 
-void	Connection::SignalHandler(int signal)
+void	Communication::SignalHandler(int signal)
 {
 	if (signal == SIGINT || signal == SIGTERM)
 	{
-		debug("Requested shutdown on Connection...");
+		debug("Requested shutdown on Communication...");
 		_shutdownRequested = true;
 	}
 }
@@ -28,9 +28,9 @@ void	Connection::SignalHandler(int signal)
 
 /* MAIN CLASS METHODS */
 
-Connection::Connection(int serverSocket, Config * config, int location)
+Communication::Communication(int serverSocket, Config * config, int location)
 {
-	debug("Connection Object Created");
+	debug("Communication Object Created");
 	this->_config = config;
 	this->_location = location;
 	this->_clientAddrLen = sizeof(this->_clientAddr);
@@ -39,19 +39,19 @@ Connection::Connection(int serverSocket, Config * config, int location)
 	this->_clientSocket = accept(serverSocket, (struct sockaddr *) &this->_clientAddr, &this->_clientAddrLen);
 	if (this->_clientSocket == -1)
 	{
-		error("Failed to accept connections");
+		error("Failed to accept Communications");
 		exit (EXIT_FAILURE);
 	}
 	debug("Client Connected. Awaiting request...");
 	this->manageRequest();
 }
 
-Connection::~Connection()
+Communication::~Communication()
 {
-	debug("Connection destroyed");
+	debug("Communication destroyed");
 }
 
-void	Connection::manageRequest(void)
+void	Communication::manageRequest(void)
 {
 	this->_ok = true;
 
@@ -59,25 +59,35 @@ void	Connection::manageRequest(void)
 		this->readRequest();
 	debug("...request received and saved");
 
-	if (this->_ok)
-		this->buildResponse();
-	debug("...respose built");
+	if (this->_ok && this->_requestParams[0] == "GET")
+	{
+		if (this->_ok)
+			this->buildResponse();
+		debug("...response built");
 
-	if (this->_ok)
-		this->sendResponse();
-	debug("...response sent");
+		if (this->_ok)
+			this->sendResponse();
+		debug("...response sent");
+	}
+	else if (this->_ok && this->_requestParams[0] == "POST")
+	{
+		error("POST not defined yet"); // TO BE MODIFIED <----------------------------fcntl(fd, F_SETFL, O_NONBLOCK);
+	}
+	else if (this->_ok && this->_requestParams[0] == "DELETE")
+	{
+		error("DELETE not defined yet"); // TO BE MODIFIED <----------------------------fcntl(fd, F_SETFL, O_NONBLOCK);
+	}
 
 	close(this->_clientSocket);
 	debug("...conection closed to client");
 }
 
-void	Connection::readRequest(void)
+void	Communication::readRequest(void)
 {
 	char	buffer[BUFFSIZE];
 	ssize_t	bytesRead;
 
 	bzero(&buffer, BUFFSIZE);
-
 	if ((bytesRead = recv(this->_clientSocket, buffer, sizeof(buffer), 0)) <= 0)
 	{
 		this->_ok = false;
@@ -87,7 +97,7 @@ void	Connection::readRequest(void)
 		std::cout << GREY << "[DEBUG: ...bytes read: " << bytesRead << "]"
 				<< DEF_COL << std::endl;
 
-	std::string requestString(buffer);
+	std::string	requestString(buffer);
 	this->_requestString = requestString;
 
 	std::istringstream	iss(buffer);
@@ -119,36 +129,42 @@ void	Connection::readRequest(void)
 		this->_ok = false;
 		return ;
 	}
-	// if (DEBUG)
-	// 	std::cout << GREY << "[DEBUG:Received from client:\n------------------------------------\n"
-	// 			<< this->_requestString << "]" << DEF_COL << std::endl << std::endl;
+	if (DEBUG)
+		std::cout << YELLOW << "[DEBUG: ---- Received from client ----\n\n"
+				<< this->_requestString << "]" << DEF_COL << std::endl << std::endl;
 }
 
-void	Connection::buildResponse(void)
+void	Communication::buildResponse(void)
 {
-
-	// find the html file from config
 	std::string	filepath;
 
-	// filepath = this->_config->getDirs()[this->_location];
-	// filepath.append("/");
-	// filepath.append(this->_config->getFiles()[this->_location]);
-	filepath = this->_config->getFile(this->_location, "/");
-
+	filepath = this->_config->getFile(this->_location, this->_requestParams[1]);
 	if (DEBUG)
 		std::cout << GREY << "[DEBUG: ...importing location " << this->_location << ": "
 				<< filepath << "]" << DEF_COL << std::endl;
 
-	// read the html file
 	std::ifstream		inFile;
-	std::string			line;
-	std::ostringstream	oss;
+	std::string			line, temp;
 	int					charCounter = 0;
 
-	// reponse header
-	this->_responseStr =	"HTTP/1.1 200 OK\r\n"
-							"Content-Type: text/plain\r\n"
-							"Content-Length: ";
+	// reponse header example:
+	// this->_responseStr =	"HTTP/1.1 200 OK\r\n"
+	// 						"Content-Type: text/plain\r\n"
+	// 						"Content-Length: 23\r\n"
+	// 						"\r\n"
+	// 						"Hello, Andoni and John!";
+
+	this->_responseStr = "HTTP/1.1 200 OK\r\n";
+
+	if (this->_requestParams[1] == "/")
+		this->_responseStr += "Content-Type: text/html\r\n";
+	else if (this->_requestParams[1] == "/favicon.ico")
+		this->_responseStr += "Content-Type: image/vnd.microsoft.icon\r\n";
+	else
+		this->_responseStr += "Content-Type: text/plain\r\n";
+
+	this->_responseStr += "Content-Length: ";
+
 	inFile.open(filepath);
 	if (!inFile.is_open())
 	{
@@ -156,27 +172,26 @@ void	Connection::buildResponse(void)
 		this->_ok = false;
 		return ;
 	}
-
-
+	temp ="";
 	while (getline(inFile, line))
 	{
-		oss << line;
+		temp += line;
 		charCounter += line.size();
 	}
+	std::stringstream ss;
+	ss << charCounter;
+	std::string charCounterString = ss.str();
 
-	oss << charCounter;
-
-	oss << "\r\n\r\n";
-
-	oss << "\r\n\r\n";
-
-	std::string result = oss.str();
+	this->_responseStr += charCounterString;
+	this->_responseStr += "\r\n\r\n";
+	this->_responseStr += temp;
 
 	inFile.close();
-
+	if (DEBUG)
+		std::cout << GREY << "[DEBUG: ...response: \n" << this->_responseStr << "\n]" << DEF_COL << std::endl;
 }
 
-void	Connection::sendResponse(void)
+void	Communication::sendResponse(void)
 {
 	ssize_t bytesSent = send(this->_clientSocket, this->_responseStr.c_str(), this->_responseStr.size(), 0);
 	if (bytesSent == -1)

@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/27 23:09:50 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/28 20:28:04 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,10 +111,10 @@ void	Server::init(void)
 		}
 		debug("...server address binded to socket");
 
-		// Start listening for connections
+		// Start listening for Communications
 		if (listen(this->_serverSockets[i], BACKLOG) == -1)
 		{
-			error("Failed to listen for connections");
+			error("Failed to listen for Communications");
 			exit (EXIT_FAILURE);
 		}
 		debug("...server socket listening");
@@ -165,7 +165,7 @@ void Server::startListening(void)
 			if (FD_ISSET(this->_serverSockets[i], &tmpSet))
 			{
 				debug("...event on listening socket identified");
-				Connection conn(this->_serverSockets[i], this->_config, i);
+				Communication conn(this->_serverSockets[i], this->_config, i);
 			}
 			i++;
 		}

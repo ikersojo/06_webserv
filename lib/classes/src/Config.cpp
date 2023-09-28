@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/28 11:11:20 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/28 13:29:14 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,35 +36,50 @@ size_t	getNumberOfPorts(const std::string & configFile)
 	return (n);
 }
 
+std::string	trimDoubleQuotes(const std::string& str)
+{
+	size_t	start = 0, end = str.length();
+
+	while (start < end && str[start] == '"')
+		start++;
+
+	while (end > start && str[end - 1] == '"')
+		end--;
+	return str.substr(start, end - start);
+}
+
 Config::Config(const std::string & configFile)
 {
 	std::cout << "Loading " << configFile << "..." << std::endl << std::endl;
 	
 	// to be replaced by an actual json/yml parser
-		this->_maxPorts = 3;
+		// this->_maxPorts = 3;
 
-		this->_ports.push_back(61000);
-		this->_ports.push_back(61001);
-		this->_ports.push_back(61002);
+		// this->_ports.push_back(61000);
+		// this->_ports.push_back(61001);
+		// this->_ports.push_back(61002);
 
-		this->_addresses.push_back("localhost");
-		this->_addresses.push_back("localhost");
-		this->_addresses.push_back("localhost");
+		// this->_addresses.push_back("localhost");
+		// this->_addresses.push_back("localhost");
+		// this->_addresses.push_back("localhost");
 
-		this->_files.resize(3);
-		this->_files[0].insert(std::make_pair("/", "./www/site1/index.html"));
-		this->_files[1].insert(std::make_pair("/", "./www/site2/index.html"));
-		this->_files[2].insert(std::make_pair("/", "./www/site3/index.html"));
+		// this->_files.resize(3);
+		// this->_files[0].insert(std::make_pair("/", "./www/site1/index.html"));
+		// this->_files[1].insert(std::make_pair("/", "./www/site2/index.html"));
+		// this->_files[2].insert(std::make_pair("/", "./www/site3/index.html"));
 
-		this->_files[0].insert(std::make_pair("/favicon.ico", "./www/site1/icon1.png"));
-		this->_files[1].insert(std::make_pair("/favicon.ico", "./www/site2/icon2.png"));
-		this->_files[2].insert(std::make_pair("/favicon.ico", "./www/site3/icon3.png"));
+		// this->_files[0].insert(std::make_pair("/favicon.ico", "./www/site1/icon1.png"));
+		// this->_files[1].insert(std::make_pair("/favicon.ico", "./www/site2/icon2.png"));
+		// this->_files[2].insert(std::make_pair("/favicon.ico", "./www/site3/icon3.png"));
 
 	// Actual code
-	getNumberOfPorts(configFile);
+	this->_maxPorts = getNumberOfPorts(configFile);
+	this->_files.resize(this->_maxPorts);
 
 	std::ifstream inFile(configFile);
-	std::string line, item1, item2, item3;
+	std::string line, item1, item2, item3, rootDir, path, fullPath;
+	int	nPortsPerServer;
+	int	nPortsPopulated = 0;
 
 	if (!inFile.is_open())
 	{
@@ -77,10 +92,12 @@ Config::Config(const std::string & configFile)
 		std::istringstream iss(line);
 		if (iss >> item1 && item1 == "server:")
 		{
+
 			while (getline(inFile, line))
 			{
 				if (line.find("listen:") != std::string::npos)
 				{
+					nPortsPerServer = 0;
 					while (getline(inFile, line) && 
 							((line.find("port:") != std::string::npos) || (line.find("address:") != std::string::npos)))
 					{
@@ -88,13 +105,16 @@ Config::Config(const std::string & configFile)
 						issPort >> item1 >> item2 >> item3;
 						if (item1 == "-" && item2 == "port:")
 						{
-							std::cout << "PORT: " << item3 << std::endl; // do things with port
+							// std::cout << "PORT: " << item3 << std::endl; // do things with port
+							nPortsPerServer++;
+							this->_ports.push_back(atoi(item3.c_str()));
 
 							if (getline(inFile, line) && line.find("address:") != std::string::npos)
 							{
 								std::istringstream issAddress(line);
 								issAddress >> item2 >> item3;
-								std::cout << "ADDRESS: " << item3 << std::endl; // do things with address
+								// std::cout << "ADDRESS: " << item3 << std::endl; // do things with address
+								this->_addresses.push_back(trimDoubleQuotes(item3));
 							}
 						}
 					}
@@ -103,7 +123,9 @@ Config::Config(const std::string & configFile)
 				{
 					std::istringstream issRootDir(line);
 					issRootDir >> item1 >> item2;
-					std::cout << "ROOT DIR: " << item2 << std::endl; // do things with root dir
+					rootDir = trimDoubleQuotes(item2);
+					rootDir+= "/";
+					// std::cout << "ROOT DIR: " << rootDir << std::endl; // do things with root dir
 				}
 				if (line.find("locations:") != std::string::npos)
 				{
@@ -114,16 +136,23 @@ Config::Config(const std::string & configFile)
 						issPath >> item1 >> item2 >> item3;
 						if (item1 == "-" && item2 == "path:")
 						{
-							std::cout << "PATH: " << item3 << std::endl; // do things with path
+							path = trimDoubleQuotes(item3);
+							// std::cout << "PATH: " << path << std::endl; // do things with path
 
 							if (getline(inFile, line) && line.find("file:") != std::string::npos)
 							{
 								std::istringstream issFile(line);
 								issFile >> item2 >> item3;
-								std::cout << "FILE: " << item3 << std::endl; // do things with file
+								fullPath = rootDir;
+								fullPath+= trimDoubleQuotes(item3);
+								// std::cout << "FILE: " << fullPath << std::endl; // do things with file
 							}
 						}
+						int	i = -1;
+						while (++i < nPortsPerServer)
+							this->_files[nPortsPopulated + i].insert(std::make_pair(path, fullPath));
 					}
+					nPortsPopulated += nPortsPerServer;
 				}
 			}
 		}
@@ -160,4 +189,21 @@ std::string		Config::getFile(size_t i, std::string req)
 void	Config::printConfig(void)
 {
 	debug("Printing config...");
+	size_t	i = 0;
+	std::cout << GREY << std::endl << "------ CONFIG FILE INPUT (DEBUG) ------" << std::endl;
+	while (i < this->_maxPorts)
+	{
+		std::cout << std::endl << "  LISTENING LOCATION " << i << ":" << std::endl;
+		std::cout << "    http://" << this->_addresses[i] << ":" << this->_ports[i] << std::endl;
+
+		std::map<std::string, std::string>& currentMap = this->_files[i];
+		std::map<std::string, std::string>::iterator it = currentMap.begin();
+		while ( it != currentMap.end())
+		{
+			std::cout << "    Requests to " << it->first << " will be replied by " << it->second << std::endl;
+			it++;
+		}
+		i++;
+	}
+	std::cout << DEF_COL << std::endl;
 }

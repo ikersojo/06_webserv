@@ -19,7 +19,7 @@ Knowing its arcane will be useful, even if you won’t be working on a website.
 
 Classes:
 - Server:
-	- The main server class that handles incoming connections and requests.
+	- The main server class that handles incoming Communications and requests.
 	- It will be configured with a configuration file. Server settings like the port to listen on, the root directory for static files...
 
 
@@ -32,7 +32,7 @@ Classes:
 # Key new concepts (the magic behind the project)
 
 ## 1. Internet Sockets (TCP and UDP)
-Everything in Unix is a file: when Unix programs do any sort of I/O, they do it by reading or writing to a file descriptor (an integer associated with an open file). The open file can be a network connection, a FIFO, a pipe, a terminal, a real on-the-disk file...
+Everything in Unix is a file: when Unix programs do any sort of I/O, they do it by reading or writing to a file descriptor (an integer associated with an open file). The open file can be a network Communication, a FIFO, a pipe, a terminal, a real on-the-disk file...
 
 To request a file descriptor for network communication, the system call **socket()** is used. It returns the socket fd, and you communicate through it using the specialized **send()** and **recv()** calls (read() and write() calls can be used, but with lower control, so not recommended). There are many kinds of sockets, we will focus on DARPA Internet addresses or **Internet Sockets**:
 
@@ -40,7 +40,7 @@ To request a file descriptor for network communication, the system call **socket
 Reliable two-way connected communication streams, used for ssh, http, etc. Use a protocol called “The Transmission Control Protocol” (TCP) , which checks that data arrives sequentially and error-free. Is part of “TCP/IP” (“IP” stands for “Internet Protocol”). IP deals with routing and TCP is responsible for data integrity.
 
 - **Datagram Sockets (```SOCK_DGRAM```):**
-Faster than TCP, but not as reliable. They do not maintain an open connection as you do with stream sockets, just send the data (it does not guaranty the arrival of the data). Datagram sockets also use IP for routing, but they don’t use TCP; they use the “User Datagram Protocol” (UDP).
+Faster than TCP, but not as reliable. They do not maintain an open Communication as you do with stream sockets, just send the data (it does not guaranty the arrival of the data). Datagram sockets also use IP for routing, but they don’t use TCP; they use the “User Datagram Protocol” (UDP).
 
 ## 2. Internet Protocol (IP):
 IPv4 network routing system which defines addresses of the "computer" in a network using four bytes (32 bits), e.g.:```192.168.0.11```, which is used in conjunction with TCP or UD to transfer data. In addition to the address of the "computer", the **port number** is used to locate the service in a given address. It’s a 16-bit number (short).
@@ -118,7 +118,7 @@ The sequence to follow to allow communication from a socket to the internet is a
 1. Define the address to where you want to connect (IP, in binary)
 2. Define a file descriptor 
 3. Bind the file descriptor to a port
-4. Wait for the connection
+4. Wait for the Communication
 5. Acceopt incomming communication from the internet
 
 ### 3.1 Adress
@@ -170,12 +170,12 @@ HTTP resources are identified and located on the network by Uniform Resource Loc
 
 There are 3 standards in use: HTTP/1.1 (1997), HTTP/2 (2015) and HTTP/3 (2022). The main evolution is performance focused:
 
-In HTTP/1.0 a separate TCP connection to the same server is made for every resource request. In HTTP/1.1 instead a TCP connection can be reused to make multiple resource requests (i.e. of HTML pages, frames, images, scripts, stylesheets, etc.). Therefore, latency is reduced as the establishment of TCP connections presents considerable overhead, specially under high traffic conditions.
+In HTTP/1.0 a separate TCP Communication to the same server is made for every resource request. In HTTP/1.1 instead a TCP Communication can be reused to make multiple resource requests (i.e. of HTML pages, frames, images, scripts, stylesheets, etc.). Therefore, latency is reduced as the establishment of TCP Communications presents considerable overhead, specially under high traffic conditions.
 
 HTTP/2 is a revision with these differences:
 - use a compressed representation of metadata (HTTP headers), since requires much less space
-- use a single TCP/IP (usually encrypted) connection per accessed server domain
-- use one or more bidirectional streams per TCP/IP connection in which HTTP requests and responses are broken down and transmitted in small packets
+- use a single TCP/IP (usually encrypted) Communication per accessed server domain
+- use one or more bidirectional streams per TCP/IP Communication in which HTTP requests and responses are broken down and transmitted in small packets
 
 HTTP/3 is a revision in order to use QUIC + UDP transport protocols instead of TCP, to improve the average speed of communications.
 
@@ -215,7 +215,7 @@ Method names are case sensitive. This is in contrast to HTTP header field names 
 The POST method requests that the target resource process the representation enclosed in the request according to the semantics of the target resource. For example, it is used for posting a message to an Internet forum, subscribing to a mailing list, or completing an online shopping transaction.[54]
 - **PUT**: like POST, but the client specifies the target location on the server.
 - **DELETE**: requests that the target resource deletes its state.
-- **CONNECT**: requests to establish a TCP/IP tunnel to the target server. It is often used to secure connections through one or more HTTP proxies with TLS.
+- **CONNECT**: requests to establish a TCP/IP tunnel to the target server. It is often used to secure Communications through one or more HTTP proxies with TLS.
 - **OPTIONS**: requests the target for the HTTP methods that it supports.
 - **TRACE**: requests a response body the changes or additions made by intermediaries.
 - **PATCH**: requests a resource to be partially modifed. This can save bandwidth.
@@ -258,7 +258,7 @@ User-Agent: Mozilla/5.0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
 Accept-Language: en-GB,en;q=0.5
 Accept-Encoding: gzip, deflate, br
-Connection: keep-alive
+Communication: keep-alive
 ```
 
 Server response:
@@ -271,7 +271,7 @@ Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT
 Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
 ETag: "3f80f-1b6-3e1cb03b"	// used to determine if a cached version of the requested resource is identical to the current version of the resource on the server
 Accept-Ranges: bytes
-Connection: close
+Communication: close
 
 <html>
   <head>

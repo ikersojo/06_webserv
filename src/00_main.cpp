@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:53:16 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/26 22:59:59 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/28 13:31:32 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ int		main(int argc, const char** argv)
 		std::string configFile(argv[1]);
 
 		Config* config = new Config(configFile);
-		// if (DEBUG)
-		// 	config.printConfig();
+		if (DEBUG)
+			config->printConfig();
 		Server	webserv(config);
 
 		webserv.init();
