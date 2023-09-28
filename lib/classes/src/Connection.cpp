@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/23 11:36:34 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/27 23:09:50 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,9 +130,11 @@ void	Connection::buildResponse(void)
 	// find the html file from config
 	std::string	filepath;
 
-	filepath = this->_config->getDirs()[this->_location];
-	filepath.append("/");
-	filepath.append(this->_config->getFiles()[this->_location]);
+	// filepath = this->_config->getDirs()[this->_location];
+	// filepath.append("/");
+	// filepath.append(this->_config->getFiles()[this->_location]);
+	filepath = this->_config->getFile(this->_location, "/");
+
 	if (DEBUG)
 		std::cout << GREY << "[DEBUG: ...importing location " << this->_location << ": "
 				<< filepath << "]" << DEF_COL << std::endl;

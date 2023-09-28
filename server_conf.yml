@@ -13,7 +13,7 @@ server:
     - path: "/images"
       file: "sample_image1.jpg"
     - path: "/cgi-bin"
-      script_directory: "cgi-bin"
+      file: "cgi-bin"
 
 server:
   listen:
@@ -30,7 +30,7 @@ server:
     - path: "/images"
       file: "sample_image2.jpg"
     - path: "/cgi-bin"
-      script_directory: "cgi-bin"
+      file: "cgi-bin"
 
 server:
   listen:
@@ -47,4 +47,4 @@ server:
     - path: "/images"
       file: "sample_image3.jpg"
     - path: "/cgi-bin"
-      script_directory: "cgi-bin"
+      file: "cgi-bin"

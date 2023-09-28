@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/22 15:29:08 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/09/27 23:09:50 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ Server::Server(Config * config)
 	while (i < this->_maxPorts)
 	{
 		this->_serverSockets.push_back(-1);
-		temp = this->_config->getPorts()[i];
+		temp = this->_config->getPort(i);
 		this->_ports.push_back(temp);
 		i++;
 	}
