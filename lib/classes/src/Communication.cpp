@@ -6,11 +6,22 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/28 20:49:16 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/01 15:58:44 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Communication.hpp"
+
+std::string	intToString(int n)
+{
+	std::string	str;
+	std::stringstream ss;
+
+	ss << n;
+	str = ss.str();
+	return (str);
+}
+
 
 /* CLASS AUX FUNCTIONS AND INITIALIZING */
 
@@ -67,7 +78,7 @@ void	Communication::manageRequest(void)
 
 		if (this->_ok)
 			this->sendResponse();
-		debug("...response sent");
+		debug("...response succesfully sent");
 	}
 	else if (this->_ok && this->_requestParams[0] == "POST")
 	{
@@ -136,35 +147,18 @@ void	Communication::readRequest(void)
 
 void	Communication::buildResponse(void)
 {
-	std::string	filepath;
+	std::string			filepath;
+	std::ifstream		inFile;
+	std::ostringstream	fileContentStream;
+	std::string			fileContent;
+	int					fileSize;
 
+	std::string			line, temp;
+
+    // Read the requested file content into a string
 	filepath = this->_config->getFile(this->_location, this->_requestParams[1]);
 	if (DEBUG)
-		std::cout << GREY << "[DEBUG: ...importing location " << this->_location << ": "
-				<< filepath << "]" << DEF_COL << std::endl;
-
-	std::ifstream		inFile;
-	std::string			line, temp;
-	int					charCounter = 0;
-
-	// reponse header example:
-	// this->_responseStr =	"HTTP/1.1 200 OK\r\n"
-	// 						"Content-Type: text/plain\r\n"
-	// 						"Content-Length: 23\r\n"
-	// 						"\r\n"
-	// 						"Hello, Andoni and John!";
-
-	this->_responseStr = "HTTP/1.1 200 OK\r\n";
-
-	if (this->_requestParams[1] == "/")
-		this->_responseStr += "Content-Type: text/html\r\n";
-	else if (this->_requestParams[1] == "/favicon.ico")
-		this->_responseStr += "Content-Type: image/vnd.microsoft.icon\r\n";
-	else
-		this->_responseStr += "Content-Type: text/plain\r\n";
-
-	this->_responseStr += "Content-Length: ";
-
+		std::cout << GREY << "[DEBUG: file requested: " << filepath << "]" << DEF_COL << std::endl;
 	inFile.open(filepath);
 	if (!inFile.is_open())
 	{
@@ -172,23 +166,31 @@ void	Communication::buildResponse(void)
 		this->_ok = false;
 		return ;
 	}
-	temp ="";
-	while (getline(inFile, line))
-	{
-		temp += line;
-		charCounter += line.size();
-	}
-	std::stringstream ss;
-	ss << charCounter;
-	std::string charCounterString = ss.str();
+    fileContentStream << inFile.rdbuf();
+    fileContent = fileContentStream.str();
+	fileSize = fileContent.size();
 
-	this->_responseStr += charCounterString;
+	// reponse header example:
+	// 		"HTTP/1.1 200 OK\r\n"
+	// 		"Content-Type: text/plain\r\n"
+	// 		"Content-Length: 23\r\n"
+	// 		"\r\n"
+	// 		"Hello, Andoni and John!";
+
+	this->_responseStr = "HTTP/1.1 200 OK\r\n";
+	if (this->_requestParams[1] == "/")
+		this->_responseStr += "Content-Type: text/html\r\n";
+	else if (this->_requestParams[1] == "/favicon.ico" || this->_requestParams[1] == "/image")
+		this->_responseStr += "Content-Type: image/vnd.microsoft.icon\r\n";
+	else
+		this->_responseStr += "Content-Type: text/plain\r\n";
+	this->_responseStr += "Content-Length: ";
+	this->_responseStr += intToString(fileSize);
 	this->_responseStr += "\r\n\r\n";
-	this->_responseStr += temp;
-
+	this->_responseStr += fileContent;
 	inFile.close();
-	if (DEBUG)
-		std::cout << GREY << "[DEBUG: ...response: \n" << this->_responseStr << "\n]" << DEF_COL << std::endl;
+	// if (DEBUG)
+	// 	std::cout << GREY << "[DEBUG: ...response: \n" << this->_responseStr << "\n]" << DEF_COL << std::endl;
 }
 
 void	Communication::sendResponse(void)
@@ -196,4 +198,6 @@ void	Communication::sendResponse(void)
 	ssize_t bytesSent = send(this->_clientSocket, this->_responseStr.c_str(), this->_responseStr.size(), 0);
 	if (bytesSent == -1)
 		error("Failed to send response");
+	else if (DEBUG)
+		std::cout << GREY << "[DEBUG: ..." << bytesSent << " bytes sent]" << DEF_COL << std::endl;
 }
