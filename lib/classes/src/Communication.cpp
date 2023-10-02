@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/01 15:58:44 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/01 17:26:55 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,29 +66,15 @@ void	Communication::manageRequest(void)
 {
 	this->_ok = true;
 
-	if (this->_ok)
-		this->readRequest();
-	debug("...request received and saved");
-
+	this->readRequest();
 	if (this->_ok && this->_requestParams[0] == "GET")
-	{
-		if (this->_ok)
-			this->buildResponse();
-		debug("...response built");
-
-		if (this->_ok)
-			this->sendResponse();
-		debug("...response succesfully sent");
-	}
+		this->handleGetRequest();
 	else if (this->_ok && this->_requestParams[0] == "POST")
-	{
-		error("POST not defined yet"); // TO BE MODIFIED <----------------------------fcntl(fd, F_SETFL, O_NONBLOCK);
-	}
+		this->handlePostRequest();
 	else if (this->_ok && this->_requestParams[0] == "DELETE")
-	{
-		error("DELETE not defined yet"); // TO BE MODIFIED <----------------------------fcntl(fd, F_SETFL, O_NONBLOCK);
-	}
-
+		this->handleDeleteRequest();
+	if (this->_ok)
+		this->sendResponse();
 	close(this->_clientSocket);
 	debug("...conection closed to client");
 }
@@ -108,8 +94,11 @@ void	Communication::readRequest(void)
 		std::cout << GREY << "[DEBUG: ...bytes read: " << bytesRead << "]"
 				<< DEF_COL << std::endl;
 
-	std::string	requestString(buffer);
-	this->_requestString = requestString;
+	// std::string	requestString(buffer);
+	// this->_requestString = requestString;
+	// if (DEBUG)
+	// 	std::cout << YELLOW << "[DEBUG: ---- Received from client ----\n\n"
+	// 			<< this->_requestString << "]" << DEF_COL << std::endl << std::endl;
 
 	std::istringstream	iss(buffer);
 	std::string			item;
@@ -140,12 +129,10 @@ void	Communication::readRequest(void)
 		this->_ok = false;
 		return ;
 	}
-	if (DEBUG)
-		std::cout << YELLOW << "[DEBUG: ---- Received from client ----\n\n"
-				<< this->_requestString << "]" << DEF_COL << std::endl << std::endl;
+	debug("...request received and saved");
 }
 
-void	Communication::buildResponse(void)
+void	Communication::handleGetRequest(void)
 {
 	std::string			filepath;
 	std::ifstream		inFile;
@@ -153,9 +140,6 @@ void	Communication::buildResponse(void)
 	std::string			fileContent;
 	int					fileSize;
 
-	std::string			line, temp;
-
-    // Read the requested file content into a string
 	filepath = this->_config->getFile(this->_location, this->_requestParams[1]);
 	if (DEBUG)
 		std::cout << GREY << "[DEBUG: file requested: " << filepath << "]" << DEF_COL << std::endl;
@@ -191,6 +175,17 @@ void	Communication::buildResponse(void)
 	inFile.close();
 	// if (DEBUG)
 	// 	std::cout << GREY << "[DEBUG: ...response: \n" << this->_responseStr << "\n]" << DEF_COL << std::endl;
+	debug("...response built");
+}
+
+
+void	Communication::handlePostRequest(void)
+{
+	error("POST not defined yet"); // TO BE MODIFIED <----------------------------fcntl(fd, F_SETFL, O_NONBLOCK);
+}
+void	Communication::handleDeleteRequest(void)
+{
+	error("DELETE not defined yet"); // TO BE MODIFIED <----------------------------fcntl(fd, F_SETFL, O_NONBLOCK);
 }
 
 void	Communication::sendResponse(void)
@@ -200,4 +195,5 @@ void	Communication::sendResponse(void)
 		error("Failed to send response");
 	else if (DEBUG)
 		std::cout << GREY << "[DEBUG: ..." << bytesSent << " bytes sent]" << DEF_COL << std::endl;
+	debug("...response succesfully sent");
 }

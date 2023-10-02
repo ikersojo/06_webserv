@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/28 20:28:04 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/01 16:53:24 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,10 @@ void	Server::SignalHandler(int signal)
 
 Server::Server(Config * config)
 {
-	int temp;
-	this->_config = config;
+	int			temp;
+	std::string	add;
 
+	this->_config = config;
 	this->_maxPorts = this->_config->getMaxPorts();
 	size_t	i = 0;
 	while (i < this->_maxPorts)
@@ -48,6 +49,8 @@ Server::Server(Config * config)
 		this->_serverSockets.push_back(-1);
 		temp = this->_config->getPort(i);
 		this->_ports.push_back(temp);
+		add = this->_config->getAddress(i);
+		this->_addresses.push_back(add);
 		i++;
 	}
 
@@ -59,7 +62,6 @@ Server::Server(Config * config)
 
 Server::~Server()
 {
-
 	size_t i = 0;
 	while (i < this->_maxPorts)
 	{
@@ -96,6 +98,7 @@ void	Server::init(void)
 		}
 		debug("...server socket defined");
 
+		// Set the Socket as re-usable
 		if (!SetSocketReuseAddr(this->_serverSockets[i]))
 		{
 			error("Failed to set socket as re-ussable");
@@ -119,7 +122,7 @@ void	Server::init(void)
 		}
 		debug("...server socket listening");
 
-		std::cout << "Server listening in http://localhost:" << this->_ports[i] << std::endl;
+		std::cout << "Server listening in http://" << this->_addresses[i] << ":" << this->_ports[i] << std::endl;
 		i++;
 	}
 	debug("Server initialized");
@@ -132,10 +135,10 @@ void Server::startListening(void)
 
 	int maxSocket = -1;
 	fd_set readSet;
+	size_t i;
 
 	FD_ZERO(&readSet);
-
-	size_t i = 0;
+	i = 0;
 	while (i < this->_maxPorts)
 	{
 		FD_SET(this->_serverSockets[i], &readSet);

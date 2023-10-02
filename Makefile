@@ -6,7 +6,7 @@
 #    By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/23 16:00:17 by isojo-go          #+#    #+#              #
-#    Updated: 2023/09/15 10:53:36 by isojo-go         ###   ########.fr        #
+#    Updated: 2023/10/01 16:45:26 by isojo-go         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@ OBJ		=	$(SRC:$(SRCDIR)/%$(EXT)=$(OBJDIR)/%.o)
 CC			=	c++
 CFLAGS		=	-Wall -Wextra -Werror -std=c++98 -pedantic -Wshadow
 RM			=	rm -rf
-DEBUG		=	-DDEBUG=1
+DEBUG		=
 
 # *************************************************************************** #
 
@@ -61,7 +61,10 @@ WHITE = \033[0;97m
 
 all:		$(NAME)
 
-$(NAME):	libclasses libaux $(OBJ)
+debug:		DEBUG = -DDEBUG=1
+debug:		fclean $(NAME)
+
+$(NAME):	fclean libclasses libaux $(OBJ)
 			@mkdir -p $(BINDIR)
 			@$(CC) $(DEBUG) $(CFLAGS) $(OBJ) $(LIBS) $(HEADERS) -o ./$(BINDIR)/$(NAME)
 			@echo "$(GREEN)$(NAME) compiled!$(DEF_COLOR)"
@@ -73,10 +76,10 @@ $(OBJDIR)/%.o: $(SRCDIR)/%$(EXT)
 			@echo "$(GREEN)Done!$(DEF_COLOR)"
 
 libclasses:
-			@$(MAKE) -C $(LIBCLASS)
+			@$(MAKE) -C $(LIBCLASS) DEBUG=$(DEBUG)
 
 libaux:
-			@$(MAKE) -C $(LIBAUX)
+			@$(MAKE) -C $(LIBAUX) DEBUG=$(DEBUG)
 
 clean:
 			@$(RM) $(OBJ) $(OBJDIR)
@@ -91,9 +94,11 @@ fclean:
 				$(RM) $(OBJ) $(OBJDIR); \
 				echo "$(YELLOW)$(NAME) object files removed!$(DEF_COLOR)"; \
 			fi
-			@$(RM) $(NAME) $(BINDIR)
-			@echo "$(RED)$(NAME) removed!$(DEF_COLOR)"
+			@if [ -d $(BINDIR) ]; then \
+				$(RM) $(NAME) $(BINDIR); \
+				echo "$(RED)$(NAME) removed!$(DEF_COLOR)"; \
+			fi
 
 re:			fclean all
 
-.PHONY:		all clean fclean re libclasses libaux
+.PHONY:		all clean fclean re libclasses libaux debug

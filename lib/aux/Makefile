@@ -6,7 +6,7 @@
 #    By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/23 16:00:31 by isojo-go          #+#    #+#              #
-#    Updated: 2023/09/15 10:24:23 by isojo-go         ###   ########.fr        #
+#    Updated: 2023/10/01 16:44:40 by isojo-go         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,7 @@ CC			=	c++
 AR			=	ar rcs
 CFLAGS		=	-Wall -Wextra -Werror -std=c++98 -pedantic -Wshadow
 RM			=	rm -rf
-DEBUG		=	-DDEBUG=1
+DEBUG		=
 
 # *************************************************************************** #
 
@@ -77,8 +77,10 @@ fclean:
 				$(RM) $(OBJ) $(OBJDIR); \
 				echo "$(YELLOW)$(NAME) object files removed!$(DEF_COLOR)"; \
 			fi
-			@$(RM) $(NAME)
-			@echo "$(RED)$(NAME) removed!$(DEF_COLOR)"
+			@if [ -f $(NAME) ]; then \
+				$(RM) $(NAME); \
+				echo "$(RED)$(NAME) removed!$(DEF_COLOR)"; \
+			fi
 
 re:			fclean all
 
