@@ -1,6 +1,6 @@
 server:
   listen:
-    - port: 61000
+    - port: 80
       address: localhost
     - port: 61001
       address: 127.0.0.1

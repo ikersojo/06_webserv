@@ -1,54 +1,35 @@
 server:
+  servername: "myserver.net"
   listen:
     - port: 61000
-      address: localhost
+      address: "localhost"
     - port: 61001
       address: 127.0.0.1
-  root_directory: "./www/site1"
   locations:
-    - path: "/"
+    - uri: "/"
+      autoindex: "off"
+      root: "./www/site1"
       file: "index.html"
-    - path: "/favicon.ico"
+      allowed-method: "GET DELETE POST"
+      error_page: "404.html"
+      client_max_boby_size: 4096
+    - uri: "/favicon.ico"
+      autoindex: "off"
+      root: "./www/site1"
       file: "icon1.png"
-    - path: "/images/sample"
+      allowed-method: "GET"
+    - uri: "/images"
+      autoindex: "on"
+      root: "./www/site1"
+      file: "images"
+      allowed-method: "GET"
+    - uri: "/images/sample"
       file: "images/sample_image1.jpg"
-    - path: "/cgi-bin"
+    - uri: "/cgi-bin"
+      root: "./www/site1"
       file: "cgi-bin"
+      cgi-ext: py
+    - uri: "/redir"
+      autoindex: "off"
+      redirection: http://www.google.com
 
-server:
-  listen:
-    - port: 62000
-      address: localhost
-    - port: 62001
-      address: 127.0.0.1
-  root_directory: "./www/site2"
-  locations:
-    - path: "/"
-      file: "index.html"
-      allowed-method: GET DELETE POST
-      autoindex: on
-      cgi-ext: py sh
-      redirection: http://www.google.com 
-    - path: "/favicon.ico"
-      file: "icon2.png"
-    - path: "/images/sample"
-      file: "images/sample_image2.png"
-    - path: "/cgi-bin"
-      file: "cgi-bin"
-
-server:
-  listen:
-    - port: 63000
-      address: localhost
-    - port: 63001
-      address: 127.0.0.1
-  root_directory: "./www/site3"
-  locations:
-    - path: "/"
-      file: "index.html"
-    - path: "/favicon.ico"
-      file: "icon3.png"
-    - path: "/images/sample"
-      file: "images/sample_image3.png"
-    - path: "/cgi-bin"
-      file: "cgi-bin"
