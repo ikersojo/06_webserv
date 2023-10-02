@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/01 16:53:24 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/02 10:22:12 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ Server::Server(Config * config)
 	debug("Server Object Created");
 }
 
+
 Server::~Server()
 {
 	size_t i = 0;
@@ -67,13 +68,16 @@ Server::~Server()
 	{
 		if (this->_serverSockets[i] != -1)
 		{
-			close(this->_serverSockets[i]);
-			debug("...socket closed");
+			if (close(this->_serverSockets[i]) == -1)
+				error("Server Socket could not be closed");
+			else
+				debug("... server socket closed");
 		}
 		i++;
 	}
 	debug("Server Object Destroyed");
 }
+
 
 void	Server::init(void)
 {
@@ -129,6 +133,7 @@ void	Server::init(void)
 	this->startListening();
 }
 
+
 void Server::startListening(void)
 {
 	debug("Setup select to iterate over the ports...");
@@ -149,7 +154,8 @@ void Server::startListening(void)
 	debug("...FD_SET ready with the listening ports");
 
 	while (!_shutdownRequested)
-	{	if (DEBUG)
+	{
+		if (DEBUG)
 			std::cout << std::endl;
 		debug("Listening...");
 		fd_set tmpSet = readSet;
@@ -168,7 +174,7 @@ void Server::startListening(void)
 			if (FD_ISSET(this->_serverSockets[i], &tmpSet))
 			{
 				debug("...event on listening socket identified");
-				Communication conn(this->_serverSockets[i], this->_config, i);
+				Communication comm(this->_serverSockets[i], this->_config, i);
 			}
 			i++;
 		}

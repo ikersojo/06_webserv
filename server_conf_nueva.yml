@@ -25,6 +25,10 @@ server:
   locations:
     - path: "/"
       file: "index.html"
+      allowed-method: GET DELETE POST
+      autoindex: on
+      cgi-ext: py sh
+      redirection: http://www.google.com 
     - path: "/favicon.ico"
       file: "icon2.png"
     - path: "/images/sample"

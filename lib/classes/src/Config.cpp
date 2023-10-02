@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/01 16:53:59 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/02 08:51:34 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,35 +36,23 @@ size_t	getNumberOfPorts(const std::string & configFile)
 	return (n);
 }
 
-std::string	trimDoubleQuotes(const std::string& str)
-{
-	size_t	start = 0, end = str.length();
-
-	while (start < end && str[start] == '"')
-		start++;
-
-	while (end > start && str[end - 1] == '"')
-		end--;
-	return str.substr(start, end - start);
-}
 
 Config::Config(const std::string & configFile)
 {
 	std::cout << "Loading " << configFile << "..." << std::endl << std::endl;
 
-	this->_maxPorts = getNumberOfPorts(configFile);
-	this->_files.resize(this->_maxPorts);
-
-	std::ifstream inFile(configFile);
 	std::string line, item1, item2, item3, rootDir, path, fullPath;
 	int	nPortsPerServer;
 	int	nPortsPopulated = 0;
-
+	std::ifstream inFile(configFile);
 	if (!inFile.is_open())
 	{
 		error("Failed to open configuration file");
 		exit(EXIT_FAILURE);
 	}
+
+	this->_maxPorts = getNumberOfPorts(configFile);
+	this->_files.resize(this->_maxPorts);
 
 	while (getline(inFile, line))
 	{
@@ -140,30 +128,36 @@ Config::Config(const std::string & configFile)
 	debug("Config Object Created");
 }
 
+
 Config::~Config(void)
 {
 	debug("Config Object Destroyed");
 }
+
 
 size_t	Config::getMaxPorts(void)
 {
 	return (this->_maxPorts);
 }
 
+
 int		Config::getPort(size_t i)
 {
 	return (this->_ports[i]);
 }
+
 
 std::string		Config::getAddress(size_t i)
 {
 	return (this->_addresses[i]);
 }
 
+
 std::string		Config::getFile(size_t i, std::string req)
 {
 	return (this->_files[i][req]);
 }
+
 
 void	Config::printConfig(void)
 {

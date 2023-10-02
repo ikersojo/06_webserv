@@ -3,6 +3,7 @@
 	
 	#include <iostream>
 	#include <string>
+	#include <sstream>
 
 	// Debug option on/off: check Makefile
 	#ifndef DEBUG
@@ -17,7 +18,9 @@
 	#define DEF_COL	"\033[0;39m"
 
 	// printToConsole.cpp
-	void	debug(const std::string & str);
-	void	error(const std::string & str);
+	void		debug(const std::string & str);
+	void		error(const std::string & str);
+	std::string	intToString(int n);
+	std::string	trimDoubleQuotes(const std::string& str);
 
 #endif // AUX_HPP

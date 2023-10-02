@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   00_main.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:53:16 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/28 13:31:32 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/02 08:56:46 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,3 +32,20 @@ int		main(int argc, const char** argv)
 	}
 	return (0);
 }
+
+/*
+TODO List (specific items, with identified locations):
+	02_confFileCorrect.cpp
+		Implemenent all the checks
+			Sequence: Server -> Listen / Root / Location
+				In Listen, each port, folowed by address (each one strating with '-')
+				In Location, each target path, followed by the associated file/dir (each one strating with '-')
+			All values with "" for strings, without for ints
+
+PENDING Functionalities List (not defined where):
+
+BUG List:
+
+
+
+ */
