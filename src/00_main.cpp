@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   00_main.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:53:16 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/02 08:56:46 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/04 23:21:22 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ int		main(int argc, const char** argv)
 		Config* config = new Config(configFile);
 		if (DEBUG)
 			config->printConfig();
-		Server	webserv(config);
+		// Server	webserv(config);
 
-		webserv.init();
+		// webserv.init();
 
 		delete config;
 	}
