@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 21:34:37 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/05 18:52:01 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/05 20:27:44 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,7 @@ static bool FirstCheck(std::string &line, int space) // El primer checkeo compru
 			checkline = line.substr(2, 8);
 			//std::cout <<"checkline: " <<checkline << std::endl;
 			if (checkline != "listen: ")
-			{
-				std::cout << "entra\n";
 				return false;
-			}
 			return true;
 		}
 		else if (line.find("root: ") != std::string::npos)
@@ -134,6 +131,5 @@ bool confFileCorrect(const char **argv)
 			std::cout << line << std::endl;
 		}
 	}
-	
 	return (configOK());
 }
