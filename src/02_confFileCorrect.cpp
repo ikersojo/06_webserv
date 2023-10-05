@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 21:34:37 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/04 20:38:09 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/05 18:52:01 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,16 +40,16 @@ static int SpaceCounter(std::string &line)
 }
 
 
-static bool FirstCheck(std::string &line, int space)
+static bool FirstCheck(std::string &line, int space) // El primer checkeo compruebo si esta [server:, listen:, root:, location:] dentro de la configuracion.
 {
-	std::string serverline, listenline, rootline, locationline;
+	std::string checkline;
 	if(space == 0 && line.find("server:") != std::string::npos)
 	{
 		size_t end = line.find_last_not_of(" \t"); // Eliminar los espacios al final de la linea.
 		
 		if(end != std::string::npos)
-			serverline = line.substr(0, end + 1);
-		if(serverline != "server:")
+			checkline = line.substr(0, end + 1);
+		if(checkline != "server:")
 		{
 			error(line);
 			return false;
@@ -60,26 +60,29 @@ static bool FirstCheck(std::string &line, int space)
 	{
 		if(line.find("listen: ") != std::string::npos)
 		{
-			listenline = line.substr(2, 10);
-			if (listenline != "listen: ")
+			checkline = line.substr(2, 8);
+			//std::cout <<"checkline: " <<checkline << std::endl;
+			if (checkline != "listen: ")
+			{
+				std::cout << "entra\n";
 				return false;
-			//std::cout <<"listenline: " <<listenline << std::endl;
+			}
 			return true;
 		}
 		else if (line.find("root: ") != std::string::npos)
 		{
-			rootline = line.substr(2, 8);
-			if (rootline != "root: ")
+			checkline = line.substr(2, 6);
+			//std::cout << "checkline: " << checkline << std::endl;
+			if (checkline != "root: ")
 				return false;
-			//std::cout << "rootline: " << rootline << std::endl;
 			return true;
 		}
 		else if (line.find("location: ") != std::string::npos)
 		{
-			locationline = line.substr(2,12);
-			if (locationline != "location: ")
+			checkline = line.substr(2,10);
+			//std::cout << "checkline: " <<  checkline << std::endl;
+			if (checkline != "location: ")
 				return false;
-			//std::cout << "locationline: " <<  locationline << std::endl;
 			return true;
 		}
 		return false;	
@@ -117,18 +120,19 @@ bool confFileCorrect(const char **argv)
 			{
 				std:: cout << line << " <--- "; 
 				error("Wrong space format");
+				filename.close();
 				return(configError());
 			}
-			std::cout << line << "espacios: " << space << std::endl;
 			
 			if (!FirstCheck(line, space))
 			{
 				std::cout << line << " <---- ";
 				error("Check error");
+				filename.close();
 				return(configError());
 			}
+			std::cout << line << std::endl;
 		}
-		
 	}
 	
 	return (configOK());
