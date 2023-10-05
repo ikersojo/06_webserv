@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:04 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/01 16:48:59 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/05 22:22:05 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,7 @@
 			static bool				_shutdownRequested;
 
 			size_t							_maxPorts;
-			std::vector < int >				_ports;
-			std::vector < std::string >		_addresses;
-			std::vector < int >				_serverSockets;
+			std::vector < int >				_serverSocket;
 			Config * 						_config;
 
 			void	startListening(void);

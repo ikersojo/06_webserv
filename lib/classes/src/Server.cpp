@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/02 10:22:12 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/05 22:22:05 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,19 +38,12 @@ void	Server::SignalHandler(int signal)
 
 Server::Server(Config * config)
 {
-	int			temp;
-	std::string	add;
-
 	this->_config = config;
 	this->_maxPorts = this->_config->getMaxPorts();
 	size_t	i = 0;
 	while (i < this->_maxPorts)
 	{
-		this->_serverSockets.push_back(-1);
-		temp = this->_config->getPort(i);
-		this->_ports.push_back(temp);
-		add = this->_config->getAddress(i);
-		this->_addresses.push_back(add);
+		this->_serverSocket.push_back(-1);
 		i++;
 	}
 
@@ -66,9 +59,9 @@ Server::~Server()
 	size_t i = 0;
 	while (i < this->_maxPorts)
 	{
-		if (this->_serverSockets[i] != -1)
+		if (this->_serverSocket[i] != -1)
 		{
-			if (close(this->_serverSockets[i]) == -1)
+			if (close(this->_serverSocket[i]) == -1)
 				error("Server Socket could not be closed");
 			else
 				debug("... server socket closed");
@@ -91,11 +84,11 @@ void	Server::init(void)
 
 		bzero(&serverAddr, sizeof(serverAddr));
 		serverAddr.sin_family = AF_INET;
-		serverAddr.sin_port = htons(this->_ports[i]);
+		serverAddr.sin_port = htons(this->_config->getPort(i));
 		serverAddr.sin_addr.s_addr = INADDR_ANY;
 
 		// Create a Socket
-		if ((this->_serverSockets[i]= socket(AF_INET, SOCK_STREAM, 0)) == -1)
+		if ((this->_serverSocket[i]= socket(AF_INET, SOCK_STREAM, 0)) == -1)
 		{
 			error("Failed to create socket");
 			exit (EXIT_FAILURE);
@@ -103,7 +96,7 @@ void	Server::init(void)
 		debug("...server socket defined");
 
 		// Set the Socket as re-usable
-		if (!SetSocketReuseAddr(this->_serverSockets[i]))
+		if (!SetSocketReuseAddr(this->_serverSocket[i]))
 		{
 			error("Failed to set socket as re-ussable");
 			exit (EXIT_FAILURE);
@@ -111,7 +104,7 @@ void	Server::init(void)
 		debug("...server socket re-usage allowed");
 
 		// Bind the server address to the socket
-		if (bind(this->_serverSockets[i], (struct sockaddr *) &serverAddr, sizeof(serverAddr)) == -1)
+		if (bind(this->_serverSocket[i], (struct sockaddr *) &serverAddr, sizeof(serverAddr)) == -1)
 		{
 			error("Failed to bind server address to socket");
 			exit (EXIT_FAILURE);
@@ -119,14 +112,14 @@ void	Server::init(void)
 		debug("...server address binded to socket");
 
 		// Start listening for Communications
-		if (listen(this->_serverSockets[i], BACKLOG) == -1)
+		if (listen(this->_serverSocket[i], BACKLOG) == -1)
 		{
 			error("Failed to listen for Communications");
 			exit (EXIT_FAILURE);
 		}
 		debug("...server socket listening");
 
-		std::cout << "Server listening in http://" << this->_addresses[i] << ":" << this->_ports[i] << std::endl;
+		std::cout << "Server listening in http://" << this->_config->getAddress(i) << ":" << this->_config->getPort(i) << std::endl;
 		i++;
 	}
 	debug("Server initialized");
@@ -146,9 +139,9 @@ void Server::startListening(void)
 	i = 0;
 	while (i < this->_maxPorts)
 	{
-		FD_SET(this->_serverSockets[i], &readSet);
-		if (this->_serverSockets[i] > maxSocket)
-			maxSocket = this->_serverSockets[i];
+		FD_SET(this->_serverSocket[i], &readSet);
+		if (this->_serverSocket[i] > maxSocket)
+			maxSocket = this->_serverSocket[i];
 		i++;
 	}
 	debug("...FD_SET ready with the listening ports");
@@ -171,10 +164,10 @@ void Server::startListening(void)
 		i = 0;
 		while (i < this->_maxPorts)
 		{
-			if (FD_ISSET(this->_serverSockets[i], &tmpSet))
+			if (FD_ISSET(this->_serverSocket[i], &tmpSet))
 			{
 				debug("...event on listening socket identified");
-				Communication comm(this->_serverSockets[i], this->_config, i);
+				Communication comm(this->_serverSocket[i], this->_config, i);
 			}
 			i++;
 		}

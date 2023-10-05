@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Communication_main.cpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/02 10:39:14 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/05 22:54:59 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,18 +79,22 @@ void	Communication::readRequest(void)
 	ssize_t	bytesRead = BUFFSIZE;
 
 	this->_requestString = "";
-	bzero(&buffer, BUFFSIZE);
-	if ((bytesRead = recv(this->_clientSocket, buffer, sizeof(buffer), 0)) <= 0)
-	{
-		this->_ok = false;
-		return ;
-	}
-	if (DEBUG)
-		std::cout << GREY << "[DEBUG: ...bytes read: " << bytesRead << "]"
-				<< DEF_COL << std::endl;
 
-	std::string	requestString(buffer);
-	this->_requestString += requestString;
+	while (bytesRead == BUFFSIZE && !this->_shutdownRequested)
+	{
+		bzero(&buffer, BUFFSIZE);
+		if ((bytesRead = recv(this->_clientSocket, buffer, sizeof(buffer), 0)) <= 0)
+		{
+			this->_ok = false;
+			return ;
+		}
+		if (DEBUG)
+			std::cout << GREY << "[DEBUG: ...bytes read: " << bytesRead << "]"
+					<< DEF_COL << std::endl;
+
+		std::string	requestString(buffer);
+		this->_requestString += requestString;
+	}
 	if (DEBUG) // remove for prod
 		std::cout << YELLOW << "[DEBUG: ---- Received from client ----\n\n"
 				<< this->_requestString << "]" << DEF_COL << std::endl << std::endl;

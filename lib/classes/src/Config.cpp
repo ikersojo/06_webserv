@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/04 23:26:54 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/05 22:02:08 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,6 @@ Config::Config(const std::string & configFile)
 		this->_errorPage[i]["/redir"] = "./www/def404.html";
 		this->_bufferSize[i]["/redir"] = 4096;
 
-	debug("----");
 		i++;
 	}
 	debug("Config Object Created");
@@ -197,7 +196,28 @@ void	Config::printConfig(void)
 		std::map<std::string, std::string>::iterator it = currentMap.begin();
 		while ( it != currentMap.end())
 		{
-			std::cout << "    Requests to " << it->first << " will be replied by " << it->second << std::endl;
+			std::cout << "    Requests to " << it->first;
+
+			if (this->isGET(i, it->first))
+				std::cout << " (G";
+			else
+				std::cout << "(-";
+			if (this->isPOST(i, it->first))
+				std::cout << "P";
+			else
+				std::cout << "-";
+			if (this->isDELETE(i, it->first))
+				std::cout << "D)";
+			else
+				std::cout << "-)";
+
+			std::cout << " will be replied by ";
+
+			if (this->isRedir(i, it->first))
+				std::cout << "a redirection to ";
+			if (this->isCgi(i, it->first))
+				std::cout << "a cgi script run of file ";
+			std::cout << it->second << std::endl;
 			it++;
 		}
 		i++;

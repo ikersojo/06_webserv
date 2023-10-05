@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Communication.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:50 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/02 08:29:50 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/05 22:54:59 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,16 @@
 			std::string					_responseStr;
 
 			void	manageRequest(void);
+
 			void	readRequest(void);
-			void	handleGetRequest(void);
-			void	handlePostRequest(void);
-			void	handleDeleteRequest(void);
+
+				void	handleGetRequest(void);
+					void	buildFileResponse(void);
+
+				void	handlePostRequest(void);
+
+				void	handleDeleteRequest(void);
+
 			void	sendResponse(void);
 	};
 
