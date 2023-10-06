@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 21:34:37 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/05 20:27:44 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/06 20:16:29 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,19 @@ static int SpaceCounter(std::string &line)
 	return cont;
 }
 
+static bool isOneOf(std::string &line)
+{
+	std::vector<std::string> valiOptions;
+	std::string option;
+	std::istringstream iss(line);
+	valiOptions.push_back("file:");
+	valiOptions.push_back("redirect:");
+	valiOptions.push_back("autoindex:");
+	
+	iss >> option;
+
+	return std::find(valiOptions.begin(),valiOptions.end(), option) != valiOptions.end();
+}
 
 static bool FirstCheck(std::string &line, int space) // El primer checkeo compruebo si esta [server:, listen:, root:, location:] dentro de la configuracion.
 {
@@ -61,7 +74,7 @@ static bool FirstCheck(std::string &line, int space) // El primer checkeo compru
 		if(line.find("listen: ") != std::string::npos)
 		{
 			checkline = line.substr(2, 8);
-			//std::cout <<"checkline: " <<checkline << std::endl;
+			std::cout <<"checkline: " <<checkline << std::endl;
 			if (checkline != "listen: ")
 				return false;
 			return true;
@@ -83,6 +96,14 @@ static bool FirstCheck(std::string &line, int space) // El primer checkeo compru
 			return true;
 		}
 		return false;	
+	}
+	else if (space == 4)
+	{
+		if (!isOneOf(line))
+		{
+			std::cout << "entra\n";
+			return false;
+		}
 	}
 	return true;
 } 
