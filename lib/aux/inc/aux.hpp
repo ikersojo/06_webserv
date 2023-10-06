@@ -1,6 +1,6 @@
 #ifndef AUX_HPP
 	#define AUX_HPP
-	
+
 	#include <iostream>
 	#include <string>
 	#include <sstream>
@@ -21,6 +21,6 @@
 	void		debug(const std::string & str);
 	void		error(const std::string & str);
 	std::string	intToString(int n);
-	std::string	trimDoubleQuotes(const std::string& str);
+	std::string	trimChars(const std::string& str, const std::string& chars);
 
 #endif // AUX_HPP

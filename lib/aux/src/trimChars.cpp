@@ -1,25 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   trimDoubleQuotes.cpp                               :+:      :+:    :+:   */
+/*   trimChar.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 08:41:51 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/02 08:42:35 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/04 17:09:50 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/aux.hpp"
 
-std::string	trimDoubleQuotes(const std::string& str)
+std::string trimChars(const std::string& str, const std::string& chars)
 {
-	size_t	start = 0, end = str.length();
+    size_t start = 0, end = str.length();
 
-	while (start < end && str[start] == '"')
-		start++;
+    while (start < end && chars.find(str[start]) != std::string::npos)
+        start++;
 
-	while (end > start && str[end - 1] == '"')
-		end--;
-	return str.substr(start, end - start);
+    while (end > start && chars.find(str[end - 1]) != std::string::npos)
+        end--;
+
+    return str.substr(start, end - start);
 }
