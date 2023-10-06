@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:50 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/05 23:11:03 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/06 12:51:53 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@
 			Config * 			_config;
 			int					_location;
 
-			std::string					_requestString; //only for debugging (so far...)
+			std::string					_requestString;
 			std::vector < std::string >	_requestParams;
 			std::string					_responseStr;
 

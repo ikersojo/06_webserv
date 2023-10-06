@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/05 22:02:08 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/06 12:51:53 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,15 +107,15 @@ Config::Config(const std::string & configFile)
 		this->_errorPage[i]["/images"] = "./www/def404.html";
 		this->_bufferSize[i]["/images"] = 4096;
 
-		this->_autoindex[i]["/redir"] = false;
-		this->_redir[i]["/redir"] = true;
-		this->_cgi[i]["/redir"] = false;
-		this->_file[i]["/redir"] = "https://www.google.com";
-		this->_allowedGET[i]["/redir"] = true;
-		this->_allowedPOST[i]["/redir"] = true;
-		this->_allowedDELETE[i]["/redir"] = true;
-		this->_errorPage[i]["/redir"] = "./www/def404.html";
-		this->_bufferSize[i]["/redir"] = 4096;
+		this->_autoindex[i]["/redirect"] = false;
+		this->_redir[i]["/redirect"] = true;
+		this->_cgi[i]["/redirect"] = false;
+		this->_file[i]["/redirect"] = "https://www.42urduliz.com";
+		this->_allowedGET[i]["/redirect"] = true;
+		this->_allowedPOST[i]["/redirect"] = true;
+		this->_allowedDELETE[i]["/redirect"] = true;
+		this->_errorPage[i]["/redirect"] = "./www/def404.html";
+		this->_bufferSize[i]["/redirect"] = 4096;
 
 		i++;
 	}

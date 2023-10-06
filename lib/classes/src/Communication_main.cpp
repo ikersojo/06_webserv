@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/05 23:25:49 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/06 12:59:12 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,6 @@ void	Communication::readRequest(void)
 	ssize_t	bytesRead = BUFFSIZE;
 
 	this->_requestString = "";
-
 	while (bytesRead == BUFFSIZE && !this->_shutdownRequested)
 	{
 		bzero(&buffer, BUFFSIZE);
@@ -96,9 +95,9 @@ void	Communication::readRequest(void)
 		std::string	requestString(buffer);
 		this->_requestString += requestString;
 	}
-	if (DEBUG) // remove for prod
-		std::cout << YELLOW << "[DEBUG: ---- Received from client ----\n\n"
-				<< this->_requestString << "]" << DEF_COL << std::endl << std::endl;
+	// if (DEBUG) // remove for prod
+	// 	std::cout << YELLOW << "[DEBUG: ---- Received from client ----\n\n"
+	// 			<< this->_requestString << "]" << DEF_COL << std::endl << std::endl;
 
 	std::istringstream	iss(buffer);
 	std::string			item;
@@ -135,10 +134,16 @@ void	Communication::readRequest(void)
 
 void	Communication::sendResponse(void)
 {
+	debug("Sending response...");
+	// if (DEBUG)
+	// 	std::cout << GREY << "[DEBUG: ...response: \n" << this->_responseStr << "\n]" << DEF_COL << std::endl;
+
 	ssize_t bytesSent = send(this->_clientSocket, this->_responseStr.c_str(), this->_responseStr.size(), 0);
 	if (bytesSent == -1)
 		error("Failed to send response");
 	else if (DEBUG)
+	{
 		std::cout << GREY << "[DEBUG: ..." << bytesSent << " bytes sent]" << DEF_COL << std::endl;
-	debug("...response succesfully sent");
+		debug("...response succesfully sent");
+	}
 }

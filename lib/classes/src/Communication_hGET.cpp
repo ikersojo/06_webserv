@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 08:41:57 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/05 23:22:46 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/06 11:23:57 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,6 @@ void	Communication::buildFileResponse(void)
 	this->_responseStr += "\r\n\r\n";
 	this->_responseStr += fileContent;
 	inFile.close();
-	// if (DEBUG)
-	// 	std::cout << GREY << "[DEBUG: ...response: \n" << this->_responseStr << "\n]" << DEF_COL << std::endl;
 	debug("...response built");
 }
 
@@ -66,6 +64,7 @@ void	Communication::buildRedirResponse(void)
 	this->_responseStr += "Location: ";
 	this->_responseStr += this->_config->getFile(this->_location, this->_requestParams[1]);
 	this->_responseStr += "\r\n\r\n";
+	debug("...response built");
 }
 
 
@@ -86,10 +85,12 @@ void	Communication::handleGetRequest(void)
 	else if (this->_config->isCgi(this->_location, this->_requestParams[1]))
 	{
 		debug("CGI run requested");
+		error("not implemented yet"); // TODO
 	}
 	else if (this->_config->isAutoIndex(this->_location, this->_requestParams[1]))
 	{
 		debug("autoindex requested");
+		error("not implemented yet"); // TODO
 	}
 	else
 	{
