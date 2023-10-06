@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/05 22:54:59 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/05 23:25:49 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	Communication::manageRequest(void)
 	this->_ok = true;
 
 	this->readRequest();
+	// TODO: check if it is a valid key in map
 	if (this->_ok && this->_requestParams[0] == "GET")
 		this->handleGetRequest();
 	else if (this->_ok && this->_requestParams[0] == "POST")

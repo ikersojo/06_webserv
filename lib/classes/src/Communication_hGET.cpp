@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 08:41:57 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/05 23:07:53 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/05 23:22:46 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,21 +60,28 @@ void	Communication::buildFileResponse(void)
 
 // HTTP/1.1 301 Moved Permanently
 // Location: /new-url
+void	Communication::buildRedirResponse(void)
+{
+	this->_responseStr = "HTTP/1.1 301 Moved Permanently\r\n";
+	this->_responseStr += "Location: ";
+	this->_responseStr += this->_config->getFile(this->_location, this->_requestParams[1]);
+	this->_responseStr += "\r\n\r\n";
+}
+
+
 void	Communication::handleGetRequest(void)
 {
 	if (!this->_config->isGET(this->_location, this->_requestParams[1]))
 	{
 		error("GET is not allowed for url");
+		this->_ok = false;
 		return ;
 	}
 
 	if (this->_config->isRedir(this->_location, this->_requestParams[1]))
 	{
-		debug("Redirection requested");
-		this->_responseStr = "HTTP/1.1 301 Moved Permanently\r\n";
-		this->_responseStr += "Location: ";
-		this->_responseStr += this->_config->getFile(this->_location, this->_requestParams[1]);
-		this->_responseStr += "\r\n";
+		debug("...redirection requested");
+		this->buildRedirResponse();
 	}
 	else if (this->_config->isCgi(this->_location, this->_requestParams[1]))
 	{
