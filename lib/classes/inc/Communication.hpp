@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:50 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/06 12:51:53 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/07 07:53:38 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 	#include <cstdlib>
 	#include <sstream>
 	#include <fstream>
+	#include <dirent.h>
 
 	#include "../../aux/inc/aux.hpp"
 	#include "../inc/Config.hpp"
@@ -62,6 +63,7 @@
 				void	handleGetRequest(void);
 					void	buildFileResponse(void);
 					void	buildRedirResponse(void);
+					void	buildAutoIndexResponse(void);
 
 				void	handlePostRequest(void);
 

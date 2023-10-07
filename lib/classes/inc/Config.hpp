@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/04 23:21:01 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/07 07:53:38 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@
 			bool			isPOST(size_t i, std::string req);
 			bool			isDELETE(size_t i, std::string req);
 			bool			isCgi(size_t i, std::string req);
+			bool			isValidRequest(size_t i, std::string req);
 
 			void			resizeVectors(size_t size);
 			void			printConfig(void);

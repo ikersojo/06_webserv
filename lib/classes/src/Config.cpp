@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/06 12:51:53 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/07 08:01:43 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,7 +226,17 @@ void	Config::printConfig(void)
 }
 
 
+bool	Config::isValidRequest(size_t i, std::string req)
+{
+	std::map < std::string, std::string >::iterator it;
 
+	std::cout << req << std::endl;
+
+	it = this->_file[i].find(req);
+	if (it != this->_file[i].end())
+		return (true);
+	return (false);
+}
 
 
 

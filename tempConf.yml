@@ -14,4 +14,5 @@ server:
     file: "images/sample_image1.jpg"
   location: "/cgi-bin"
     file: "cgi-bin"
+  location: "/redirect"
     redirect: "https://www.42urduliz.com"

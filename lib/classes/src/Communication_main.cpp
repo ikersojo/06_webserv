@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/06 12:59:12 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/07 08:00:39 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,12 @@ void	Communication::manageRequest(void)
 	this->_ok = true;
 
 	this->readRequest();
-	// TODO: check if it is a valid key in map
+	if (!this->_config->isValidRequest(this->_location, this->_requestParams[1]))
+	{
+		error("not a valid url"); // TO BE REPLACED BY 404
+		this->_ok = false;
+		return ;
+	}
 	if (this->_ok && this->_requestParams[0] == "GET")
 		this->handleGetRequest();
 	else if (this->_ok && this->_requestParams[0] == "POST")
@@ -78,14 +83,16 @@ void	Communication::readRequest(void)
 {
 	char	buffer[BUFFSIZE];
 	ssize_t	bytesRead = BUFFSIZE;
-
 	this->_requestString = "";
+
+	debug("...reading request");
 	while (bytesRead == BUFFSIZE && !this->_shutdownRequested)
 	{
 		bzero(&buffer, BUFFSIZE);
 		if ((bytesRead = recv(this->_clientSocket, buffer, sizeof(buffer), 0)) <= 0)
 		{
 			this->_ok = false;
+			error("Request not received (or empty)");
 			return ;
 		}
 		if (DEBUG)
@@ -95,9 +102,9 @@ void	Communication::readRequest(void)
 		std::string	requestString(buffer);
 		this->_requestString += requestString;
 	}
-	// if (DEBUG) // remove for prod
-	// 	std::cout << YELLOW << "[DEBUG: ---- Received from client ----\n\n"
-	// 			<< this->_requestString << "]" << DEF_COL << std::endl << std::endl;
+	if (DEBUG) // remove for prod
+		std::cout << YELLOW << "[DEBUG: ---- Received from client ----\n\n"
+				<< this->_requestString << "]" << DEF_COL << std::endl << std::endl;
 
 	std::istringstream	iss(buffer);
 	std::string			item;
