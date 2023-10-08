@@ -4,6 +4,7 @@
 	#include <iostream>
 	#include <string>
 	#include <sstream>
+	#include <ctime>
 
 	// Debug option on/off: check Makefile
 	#ifndef DEBUG
@@ -22,5 +23,6 @@
 	void		error(const std::string & str);
 	std::string	intToString(int n);
 	std::string	trimDoubleQuotes(const std::string& str);
+	std::string	now(void);
 
 #endif // AUX_HPP

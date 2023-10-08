@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/07 07:53:38 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/08 21:54:49 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@
 
 			void			resizeVectors(size_t size);
 			void			printConfig(void);
+
+			void			setAIFile(size_t i, std::string url, std::string path, std::string file);
 
 		private:
 			Config(void);

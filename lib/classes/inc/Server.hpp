@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:04 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/05 22:22:05 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/07 18:39:04 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 	#include <sys/select.h>
 	#include <csignal>
 	#include <cstdlib>
+	#include <sys/event.h>
 
 	#include "../../aux/inc/aux.hpp"
 	#include "../inc/Communication.hpp"
@@ -53,7 +54,7 @@
 			std::vector < int >				_serverSocket;
 			Config * 						_config;
 
-			void	startListening(void);
+			void	startListeningSelect(void);
 	};
 
 #endif // SERVER_HPP

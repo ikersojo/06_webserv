@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/05 22:22:05 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/08 22:41:29 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ Server::~Server()
 
 void	Server::init(void)
 {
-	debug("Initializing server...");
+	std::cout << now() << "  Initializing server..." << std::endl;
 
 	size_t i = 0;
 	while (i < this->_maxPorts)
@@ -98,7 +98,7 @@ void	Server::init(void)
 		// Set the Socket as re-usable
 		if (!SetSocketReuseAddr(this->_serverSocket[i]))
 		{
-			error("Failed to set socket as re-ussable");
+			error("Failed to set server socket as re-ussable");
 			exit (EXIT_FAILURE);
 		}
 		debug("...server socket re-usage allowed");
@@ -119,21 +119,22 @@ void	Server::init(void)
 		}
 		debug("...server socket listening");
 
-		std::cout << "Server listening in http://" << this->_config->getAddress(i) << ":" << this->_config->getPort(i) << std::endl;
+		std::cout << now() << "  Server listening in socket " << this->_serverSocket[i] << " to http://" << this->_config->getAddress(i) << ":" << this->_config->getPort(i) << std::endl;
 		i++;
 	}
 	debug("Server initialized");
-	this->startListening();
+	this->startListeningSelect();
 }
 
 
-void Server::startListening(void)
+void Server::startListeningSelect(void)
 {
-	debug("Setup select to iterate over the ports...");
+	debug("Setting up SELECT to iterate over the ports...");
 
-	int maxSocket = -1;
-	fd_set readSet;
-	size_t i;
+	fd_set			readSet;
+	size_t			i;
+	int				select_res;
+	int				maxSocket = -1;
 
 	FD_ZERO(&readSet);
 	i = 0;
@@ -146,30 +147,32 @@ void Server::startListening(void)
 	}
 	debug("...FD_SET ready with the listening ports");
 
-	while (!_shutdownRequested)
+	while (!Server::_shutdownRequested)
 	{
 		if (DEBUG)
 			std::cout << std::endl;
 		debug("Listening...");
 		fd_set tmpSet = readSet;
-		if (select(maxSocket + 1, &tmpSet, NULL, NULL, NULL) == -1)
+		select_res = select(maxSocket + 1, &tmpSet, NULL, NULL, NULL);
+		if (select_res == -1)
 		{
-			if (!_shutdownRequested) // only print error if there is no shutdown request
+			if (!Server::_shutdownRequested) // only print error if there is no shutdown request
 				error("Select failed");
 			continue; // continue running the server after a select error
-
 		}
-		debug("...select identified an event");
-
-		i = 0;
-		while (i < this->_maxPorts)
+		else if  (select_res > 0)
 		{
-			if (FD_ISSET(this->_serverSocket[i], &tmpSet))
+			debug("...select identified an event");
+			i = 0;
+			while (i < this->_maxPorts)
 			{
-				debug("...event on listening socket identified");
-				Communication comm(this->_serverSocket[i], this->_config, i);
+				if (FD_ISSET(this->_serverSocket[i], &tmpSet))
+				{
+					debug("...event on listening server socket identified");
+					Communication comm(this->_serverSocket[i], this->_config, i);
+				}
+				i++;
 			}
-			i++;
 		}
 	}
 }

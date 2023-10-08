@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/07 08:00:39 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/08 22:46:42 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	Communication::SignalHandler(int signal)
 	if (signal == SIGINT || signal == SIGTERM)
 	{
 		debug("Requested shutdown on Communication...");
-		_shutdownRequested = true;
+		Communication::_shutdownRequested = true;
 	}
 }
 
@@ -38,12 +38,20 @@ Communication::Communication(int serverSocket, Config * config, int location)
 	this->_serverSocket = serverSocket;
 	this->_clientAddrLen = sizeof(this->_clientAddrLen);
 	this->_clientSocket = accept(serverSocket, (struct sockaddr *) &this->_clientAddr, &this->_clientAddrLen);
+	debug("...client socket accepted communication");
 	if (this->_clientSocket == -1)
 	{
 		error("Failed to accept Communications");
 		exit (EXIT_FAILURE);
 	}
+	fcntl(this->_clientSocket, F_SETFL, O_NONBLOCK);
+	debug("...client socket set as non-blocking");
+
+	char	ipAddress[INET_ADDRSTRLEN];
+	inet_ntop(AF_INET, &(this->_clientAddr.sin_addr), ipAddress, INET_ADDRSTRLEN);
+	std::cout << now() << "  " << "Client " << ipAddress << " assigned to socket " << this->_clientSocket << std::endl;
 	debug("Client Connected. Awaiting request...");
+
 	this->manageRequest();
 }
 
@@ -59,11 +67,10 @@ void	Communication::manageRequest(void)
 	this->_ok = true;
 
 	this->readRequest();
-	if (!this->_config->isValidRequest(this->_location, this->_requestParams[1]))
+	if (this->_ok && !this->_config->isValidRequest(this->_location, this->_requestParams[1]))
 	{
-		error("not a valid url"); // TO BE REPLACED BY 404
+		error("Not valid url"); // TO BE REPLACED BY 404
 		this->_ok = false;
-		return ;
 	}
 	if (this->_ok && this->_requestParams[0] == "GET")
 		this->handleGetRequest();
@@ -82,26 +89,23 @@ void	Communication::manageRequest(void)
 void	Communication::readRequest(void)
 {
 	char	buffer[BUFFSIZE];
-	ssize_t	bytesRead = BUFFSIZE;
+	ssize_t	bytesRead = 0;
 	this->_requestString = "";
 
+	memset(buffer, 0, BUFFSIZE);
 	debug("...reading request");
-	while (bytesRead == BUFFSIZE && !this->_shutdownRequested)
+	while (!Communication::_shutdownRequested)
 	{
-		bzero(&buffer, BUFFSIZE);
-		if ((bytesRead = recv(this->_clientSocket, buffer, sizeof(buffer), 0)) <= 0)
-		{
-			this->_ok = false;
-			error("Request not received (or empty)");
-			return ;
-		}
-		if (DEBUG)
-			std::cout << GREY << "[DEBUG: ...bytes read: " << bytesRead << "]"
-					<< DEF_COL << std::endl;
-
-		std::string	requestString(buffer);
-		this->_requestString += requestString;
+		bytesRead = recv(this->_clientSocket, buffer, sizeof(buffer), 0);
+		if (bytesRead >= 0)
+			break ;
 	}
+	if (DEBUG)
+		std::cout << GREY << "[DEBUG: ...bytes read: " << bytesRead << "]"
+				<< DEF_COL << std::endl;
+
+	std::string	requestString(buffer);
+	this->_requestString += requestString;
 	if (DEBUG) // remove for prod
 		std::cout << YELLOW << "[DEBUG: ---- Received from client ----\n\n"
 				<< this->_requestString << "]" << DEF_COL << std::endl << std::endl;

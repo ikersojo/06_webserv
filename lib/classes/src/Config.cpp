@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/07 08:01:43 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/08 22:48:58 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,28 @@ void	Config::resizeVectors(size_t size)
 	this->_cgi.resize(size);
 }
 
+
+void	Config::setAIFile(size_t i, std::string url, std::string path, std::string file)
+{
+	std::string	fullPath;
+
+	fullPath = path + file;
+
+	this->_autoindex[i][url] = false;
+	this->_redir[i][url] = false;
+	this->_cgi[i][url] = false;
+	this->_file[i][url] = fullPath;
+	this->_allowedGET[i][url] = true;
+	this->_allowedPOST[i][url] = false;
+	this->_allowedDELETE[i][url] = false;
+	this->_errorPage[i][url] = "./www/def404.html";
+	this->_bufferSize[i][url] = 4096;
+}
+
+
 Config::Config(const std::string & configFile)
 {
-	std::cout << "Loading " << configFile << "..." << std::endl << std::endl;
+	std::cout << now() << "  Loading " << configFile << "..." << std::endl << std::endl;
 
 	this->_maxPorts = 1;						// this->_maxPorts = getNumberOfPorts(configFile);
 	this->resizeVectors(this->_maxPorts);
