@@ -3,7 +3,7 @@
 
 *La primera función solo comprueba si están las palabras correctas y en el lugar adecuado de la configuracion:
 	- El primer test miro si en el archivo se encuentra la palabra server: en primera posición.
-	- Compruebo en segunda posicion si están las palabras (location:, listen:)
+	- Compruebo en segunda posicion si están las palabras (location:, listen:, root:)
 	- Si la ruta root no esta, se da 500 error.
 	- Compruebo dentro de location: en tercera posicion, si están UNA de las palabras(file, redirect, autoindex).
 	- Si ninguna de estas palabras están en la configuracion devuelvo error de "archivo mal configurado".
@@ -11,7 +11,7 @@
 	- En listen: el formato tiene que ser este texto:numero, el numero tiene que ser entero y lo guardo para luego comprobar si este numero se repite.
 	- En buffer_size: solo numero entero, ¿meter un numero max o min?
 	- autoindex: solo puede estar "on" y "off".
-	- allow: puede tener las tres opciones o ninguna GET, POST, DELETE.
+	- allow: puede tener las tres opciones o ninguna GET, POST, DELETE. Si hay alguna opcion que no sea esas 3 ERROR.
 
 
 

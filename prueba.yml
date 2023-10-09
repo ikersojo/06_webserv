@@ -1,10 +1,9 @@
-server:
-  listen:      
+server: 
   listen: 127.0.0.1:61001
   root: "./www/site1"
-  location: o
+  location: /
     file: "index.html"
-    allow: GET POST DELETE
+    allow: GET DELETE
     buffer_size: 4096
     autoindex: on
     error_page: "asdasd"
@@ -18,5 +17,3 @@ server:
     file: "asd"
     redirect: "www.google.com"
     autoindex: "on"
-
-# Dentro de una location, al menos tiene que existir una de las siguientes directivas: file, redirect o autoindex (pueden existir varias a la vez).

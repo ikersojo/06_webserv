@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 21:34:37 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/06 20:16:29 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/09 20:19:42 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,58 +52,83 @@ static bool isOneOf(std::string &line)
 
 	return std::find(valiOptions.begin(),valiOptions.end(), option) != valiOptions.end();
 }
+static bool isAllowof(std::string &line)
+{
+	std::vector<std::string> valiOptions;
+	valiOptions.push_back("GET");
+	valiOptions.push_back("POST");
+	valiOptions.push_back("DELETE");
+	std::string config, option1, option2, option3;
+	std::istringstream iss(line);
+	iss >> config >> option1 >> option2 >> option3;
+
+	if(std::find(valiOptions.begin(), valiOptions.end(), option1) != valiOptions.end());
+
+}
+
+static bool CheckLocation(std::ifstream &file, std::string &line)
+{
+	int space, cont = 0;
+	
+	while(std::getline(file, line))
+	{
+		space = SpaceCounter(line);
+		if(space != 4)
+			break;
+		if (isOneOf(line))
+			cont++;
+		if(line.find("allow:") != std::string::npos)
+		{
+			if(!isAllowof(line))
+			{
+				std::cout << line << "<-----";
+				error("allow config error");
+				return false;
+			}
+		}
+		std::cout << line << std::endl;
+	}
+	std::cout << "******************\n";
+	if(cont > 0)
+		return true;
+	else
+		return false;
+}
+
 
 static bool FirstCheck(std::string &line, int space) // El primer checkeo compruebo si esta [server:, listen:, root:, location:] dentro de la configuracion.
 {
-	std::string checkline;
-	if(space == 0 && line.find("server:") != std::string::npos)
+	std::string checkline, option, null;
+	std::istringstream iss(line);
+	if(space == 0)
 	{
-		size_t end = line.find_last_not_of(" \t"); // Eliminar los espacios al final de la linea.
-		
-		if(end != std::string::npos)
-			checkline = line.substr(0, end + 1);
-		if(checkline != "server:")
-		{
-			error(line);
+		iss >> checkline >> null;
+		if(checkline != "server:" || !null.empty())
 			return false;
-		}		
 		return true;
 	}
 	else if(space == 2)
 	{
-		if(line.find("listen: ") != std::string::npos)
+		iss >> checkline >> option >> null;
+		if(line.find("listen:") != std::string::npos)
 		{
-			checkline = line.substr(2, 8);
-			std::cout <<"checkline: " <<checkline << std::endl;
-			if (checkline != "listen: ")
+			if((checkline != "listen:") || option.empty() || !null.empty())
 				return false;
 			return true;
 		}
-		else if (line.find("root: ") != std::string::npos)
+		else if (line.find("root:") != std::string::npos)
 		{
-			checkline = line.substr(2, 6);
-			//std::cout << "checkline: " << checkline << std::endl;
-			if (checkline != "root: ")
+			if (checkline != "root:" || !null.empty())
 				return false;
 			return true;
 		}
-		else if (line.find("location: ") != std::string::npos)
+		else if (line.find("location:") != std::string::npos)
 		{
-			checkline = line.substr(2,10);
-			//std::cout << "checkline: " <<  checkline << std::endl;
-			if (checkline != "location: ")
+			if (checkline != "location:" || option.empty() || !null.empty())
 				return false;
 			return true;
 		}
 		return false;	
-	}
-	else if (space == 4)
-	{
-		if (!isOneOf(line))
-		{
-			std::cout << "entra\n";
-			return false;
-		}
 	}
 	return true;
 } 
@@ -119,7 +144,7 @@ bool confFileCorrect(const char **argv)
 		return(false);
 	}
 	
-	while(std::getline(filename, line))
+	while(line.find("location:") != std::string::npos || std::getline(filename, line))
 	{
 		bool isWhitespace = true;  //Para comprobar si la linea no solo esta vacia, si tiene espacios o /t, solo tambien me lo salto.
 		for(size_t i = 0; i < line.length(); i++)
@@ -134,7 +159,7 @@ bool confFileCorrect(const char **argv)
 		if(!isWhitespace)
 		{
 			space = SpaceCounter(line);
-			if (space != 0 && space != 2 && space != 4)
+			if (space != 0 && space != 2)
 			{
 				std:: cout << line << " <--- "; 
 				error("Wrong space format");
@@ -150,6 +175,15 @@ bool confFileCorrect(const char **argv)
 				return(configError());
 			}
 			std::cout << line << std::endl;
+			if (line.find("location:") != std::string::npos)
+			{
+				std::cout << "******Compruebo el bloque location******\n";
+				if(!CheckLocation(filename, line))
+				{
+					error("Error Location Config");
+					return(configError());
+				}
+			}
 		}
 	}
 	return (configOK());
