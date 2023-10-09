@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/08 22:48:58 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/09 22:39:18 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,13 +75,11 @@ Config::Config(const std::string & configFile)
 {
 	std::cout << now() << "  Loading " << configFile << "..." << std::endl << std::endl;
 
-	this->_maxPorts = 1;						// this->_maxPorts = getNumberOfPorts(configFile);
+	this->_maxPorts = 2;						// this->_maxPorts = getNumberOfPorts(configFile);
 	this->resizeVectors(this->_maxPorts);
 
 
 	size_t	i = 0;
-	while (i < this->_maxPorts)
-	{
 		this->_servername[i] = "myserver.com";
 		this->_port[i] = 61001;
 		this->_address[i] = "localhost";
@@ -136,8 +134,21 @@ Config::Config(const std::string & configFile)
 		this->_errorPage[i]["/redirect"] = "./www/def404.html";
 		this->_bufferSize[i]["/redirect"] = 4096;
 
-		i++;
-	}
+	i = 1;
+		this->_servername[i] = "myserver.com";
+		this->_port[i] = 61002;
+		this->_address[i] = "localhost";
+
+		this->_autoindex[i]["/"] = false;
+		this->_redir[i]["/"] = false;
+		this->_cgi[i]["/"] = false;
+		this->_file[i]["/"] = "./www/stressTestSite/index.html";
+		this->_allowedGET[i]["/"] = true;
+		this->_allowedPOST[i]["/"] = true;
+		this->_allowedDELETE[i]["/"] = true;
+		this->_errorPage[i]["/"] = "./www/def404.html";
+		this->_bufferSize[i]["/"] = 4096;
+
 	debug("Config Object Created");
 }
 
@@ -165,6 +176,10 @@ std::string		Config::getAddress(size_t i)
 	return (this->_address[i]);
 }
 
+std::string		Config::getErrorPage(size_t i, std::string req)
+{
+	return (this->_errorPage[i][req]);
+}
 
 std::string		Config::getFile(size_t i, std::string req)
 {
@@ -248,8 +263,6 @@ void	Config::printConfig(void)
 bool	Config::isValidRequest(size_t i, std::string req)
 {
 	std::map < std::string, std::string >::iterator it;
-
-	std::cout << req << std::endl;
 
 	it = this->_file[i].find(req);
 	if (it != this->_file[i].end())

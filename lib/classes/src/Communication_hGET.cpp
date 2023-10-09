@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 08:41:57 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/08 22:47:09 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/09 23:16:19 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,8 @@ void	Communication::buildFileResponse(void)
 	inFile.open(filepath);
 	if (!inFile.is_open())
 	{
-		error("file not found"); // TO BE REPLACED BY 404
-		this->_ok = false;
+		error("file not found");
+		build404errorResponse();
 		return ;
 	}
     fileContentStream << inFile.rdbuf();
@@ -74,9 +74,9 @@ void	Communication::buildFileResponse(void)
 	fileSize = fileContent.size();
 
 	this->_responseStr = "HTTP/1.1 200 OK\r\n";
-	if (this->_requestParams[1] == "/")
+	if (filepath.find(".html") != std::string::npos)
 		this->_responseStr += "Content-Type: text/html\r\n";
-	else if (this->_requestParams[1] == "/favicon.ico" || this->_requestParams[1] == "/image")
+	else if (this->_requestParams[1] == "/favicon.ico" || this->_requestParams[1] == "/image" || this->_requestParams[1].find(".jpg") != std::string::npos || this->_requestParams[1].find(".png") != std::string::npos)
 		this->_responseStr += "Content-Type: image/vnd.microsoft.icon\r\n";
 	else
 		this->_responseStr += "Content-Type: text/plain\r\n";
@@ -101,6 +101,40 @@ void	Communication::buildRedirResponse(void)
 	debug("...response built");
 }
 
+void	Communication::build404errorResponse(void)
+{
+	std::string			filepath;
+	std::ifstream		inFile;
+	std::ostringstream	fileContentStream;
+	std::string			fileContent;
+	int					fileSize;
+
+	this->_responseStr = "HTTP/1.1 404 Not Found\r\n";
+	this->_responseStr += "Content-Type: text/html\r\n";
+
+	filepath = this->_config->getErrorPage(this->_location, this->_requestParams[1]);
+	if (DEBUG)
+		std::cout << GREY << "[DEBUG: ...error file: " << filepath << "]" << DEF_COL << std::endl;
+	inFile.open(filepath);
+	if (!inFile.is_open())
+	{
+		error("error 404 file not found");
+		this->_responseStr += "<html><head><title>Error 404 - Page not found</title></head><body>";
+		this->_responseStr +=  "<h1>Error 404 - Page not found</h1>";
+		return ;
+	}
+
+    fileContentStream << inFile.rdbuf();
+    fileContent = fileContentStream.str();
+	fileSize = fileContent.size();
+	this->_responseStr += "Content-Length: ";
+	this->_responseStr += intToString(fileSize);
+	this->_responseStr += "\r\n\r\n";
+	this->_responseStr += fileContent;
+	inFile.close();
+
+	debug("...error response built");
+}
 
 void	Communication::buildAutoIndexResponse(void)
 {
@@ -123,12 +157,20 @@ void	Communication::buildAutoIndexResponse(void)
 		}
 		this->_responseStr += "</ul></body></html>";
 		closedir(dir);
+		debug("...additional locations added to config");
+		if (DEBUG)
+			this->_config->printConfig();
+
+		if (this->_config->isValidRequest(this->_location, this->_requestParams[1] + "/index.html"))
+		{
+			this->_requestParams[1] = this->_requestParams[1] + "/index.html";
+			debug("...index file found");
+			buildFileResponse();
+			return ;
+		}
 	}
 	else
 		error("Directory not found");
-	debug("...additional locations added to config");
-	if (DEBUG)
-		this->_config->printConfig();
 
 	debug("...response built");
 }

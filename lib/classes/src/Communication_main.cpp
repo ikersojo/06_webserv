@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/08 22:46:42 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/09 23:37:29 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,10 @@ void	Communication::manageRequest(void)
 	this->readRequest();
 	if (this->_ok && !this->_config->isValidRequest(this->_location, this->_requestParams[1]))
 	{
-		error("Not valid url"); // TO BE REPLACED BY 404
-		this->_ok = false;
+		error("Not valid url");
+		build404errorResponse();
 	}
-	if (this->_ok && this->_requestParams[0] == "GET")
+	else if (this->_ok && this->_requestParams[0] == "GET")
 		this->handleGetRequest();
 	else if (this->_ok && this->_requestParams[0] == "POST")
 		this->handlePostRequest();
@@ -91,18 +91,26 @@ void	Communication::readRequest(void)
 	char	buffer[BUFFSIZE];
 	ssize_t	bytesRead = 0;
 	this->_requestString = "";
+	size_t	timeout = 0;
 
 	memset(buffer, 0, BUFFSIZE);
 	debug("...reading request");
-	while (!Communication::_shutdownRequested)
+	while (!Communication::_shutdownRequested && timeout < 500)
 	{
 		bytesRead = recv(this->_clientSocket, buffer, sizeof(buffer), 0);
 		if (bytesRead >= 0)
 			break ;
+		timeout++;
 	}
 	if (DEBUG)
-		std::cout << GREY << "[DEBUG: ...bytes read: " << bytesRead << "]"
+		std::cout << GREY << "[DEBUG: ...bytes read: " << bytesRead << " in " << timeout << " attempts]"
 				<< DEF_COL << std::endl;
+	
+	if (bytesRead == -1)
+	{
+		this->_ok = false;
+		return ;
+	}
 
 	std::string	requestString(buffer);
 	this->_requestString += requestString;

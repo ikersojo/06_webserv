@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:50 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/07 08:19:53 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/09 21:24:55 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@
 					void	buildFileResponse(void);
 					void	buildRedirResponse(void);
 					void	buildAutoIndexResponse(void);
+					void	build404errorResponse(void);
 
 				void	handlePostRequest(void);
 
