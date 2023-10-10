@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/04 17:16:49 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/10 15:44:27 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,23 @@
 		std::string	path;
 		bool		autoindex;
 		std::string	file;
+		std::string	root;
 		bool		allowedGET;
 		bool		allowedPOST;
 		bool		allowedDELETE;
 		std::string	errorPage;
 		int			bufferSize;
+
+		Location() : \
+			path(""), \
+			autoindex(false), \
+			file("./www/default.html"), \
+			root(""), \
+			allowedGET(true), \
+			allowedPOST(true), \
+			allowedDELETE(true), \
+			errorPage("./www/404.html"), \
+			bufferSize(4096) {}
 	};
 
 	class Config
@@ -64,6 +76,7 @@
 			std::vector < std::string >								_address;
 			std::vector < std::map < std::string, bool > >			_autoindex;
 			std::vector < std::map < std::string, std::string > >	_file;
+			std::vector < std::map < std::string, std::string > >	_root;
 			std::vector < std::map < std::string, bool > >			_allowedGET;
 			std::vector < std::map < std::string, bool > >			_allowedPOST;
 			std::vector < std::map < std::string, bool > >			_allowedDELETE;
