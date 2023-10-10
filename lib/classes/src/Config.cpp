@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/10 16:26:42 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/10 18:14:57 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,43 @@ std::vector< std::vector< std::pair<std::string, std::string> > >	getListenPoint
 	return (res);
 }
 
-Location	createLocation(std::ifstream& inFile, std::string& line) {
+std::map<std::string, std::string>	createMapString(std::vector<Location> allServerLocs, std::string directive) {
+	std::map<std::string, std::string> Map;
+
+	for (size_t i = 0; i < allServerLocs.size(); i++) {
+		if (directive == "file") Map[allServerLocs[i].path] = allServerLocs[i].file;
+		else if (directive == "errorPage") Map[allServerLocs[i].path] = allServerLocs[i].errorPage;
+		else if (directive == "root") Map[allServerLocs[i].path] = allServerLocs[i].root;
+		else if (directive == "cgiExt") Map[allServerLocs[i].path] = allServerLocs[i].cgiExt;
+	}
+
+	return (Map);
+}
+
+std::map<std::string, bool>	createMapBool(std::vector<Location> allServerLocs, std::string directive) {
+	std::map<std::string, bool> Map;
+
+	for (size_t i = 0; i < allServerLocs.size(); i++) {
+		if (directive == "autoindex") Map[allServerLocs[i].path] = allServerLocs[i].autoindex;
+		else if (directive == "allowedGET") Map[allServerLocs[i].path] = allServerLocs[i].allowedGET;
+		else if (directive == "allowedPOST") Map[allServerLocs[i].path] = allServerLocs[i].allowedPOST;
+		else if (directive == "allowedDELETE") Map[allServerLocs[i].path] = allServerLocs[i].allowedDELETE;
+	}
+
+	return (Map);
+}
+
+std::map<std::string, int>	createMapInt(std::vector<Location> allServerLocs, std::string directive) {
+	std::map<std::string, int> Map;
+
+	for (size_t i = 0; i < allServerLocs.size(); i++) {
+		if (directive == "bufferSize") Map[allServerLocs[i].path] = allServerLocs[i].bufferSize;
+	}
+
+	return (Map);
+}
+
+Location	getLocation(std::ifstream& inFile, std::string& line) {
 	Location location;
 
 	if (line.find("location:") != std::string::npos) {
@@ -86,72 +122,15 @@ Location	createLocation(std::ifstream& inFile, std::string& line) {
 				if (line.find("POST") == std::string::npos) location.allowedPOST = false;
 				if (line.find("DELETE") == std::string::npos) location.allowedDELETE = false;
 			}
-			if (line.find("error_page") != std::string::npos)
+			if (line.find("error_page:") != std::string::npos)
 				location.errorPage = extractCleanValue(line);
-			if (line.find("buffer_size") != std::string::npos)
+			if (line.find("buffer_size:") != std::string::npos)
 				location.bufferSize = std::atoi(extractCleanValue(line).c_str());
+			if (line.find("cgi_ext:") != std::string::npos)
+				location.cgiExt = extractCleanValue(line);
 		}
 	}
 	return (location);
-}
-
-void	printAllServerLocs(std::vector< std::vector<Location> >& allServerLocs) {
-	size_t	nServer = 0;
-
-	std::cout << "\n-- ALL SERVER LOCATIONS --\n";
-	for (std::vector< std::vector<Location> >::const_iterator it1 = allServerLocs.begin(); it1 != allServerLocs.end(); it1++) {
-		std::cout << (nServer+1) << "º SERVER ---------------\n";
-		nServer++;
-		for (std::vector<Location>::const_iterator it2 = it1->begin(); it2 != it1->end(); it2++) {
-			std::cout << "    location " << it2->path << ":" << std::endl;
-			std::cout << "      file:        " << it2->file << std::endl;
-			std::cout << "      root:        " << it2->root << std::endl;
-			std::cout << "      autoindex:   " << (it2->autoindex ? "on" : "off") << std::endl;
-			std::cout << "      allow:       ";
-			if (it2->allowedGET) std::cout << "GET ";
-			if (it2->allowedPOST) std::cout << "POST ";
-			if (it2->allowedDELETE) std::cout << "DELETE ";
-			std::cout << std::endl;
-			std::cout << "      error_page:  " << it2->errorPage << std::endl;
-			std::cout << "      buffer_size: " << it2->bufferSize << std::endl;
-		}
-	}
-	std::cout << "\n------------------------\n";
-}
-
-std::map<std::string, std::string> createMapString(std::vector<Location> allServerLocs, std::string directive) {
-	std::map<std::string, std::string> Map;
-
-	for (size_t i = 0; i < allServerLocs.size(); i++) {
-		if (directive == "file") Map[allServerLocs[i].path] = allServerLocs[i].file;
-		else if (directive == "errorPage") Map[allServerLocs[i].path] = allServerLocs[i].errorPage;
-		else if (directive == "root") Map[allServerLocs[i].path] = allServerLocs[i].root;
-	}
-
-	return (Map);
-}
-
-std::map<std::string, bool> createMapBool(std::vector<Location> allServerLocs, std::string directive) {
-	std::map<std::string, bool> Map;
-
-	for (size_t i = 0; i < allServerLocs.size(); i++) {
-		if (directive == "autoindex") Map[allServerLocs[i].path] = allServerLocs[i].autoindex;
-		else if (directive == "allowedGET") Map[allServerLocs[i].path] = allServerLocs[i].allowedGET;
-		else if (directive == "allowedPOST") Map[allServerLocs[i].path] = allServerLocs[i].allowedPOST;
-		else if (directive == "allowedDELETE") Map[allServerLocs[i].path] = allServerLocs[i].allowedDELETE;
-	}
-
-	return (Map);
-}
-
-std::map<std::string, int> createMapInt(std::vector<Location> allServerLocs, std::string directive) {
-	std::map<std::string, int> Map;
-
-	for (size_t i = 0; i < allServerLocs.size(); i++) {
-		if (directive == "bufferSize") Map[allServerLocs[i].path] = allServerLocs[i].bufferSize;
-	}
-
-	return (Map);
 }
 
 std::vector< std::vector<Location> >	getAllServerLocs(const std::string & configFile) {
@@ -170,7 +149,7 @@ std::vector< std::vector<Location> >	getAllServerLocs(const std::string & config
 		while (line.find("location:") != std::string::npos || getline(inFile, line)) {
 			if (line.find("server:") != std::string::npos) break;
 			if (line.find("location:") == std::string::npos) continue;
-			Location location = createLocation(inFile, line);
+			Location location = getLocation(inFile, line);
 			serverLocs.push_back(location);
 		}
 		allServerLocs.push_back(serverLocs);
@@ -195,8 +174,6 @@ Config::Config(const std::string & configFile)
 	}
 
 	std::vector< std::vector<Location> > allServerLocs = getAllServerLocs(configFile);
-
-	printAllServerLocs(allServerLocs);
 	size_t	nServer = 0;
 	for (std::vector< std::vector<Location> >::const_iterator it = allServerLocs.begin(); it < allServerLocs.end(); it++) {
 		for (std::vector< std::pair<std::string, std::string> >::const_iterator it2 = listenPoints[nServer].begin(); it2 < listenPoints[nServer].end(); it2++) {
@@ -206,6 +183,7 @@ Config::Config(const std::string & configFile)
 			_allowedGET.push_back(createMapBool(*it, "allowedGET"));
 			_allowedPOST.push_back(createMapBool(*it, "allowedPOST"));
 			_allowedDELETE.push_back(createMapBool(*it, "allowedDELETE"));
+			_cgiExt.push_back(createMapString(*it, "cgiExt"));
 			_errorPage.push_back(createMapString(*it, "errorPage"));
 			_bufferSize.push_back(createMapInt(*it, "bufferSize"));
 		}
@@ -268,6 +246,7 @@ void	Config::printConfig(void) {
 			std::cout << std::endl;
 			std::cout << "      errorPage :  " << _errorPage[i][it->first] << std::endl;
 			std::cout << "      bufferSize : " << _bufferSize[i][it->first] << std::endl;
+			std::cout << "      cgiExt :     " << _cgiExt[i][it->first] << std::endl;
 			it++;
 		}
 		i++;

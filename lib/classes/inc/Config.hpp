@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/10 15:44:27 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/10 18:09:19 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 		bool		allowedDELETE;
 		std::string	errorPage;
 		int			bufferSize;
+		std::string	cgiExt;
 
 		Location() : \
 			path(""), \
@@ -43,7 +44,8 @@
 			allowedPOST(true), \
 			allowedDELETE(true), \
 			errorPage("./www/404.html"), \
-			bufferSize(4096) {}
+			bufferSize(4096), \
+			cgiExt("") {}
 	};
 
 	class Config
@@ -80,6 +82,7 @@
 			std::vector < std::map < std::string, bool > >			_allowedGET;
 			std::vector < std::map < std::string, bool > >			_allowedPOST;
 			std::vector < std::map < std::string, bool > >			_allowedDELETE;
+			std::vector < std::map < std::string, std::string > >	_cgiExt;
 			std::vector < std::map < std::string, std::string > >	_errorPage;
 			std::vector < std::map < std::string, int > >			_bufferSize;
 	};
