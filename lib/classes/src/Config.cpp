@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/10 18:14:57 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/11 12:57:07 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,32 +105,27 @@ std::map<std::string, int>	createMapInt(std::vector<Location> allServerLocs, std
 	return (Map);
 }
 
-Location	getLocation(std::ifstream& inFile, std::string& line) {
-	Location location;
-
-	if (line.find("location:") != std::string::npos) {
-		location.path = extractCleanValue(line);
-		while (getline(inFile, line) && !line.empty() && line.find("location:") == std::string::npos) {
-			if (line.find("root:") != std::string::npos)
-				location.root = extractCleanValue(line);
-			if (line.find("file:") != std::string::npos)
-				location.file = extractCleanValue(line);
-			if (line.find("autoindex:") != std::string::npos)
-				if (line.find("on") != std::string::npos) location.autoindex = true;
-			if (line.find("allow:") != std::string::npos) {
-				if (line.find("GET") == std::string::npos) location.allowedGET = false;
-				if (line.find("POST") == std::string::npos) location.allowedPOST = false;
-				if (line.find("DELETE") == std::string::npos) location.allowedDELETE = false;
-			}
-			if (line.find("error_page:") != std::string::npos)
-				location.errorPage = extractCleanValue(line);
-			if (line.find("buffer_size:") != std::string::npos)
-				location.bufferSize = std::atoi(extractCleanValue(line).c_str());
-			if (line.find("cgi_ext:") != std::string::npos)
-				location.cgiExt = extractCleanValue(line);
+void	setLocation(std::ifstream& inFile, std::string& line, Location& location) {
+	location.path = extractCleanValue(line);
+	while (getline(inFile, line) && !line.empty() && line.find("location:") == std::string::npos) {
+		if (line.find("root:") != std::string::npos)
+			location.root = extractCleanValue(line);
+		if (line.find("file:") != std::string::npos)
+			location.file = extractCleanValue(line);
+		if (line.find("autoindex:") != std::string::npos)
+			if (line.find("on") != std::string::npos) location.autoindex = true;
+		if (line.find("allow:") != std::string::npos) {
+			(line.find("GET") != std::string::npos) ? location.allowedGET = true : location.allowedGET = false;
+			(line.find("POST") != std::string::npos) ? location.allowedPOST = true : location.allowedPOST = false;
+			(line.find("DELETE") != std::string::npos) ? location.allowedDELETE = true : location.allowedDELETE = false;
 		}
+		if (line.find("error_page:") != std::string::npos)
+			location.errorPage = extractCleanValue(line);
+		if (line.find("buffer_size:") != std::string::npos)
+			location.bufferSize = std::atoi(extractCleanValue(line).c_str());
+		if (line.find("cgi_ext:") != std::string::npos)
+			location.cgiExt = extractCleanValue(line);
 	}
-	return (location);
 }
 
 std::vector< std::vector<Location> >	getAllServerLocs(const std::string & configFile) {
@@ -143,18 +138,28 @@ std::vector< std::vector<Location> >	getAllServerLocs(const std::string & config
 		exit(EXIT_FAILURE);
 	}
 
-	std::vector< std::vector<Location> > allServerLocs; // allServerLocs[server][location]
+	std::vector< std::vector<Location> > allServerLocs;
 	std::vector<Location> serverLocs;
-	while (getline(inFile, line)) {
+	Location general;
+	std::cout << "crea general!!\n";
+	setLocation(inFile, line, general);
+	while (line.find("location:") != std::string::npos || getline(inFile, line)) {
 		while (line.find("location:") != std::string::npos || getline(inFile, line)) {
 			if (line.find("server:") != std::string::npos) break;
 			if (line.find("location:") == std::string::npos) continue;
-			Location location = getLocation(inFile, line);
-			serverLocs.push_back(location);
+			else {
+				Location location(general);
+				setLocation(inFile, line, location);
+				serverLocs.push_back(location);
+			}
+		}
+		if (line.find("server:") != std::string::npos) {
+			general = Location();
+			std::cout << "crea general!!\n";
+			setLocation(inFile, line, general);
 		}
 		allServerLocs.push_back(serverLocs);
 		serverLocs.clear();
-
 	}
 	inFile.close();
 	return (allServerLocs);

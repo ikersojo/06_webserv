@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/10 18:09:19 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/11 12:44:40 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 	#include <vector>
 	#include <map>
 	#include <fstream>
-	#include <sstream>
 
 
 	#include "../../aux/inc/aux.hpp"
@@ -46,6 +45,18 @@
 			errorPage("./www/404.html"), \
 			bufferSize(4096), \
 			cgiExt("") {}
+
+		Location(const Location & ref) : \
+			path(ref.path), \
+			autoindex(ref.autoindex), \
+			file(ref.file), \
+			root(ref.root), \
+			allowedGET(ref.allowedGET), \
+			allowedPOST(ref.allowedPOST), \
+			allowedDELETE(ref.allowedDELETE), \
+			errorPage(ref.errorPage), \
+			bufferSize(ref.bufferSize), \
+			cgiExt(ref.cgiExt) {}
 	};
 
 	class Config
