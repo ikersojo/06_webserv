@@ -1,9 +1,11 @@
 server: 
   listen: 127.0.0.1:61001
+  listen: 127.0.0.1:61002
+  listen: 127.0.0.1:61003
   root: "./www/site1"
   location: /
     file: "index.html"
-    allow: GET DELETE
+    allow: GET POST DELETE
     buffer_size: 4096
     autoindex: on
     error_page: "asdasd"
@@ -16,4 +18,27 @@ server:
   location: "/"
     file: "asd"
     redirect: "www.google.com"
-    autoindex: "on"
+    autoindex: on
+
+
+server: 
+  listen: 127.0.0.1:61011
+  listen: 127.0.0.1:61022
+  listen: 127.0.0.1:61023
+  root: "./www/site1"
+  location: /
+    file: "index.html"
+    allow: GET POST DELETE
+    buffer_size: 4096
+    autoindex: on
+    error_page: "asdasd"
+  location: "/favicon.ico"
+    file: "icon1.png"
+  location: "/images/sample"
+    file: "images/sample_image1.jpg"
+  location: "/cgi-bin"
+    file: "cgi-bin"
+  location: "/"
+    file: "asd"
+    redirect: "www.google.com"
+    autoindex: on

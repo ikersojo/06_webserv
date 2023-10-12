@@ -14,5 +14,8 @@
 	- allow: puede tener las tres opciones o ninguna GET, POST, DELETE. Si hay alguna opcion que no sea esas 3 ERROR.
 
 
+Actualizacion
+
+autoindex. "on" y "off", son viablle(?¿), o la configuracion es solo sin comillas
 
 
