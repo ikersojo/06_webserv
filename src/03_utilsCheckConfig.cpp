@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 11:57:48 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/13 12:09:43 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/13 13:29:29 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,6 +224,12 @@ bool CheckLocation(std::ifstream &file, std::string &line)
 			}
 		}
 		std::cout << line << std::endl;
+	}
+	std::cout << "========" << line << "\n";
+	if(line.find("server:") != std::string::npos)
+	{
+		error("Error NO empty line");
+		return false;
 	}
 	if (cont > 0)
 		return true;
