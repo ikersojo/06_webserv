@@ -20,7 +20,6 @@ server:
     redirect: "www.google.com"
     autoindex: on
 
-
 server: 
   listen: 127.0.0.1:61011
   listen: 127.0.0.1:61022

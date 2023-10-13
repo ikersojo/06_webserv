@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:54:15 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/28 20:28:04 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/13 12:08:16 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,19 @@
 		// 02_confFileCorrect.cpp 
 		bool confFileCorrect(const char **argv);
 
-
+		
 	// --- AUX FUNCTIONS --- //
-
+		// 03_utilsChecksConfig.cpp
+		bool Allow(std::string &line);
+		bool Buffersize(std::string &line);
+		bool AutoIndex(std::string &line);
+		bool Redirect(std::string &line);
+		int checkAddress(std::string address);
+		bool Checkport(std::vector<int> &Allport);
+		int SpaceCounter(std::string &line);
+		bool CheckLocation(std::ifstream &file, std::string &line);
+		bool isOneOf(std::string &line);
+		
 		// 99_printLogo.cpp
 		void	printLogo(void);
 
