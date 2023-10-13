@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/09 23:37:29 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/12 22:11:29 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ bool	Communication::_shutdownRequested = false;
 
 void	Communication::SignalHandler(int signal)
 {
-	if (signal == SIGINT || signal == SIGTERM)
-	{
-		debug("Requested shutdown on Communication...");
-		Communication::_shutdownRequested = true;
-	}
+		if (signal == SIGINT || signal == SIGTERM)
+		{
+			debug("Requested shutdown on Communication...");
+			Communication::_shutdownRequested = true;
+		}
 }
 
 
@@ -44,7 +44,12 @@ Communication::Communication(int serverSocket, Config * config, int location)
 		error("Failed to accept Communications");
 		exit (EXIT_FAILURE);
 	}
-	fcntl(this->_clientSocket, F_SETFL, O_NONBLOCK);
+	if (fcntl(this->_clientSocket, F_SETFL, O_NONBLOCK) == -1)
+	{
+		error("Client socket cannot be set as non-blocked");
+		this->_ok = false;
+		return ;
+	}
 	debug("...client socket set as non-blocking");
 
 	char	ipAddress[INET_ADDRSTRLEN];
@@ -91,19 +96,19 @@ void	Communication::readRequest(void)
 	char	buffer[BUFFSIZE];
 	ssize_t	bytesRead = 0;
 	this->_requestString = "";
-	size_t	timeout = 0;
+	size_t	it = 0;
 
 	memset(buffer, 0, BUFFSIZE);
 	debug("...reading request");
-	while (!Communication::_shutdownRequested && timeout < 500)
+	while (!Communication::_shutdownRequested && it < MAXREADIT)
 	{
 		bytesRead = recv(this->_clientSocket, buffer, sizeof(buffer), 0);
 		if (bytesRead >= 0)
 			break ;
-		timeout++;
+		it++;
 	}
 	if (DEBUG)
-		std::cout << GREY << "[DEBUG: ...bytes read: " << bytesRead << " in " << timeout << " attempts]"
+		std::cout << GREY << "[DEBUG: ...bytes read: " << bytesRead << " in " << it << " attempts]"
 				<< DEF_COL << std::endl;
 	
 	if (bytesRead == -1)
@@ -114,9 +119,9 @@ void	Communication::readRequest(void)
 
 	std::string	requestString(buffer);
 	this->_requestString += requestString;
-	if (DEBUG) // remove for prod
-		std::cout << YELLOW << "[DEBUG: ---- Received from client ----\n\n"
-				<< this->_requestString << "]" << DEF_COL << std::endl << std::endl;
+	// if (DEBUG) // remove for prod
+	// 	std::cout << YELLOW << "[DEBUG: ---- Received from client ----\n\n"
+	// 			<< this->_requestString << "]" << DEF_COL << std::endl << std::endl;
 
 	std::istringstream	iss(buffer);
 	std::string			item;
@@ -150,19 +155,3 @@ void	Communication::readRequest(void)
 	debug("...request received and saved");
 }
 
-
-void	Communication::sendResponse(void)
-{
-	debug("Sending response...");
-	// if (DEBUG)
-	// 	std::cout << GREY << "[DEBUG: ...response: \n" << this->_responseStr << "\n]" << DEF_COL << std::endl;
-
-	ssize_t bytesSent = send(this->_clientSocket, this->_responseStr.c_str(), this->_responseStr.size(), 0);
-	if (bytesSent == -1)
-		error("Failed to send response");
-	else if (DEBUG)
-	{
-		std::cout << GREY << "[DEBUG: ..." << bytesSent << " bytes sent]" << DEF_COL << std::endl;
-		debug("...response succesfully sent");
-	}
-}

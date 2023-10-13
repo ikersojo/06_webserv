@@ -5,6 +5,13 @@
 	#include <string>
 	#include <sstream>
 	#include <ctime>
+	#include <fcntl.h>
+	#include <sys/socket.h>
+	#include <arpa/inet.h>
+	#include <unistd.h>
+	#include <vector>
+	#include <termios.h>
+	#include <unistd.h>
 
 	// Debug option on/off: check Makefile
 	#ifndef DEBUG
@@ -21,8 +28,23 @@
 	// printToConsole.cpp
 	void		debug(const std::string & str);
 	void		error(const std::string & str);
+	void		debugPrintFd(const fd_set * tmpRecvSet, const fd_set * tmpSendSet, int maxSocket);
+	void		printListening(int * listenIndex, int * listenWrittenSize);
+
+	// intToString.cpp
 	std::string	intToString(int n);
+
+	// trimDoubleQuotes.cpp
 	std::string	trimDoubleQuotes(const std::string& str);
+
+	// now.cpp
 	std::string	now(void);
+
+	// locationInSocketVector.cpp
+	int			locationInSocketVector(int fd, std::vector < int > socketList);
+
+	// echo.cpp
+	void	echoOff(void);
+	void	echoOn(void);
 
 #endif // AUX_HPP

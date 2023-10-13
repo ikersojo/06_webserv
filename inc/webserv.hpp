@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:54:15 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/09/28 20:28:04 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/13 14:49:29 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,14 @@
 	// Main includes:
 	#include <iostream>
 	#include <string>
+	#include <csignal>
 
 	#include "../lib/aux/inc/aux.hpp"
 
 	// Custom Class Includes:
-	#include "../lib/classes/inc/Server.hpp"
-	#include "../lib/classes/inc/Communication.hpp"
 	#include "../lib/classes/inc/Config.hpp"
+	#include "../lib/classes/inc/Server.hpp"
+	#include "../lib/classes/inc/ResponseBuilder.hpp"
 
 	// --- MAIN FUNCTIONS --- //
 

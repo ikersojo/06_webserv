@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/09 22:39:18 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/12 11:13:11 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	Config::setAIFile(size_t i, std::string url, std::string path, std::string 
 
 Config::Config(const std::string & configFile)
 {
-	std::cout << now() << "  Loading " << configFile << "..." << std::endl << std::endl;
+	std::cout << now() << "  Loading " << configFile << "..." << std::endl;
 
 	this->_maxPorts = 2;						// this->_maxPorts = getNumberOfPorts(configFile);
 	this->resizeVectors(this->_maxPorts);

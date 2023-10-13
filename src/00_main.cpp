@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:53:16 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/05 22:15:41 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/13 16:43:16 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 int		main(int argc, const char** argv)
 {
+	signal(SIGPIPE, SIG_IGN);
+	echoOff();
 	printLogo();
 	debug("starting main program");
 	if (syntaxCorrect(argc, argv) && confFileCorrect(argv))
@@ -29,6 +31,7 @@ int		main(int argc, const char** argv)
 		webserv.init();
 
 		delete config;
+		echoOn();
 	}
 	return (0);
 }

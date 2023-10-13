@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:50 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/09 21:24:55 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/10 19:15:27 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 	#define COMMUNICATION_HPP
 
 	#define	BUFFSIZE	4096
+	#define MAXREADIT	500
 
 	#include <iostream>
 	#include <string>
