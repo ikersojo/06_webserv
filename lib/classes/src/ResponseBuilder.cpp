@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/14 15:08:57 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/14 15:19:24 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,6 +233,11 @@ std::string	ResponseBuilder::fileResponse(void)
 		this->_responseStr += "Content-Type: text/html\r\n";
 	else if (this->_requestParams[1] == "/favicon.ico" || this->_requestParams[1] == "/image" || this->_requestParams[1].find(".jpg") != std::string::npos || this->_requestParams[1].find(".png") != std::string::npos)
 		this->_responseStr += "Content-Type: image/vnd.microsoft.icon\r\n";
+	else if (filePath.find(".json") != std::string::npos)
+	{
+		this->_responseStr += "Content-Type: application/json\r\n";
+		this->initJson(filePath);
+	}
 	else
 		this->_responseStr += "Content-Type: text/plain\r\n";
 	this->_responseStr += "Content-Length: ";
@@ -393,7 +398,6 @@ void	ResponseBuilder::writeToJsonFile(std::string task, std::string filePath)
 }
 
 
-
 std::string	ResponseBuilder::deleteResponse(void)
 {
 	if (!this->_config->isDELETE(this->_configIndex, this->_requestParams[1]))
@@ -403,7 +407,6 @@ std::string	ResponseBuilder::deleteResponse(void)
 	}
 	if (this->_config->getHandleDELETE(this->_configIndex, this->_requestParams[1]) == "removeFromList")
 	{
-		std::string	filePath = this->_config->getFile(this->_configIndex, this->_requestParams[1].substr(0, this->_requestParams[1].rfind("/")));		this->initJson(filePath);
 		std::string	task = this->_config->getFile(this->_configIndex, this->_requestParams[1]);
 		if (DEBUG)
 			std::cout << GREY << "[DEBUG: ...task to be removed identified: " << task << "]" << DEF_COL << std::endl;
@@ -539,7 +542,6 @@ void	ResponseBuilder::initJson(std::string filePath)
 	{
 		writeToJsonFile(stringArray[i], filePath);
 		std::string url = this->_requestParams[1] + "/" + stringArray[i];
-		std::cout << YELLOW << url << std::endl;
 		this->_config->setDeletePath(this->_configIndex, url, stringArray[i]);
 		i++;
 	}
