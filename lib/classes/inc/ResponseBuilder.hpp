@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:00 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/13 15:49:05 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/14 14:35:26 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,20 @@
 
 			void		assessRequest(void);
 			std::string	getResponse(void);
+			std::string	postResponse(void);
+			std::string	deleteResponse(void);
 
 			std::string	errorResponse(int code);
 			std::string	fileResponse(void);
 			std::string	redirResponse(void);
 			std::string	aiResponse(void);
 
-
-
+			// TODO App
+			void	addToList(void);
+			void	removeFromList(std::string task);
+			void	writeToJsonFile(std::string task, std::string filePath);
+			void	clearJsonFile(std::string filePath);
+			void	initJson(std::string filePath);
 			// std::string	postResponse(void);
 			// std::string	deleteResponse(void);
 

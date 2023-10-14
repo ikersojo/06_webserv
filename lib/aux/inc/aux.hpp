@@ -47,4 +47,10 @@
 	void	echoOff(void);
 	void	echoOn(void);
 
+	// vectorToJson.cpp
+	std::string	vectorToJson(std::vector < std::string > vec);
+
+	// countOccurrences.cpp
+	size_t countOccurrences(const std::string& str, char ch);
+
 #endif // AUX_HPP

@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/12 11:13:11 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/14 11:06:00 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ void	Config::resizeVectors(size_t size)
 	this->_bufferSize.resize(size);
 	this->_redir.resize(size);
 	this->_cgi.resize(size);
+	this->_handlePOST.resize(size);
+	this->_handleDELETE.resize(size);
 }
 
 
@@ -71,11 +73,26 @@ void	Config::setAIFile(size_t i, std::string url, std::string path, std::string 
 }
 
 
+void	Config::setDeletePath(size_t i, std::string url, std::string task)
+{
+	this->_autoindex[i][url] = false;
+	this->_redir[i][url] = false;
+	this->_cgi[i][url] = false;
+	this->_file[i][url] = task;
+	this->_allowedGET[i][url] = false;
+	this->_allowedPOST[i][url] = false;
+	this->_allowedDELETE[i][url] = true;
+	this->_errorPage[i][url] = "./www/def404.html";
+	this->_bufferSize[i][url] = 4096;
+	this->_handleDELETE[i][url] = "removeFromList";
+}
+
+
 Config::Config(const std::string & configFile)
 {
 	std::cout << now() << "  Loading " << configFile << "..." << std::endl;
 
-	this->_maxPorts = 2;						// this->_maxPorts = getNumberOfPorts(configFile);
+	this->_maxPorts = 3;						// this->_maxPorts = getNumberOfPorts(configFile);
 	this->resizeVectors(this->_maxPorts);
 
 
@@ -89,50 +106,60 @@ Config::Config(const std::string & configFile)
 		this->_cgi[i]["/"] = false;
 		this->_file[i]["/"] = "./www/site1/index.html";
 		this->_allowedGET[i]["/"] = true;
-		this->_allowedPOST[i]["/"] = true;
-		this->_allowedDELETE[i]["/"] = true;
+		this->_allowedPOST[i]["/"] = false;
+		this->_allowedDELETE[i]["/"] = false;
 		this->_errorPage[i]["/"] = "./www/def404.html";
 		this->_bufferSize[i]["/"] = 4096;
+		this->_handlePOST[i]["/"] = "";
+		this->_handleDELETE[i]["/"] = "";
 
 		this->_autoindex[i]["/favicon.ico"] = false;
 		this->_redir[i]["/favicon.ico"] = false;
 		this->_cgi[i]["/favicon.ico"] = false;
 		this->_file[i]["/favicon.ico"] = "./www/site1/icon1.png";
 		this->_allowedGET[i]["/favicon.ico"] = true;
-		this->_allowedPOST[i]["/favicon.ico"] = true;
-		this->_allowedDELETE[i]["/favicon.ico"] = true;
+		this->_allowedPOST[i]["/favicon.ico"] = false;
+		this->_allowedDELETE[i]["/favicon.ico"] = false;
 		this->_errorPage[i]["/favicon.ico"] = "./www/def404.html";
 		this->_bufferSize[i]["/favicon.ico"] = 4096;
+		this->_handlePOST[i]["/favicon.ico"] = "";
+		this->_handleDELETE[i]["/favicon.ico"] = "";
 
 		this->_autoindex[i]["/images/sample"] = false;
 		this->_redir[i]["/images/sample"] = false;
 		this->_cgi[i]["/images/sample"] = false;
 		this->_file[i]["/images/sample"] = "./www/site1/images/sample_image1.jpg";
 		this->_allowedGET[i]["/images/sample"] = true;
-		this->_allowedPOST[i]["/images/sample"] = true;
-		this->_allowedDELETE[i]["/images/sample"] = true;
+		this->_allowedPOST[i]["/images/sample"] = false;
+		this->_allowedDELETE[i]["/images/sample"] = false;
 		this->_errorPage[i]["/images/sample"] = "./www/def404.html";
 		this->_bufferSize[i]["/images/sample"] = 4096;
+		this->_handlePOST[i]["/images/sample"] = "";
+		this->_handleDELETE[i]["/images/sample"] = "";
 
 		this->_autoindex[i]["/images"] = true;
 		this->_redir[i]["/images"] = false;
 		this->_cgi[i]["/images"] = false;
 		this->_file[i]["/images"] = "./www/site1/images/";
 		this->_allowedGET[i]["/images"] = true;
-		this->_allowedPOST[i]["/images"] = true;
-		this->_allowedDELETE[i]["/images"] = true;
+		this->_allowedPOST[i]["/images"] = false;
+		this->_allowedDELETE[i]["/images"] = false;
 		this->_errorPage[i]["/images"] = "./www/def404.html";
 		this->_bufferSize[i]["/images"] = 4096;
+		this->_handlePOST[i]["/images"] = "";
+		this->_handleDELETE[i]["/images"] = "";
 
 		this->_autoindex[i]["/redirect"] = false;
 		this->_redir[i]["/redirect"] = true;
 		this->_cgi[i]["/redirect"] = false;
 		this->_file[i]["/redirect"] = "https://www.42urduliz.com";
 		this->_allowedGET[i]["/redirect"] = true;
-		this->_allowedPOST[i]["/redirect"] = true;
-		this->_allowedDELETE[i]["/redirect"] = true;
+		this->_allowedPOST[i]["/redirect"] = false;
+		this->_allowedDELETE[i]["/redirect"] = false;
 		this->_errorPage[i]["/redirect"] = "./www/def404.html";
 		this->_bufferSize[i]["/redirect"] = 4096;
+		this->_handlePOST[i]["/redirect"] = "";
+		this->_handleDELETE[i]["/redirect"] = "";
 
 	i = 1;
 		this->_servername[i] = "myserver.com";
@@ -144,10 +171,41 @@ Config::Config(const std::string & configFile)
 		this->_cgi[i]["/"] = false;
 		this->_file[i]["/"] = "./www/stressTestSite/index.html";
 		this->_allowedGET[i]["/"] = true;
-		this->_allowedPOST[i]["/"] = true;
-		this->_allowedDELETE[i]["/"] = true;
+		this->_allowedPOST[i]["/"] = false;
+		this->_allowedDELETE[i]["/"] = false;
 		this->_errorPage[i]["/"] = "./www/def404.html";
 		this->_bufferSize[i]["/"] = 4096;
+		this->_handlePOST[i]["/"] = "";
+		this->_handleDELETE[i]["/"] = "";
+
+	i = 2;
+		this->_servername[i] = "myserver.com";
+		this->_port[i] = 61003;
+		this->_address[i] = "localhost";
+
+		this->_autoindex[i]["/"] = false;
+		this->_redir[i]["/"] = false;
+		this->_cgi[i]["/"] = false;
+		this->_file[i]["/"] = "./www/todoSite/index.html";
+		this->_allowedGET[i]["/"] = true;
+		this->_allowedPOST[i]["/"] = false;
+		this->_handlePOST[i]["/"] = "";
+		this->_allowedDELETE[i]["/"] = false;
+		this->_handleDELETE[i]["/"] = "";
+		this->_errorPage[i]["/"] = "./www/def404.html";
+		this->_bufferSize[i]["/"] = 4096;
+
+		this->_autoindex[i]["/api"] = false;
+		this->_redir[i]["/api"] = false;
+		this->_cgi[i]["/api"] = false;
+		this->_file[i]["/api"] = "./www/todoSite/tasks.json";
+		this->_allowedGET[i]["/api"] = true;
+		this->_allowedPOST[i]["/api"] = true;
+		this->_handlePOST[i]["/api"] = "addToList";
+		this->_allowedDELETE[i]["/api"] = false;
+		this->_handleDELETE[i]["/api"] = "";
+		this->_errorPage[i]["/api"] = "./www/def404.html";
+		this->_bufferSize[i]["/api"] = 4096;
 
 	debug("Config Object Created");
 }
@@ -271,9 +329,16 @@ bool	Config::isValidRequest(size_t i, std::string req)
 }
 
 
+std::string		Config::getHandlePOST(size_t i, std::string req)
+{
+	return (this->_handlePOST[i][req]);
+}
 
 
-
+std::string		Config::getHandleDELETE(size_t i, std::string req)
+{
+	return (this->_handleDELETE[i][req]);
+}
 
 
 
