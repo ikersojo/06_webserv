@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 11:57:48 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/13 13:29:29 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/16 15:55:05 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,14 +176,28 @@ bool isOneOf(std::string &line)
 	return std::find(valiOptions.begin(),valiOptions.end(), option) != valiOptions.end();
 }
 
+static std::string trimSpace(std::string &str)
+{
+	size_t	start = 0, end = str.length();
+
+	while (start < end && (str[start] == ' ' || str[start] == '\t' || str[start] == '\n'))
+		start++;
+
+	while (end > start && (str[end - 1] == ' ' || str[end -1] == '\t'|| str[end -1] == '\n'))
+		end--;
+	return str.substr(start, end - start);
+}
+
 bool CheckLocation(std::ifstream &file, std::string &line)
 {
 	int space, cont = 0;
-	
+	std::string trimstr;
 	while(std::getline(file, line))
 	{
+		trimstr = line;
+		trimstr = trimSpace(trimstr);
 		space = SpaceCounter(line);
-		if(space != 4)
+		if(space != 4 || trimstr.empty())
 			break;
 		if(isOneOf(line))
 			cont++;
@@ -225,10 +239,10 @@ bool CheckLocation(std::ifstream &file, std::string &line)
 		}
 		std::cout << line << std::endl;
 	}
-	std::cout << "========" << line << "\n";
-	if(line.find("server:") != std::string::npos)
+	
+	if(!trimstr.empty() && !(line.find("location:") != std::string::npos) && !file.eof())
 	{
-		error("Error NO empty line");
+		error("No empty line");
 		return false;
 	}
 	if (cont > 0)

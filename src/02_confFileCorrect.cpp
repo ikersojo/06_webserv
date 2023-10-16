@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 21:34:37 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/13 12:10:37 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/13 16:52:55 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,25 +100,14 @@ bool confFileCorrect(const char **argv)
 			if(!FirstCheck(line, space))
 			{
 				std::cout << line << " <---- ";
-				error("1º Check error");
+				error("Check error");
 				filename.close();
 				return(configError());
 			}
 			
 			std::cout << line << std::endl;
 			
-			if(line.find("location:") != std::string::npos)
-			{
-				//std::cout << "******Compruebo el bloque location******\n";
-				if(!CheckLocation(filename, line))
-				{
-					error("Error Location Config");
-					filename.close();
-					return(configError());
-				}
-			}
-			
-			if(line.find("listen:") != std::string::npos) //En esta funcion mi objetivo es recolectar puertos para verificar si se repiten.
+			if(line.find("listen:") != std::string::npos && space == 2) //En esta funcion mi objetivo es recolectar puertos para verificar si se repiten.
 			{
 				std::istringstream iss(line);
 				std::string option, address;
@@ -132,7 +121,17 @@ bool confFileCorrect(const char **argv)
 				}
 				Allport.push_back(port);
 			}
-		
+			
+			if(line.find("location:") != std::string::npos && space == 2)
+			{
+				//std::cout << "******Compruebo el bloque location******\n";
+				if(!CheckLocation(filename, line))
+				{
+					error("Error Location Config");
+					filename.close();
+					return(configError());
+				}
+			}
 		}
 	}
 	if(!Checkport(Allport))

@@ -3,7 +3,7 @@ server:
   listen: 127.0.0.1:61002
   listen: 127.0.0.1:61003
   root: "./www/site1"
-  location: /
+  location: / 
     file: "index.html"
     allow: GET POST DELETE
     buffer_size: 4096
@@ -19,8 +19,10 @@ server:
     file: "asd"
     redirect: "www.google.com"
     autoindex: on
-
-server: 
+  location: 127.0.0.1:61017
+    redirect: "www.google.com"
+    
+server:
   listen: 127.0.0.1:61011
   listen: 127.0.0.1:61022
   listen: 127.0.0.1:61023
