@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 21:34:37 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/13 16:52:55 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/16 19:59:41 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,7 @@ bool confFileCorrect(const char **argv)
 			}
 		}
 	}
+	
 	if(!Checkport(Allport))
 	{
 		error("Error Repeated port");

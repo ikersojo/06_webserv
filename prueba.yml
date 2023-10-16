@@ -8,7 +8,7 @@ server:
     allow: GET POST DELETE
     buffer_size: 4096
     autoindex: on
-    error_page: "asdasd"
+    error_page: "404" "404.html"
   location: "/favicon.ico"
     file: "icon1.png"
   location: "/images/sample"
@@ -21,9 +21,9 @@ server:
     autoindex: on
   location: 127.0.0.1:61017
     redirect: "www.google.com"
-    
+
 server:
-  listen: 127.0.0.1:61011
+  listen: 127.0.0.16:1011
   listen: 127.0.0.1:61022
   listen: 127.0.0.1:61023
   root: "./www/site1"
@@ -32,7 +32,7 @@ server:
     allow: GET POST DELETE
     buffer_size: 4096
     autoindex: on
-    error_page: "asdasd"
+    error_page: "404" "404.html"
   location: "/favicon.ico"
     file: "icon1.png"
   location: "/images/sample"

@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 11:57:48 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/16 15:55:05 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/16 19:59:56 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,6 @@ bool Allow(std::string &line)
 	std::istringstream iss(line);
 	iss >> config >> option1 >> option2 >> option3 >> null;
 	
-	std::transform(option1.begin(), option1.end(), option1.begin(), ::toupper);
-    std::transform(option2.begin(), option2.end(), option2.begin(), ::toupper);
-    std::transform(option3.begin(), option3.end(), option3.begin(), ::toupper);
-
 	if(!null.empty())
 		return false;
 
@@ -85,6 +81,7 @@ bool AutoIndex(std::string &line)
 	
 	if(!null.empty())
 		return false;
+	option = trimDoubleQuotes(option);
 	if(option != "on" && option != "off")
 		return false;
 	return true;
@@ -101,11 +98,42 @@ bool Redirect(std::string &line)
 	return true;
 }
 
-static bool isInteger(std::string port)
+bool ErrorPage(std::string &line)
 {
-	for(std::string::size_type i = 0; i < port.length(); i++)
+	std::string config, num, str, null;
+	std::istringstream iss(line);
+	iss >> config >> num >> str >> null;
+	
+	if(!null.empty())
+		return false;
+
+	num = trimDoubleQuotes(num);
+	if(!isInteger(num))
 	{
-		if(!std::isdigit(port[i]))
+		error("Error number");
+		return false;
+	}
+
+	if(!(str.find(num) != std::string::npos))
+	{
+		error("The file does not correspond to the error number");
+		return false;
+	}
+	
+	str = trimDoubleQuotes(str);
+	if (access(str.c_str(), F_OK) != 0)
+	{
+		error("The file does not exist");
+		return false;
+	}
+	return true;
+}
+
+bool isInteger(std::string numb)
+{
+	for(std::string::size_type i = 0; i < numb.length(); i++)
+	{
+		if(!std::isdigit(numb[i]))
 			return false;
 	}
 	return true;
@@ -176,6 +204,24 @@ bool isOneOf(std::string &line)
 	return std::find(valiOptions.begin(),valiOptions.end(), option) != valiOptions.end();
 }
 
+bool isLocationConfigOf(std::string &line)
+{
+	std::vector<std::string> valiOptions;
+	std::string option;
+	std::istringstream iss(line);
+	valiOptions.push_back("file:");
+	valiOptions.push_back("redirect:");
+	valiOptions.push_back("autoindex:");
+	valiOptions.push_back("allow:");
+	valiOptions.push_back("buffer_size:");
+	valiOptions.push_back("autoindex:");
+	valiOptions.push_back("error_page:");
+	
+	iss >> option;
+
+	return std::find(valiOptions.begin(),valiOptions.end(), option) != valiOptions.end();
+}
+
 static std::string trimSpace(std::string &str)
 {
 	size_t	start = 0, end = str.length();
@@ -191,9 +237,11 @@ static std::string trimSpace(std::string &str)
 bool CheckLocation(std::ifstream &file, std::string &line)
 {
 	int space, cont = 0;
-	std::string trimstr;
+	std::string trimstr, config;
 	while(std::getline(file, line))
 	{
+		std::istringstream iss(line);
+		iss >> config;
 		trimstr = line;
 		trimstr = trimSpace(trimstr);
 		space = SpaceCounter(line);
@@ -201,39 +249,54 @@ bool CheckLocation(std::ifstream &file, std::string &line)
 			break;
 		if(isOneOf(line))
 			cont++;
-		if(line.find("allow:") != std::string::npos)
+		if(!isLocationConfigOf(line))
+		{
+			std::cout << line << " <----- ";
+			error("The configuration does not exist");
+			return false;
+		}
+		if(config == "allow:")
 		{
 			if(!Allow(line))
 			{
-				std::cout << line << "<-----";
+				std::cout << line << " <----- ";
 				error("allow config error");
 				return false;
 			}
 		}
-		if(line.find("buffer_size:") != std::string::npos)
+		if(config == "buffer_size:")
 		{
 			if(!Buffersize(line))
 			{
-				std::cout << line << "<-----";
+				std::cout << line << " <----- ";
 				error("Buffer_size config error");
 				return false;
 			}
 		}
-		if(line.find("autoindex:") != std::string::npos)
+		if(config == "autoindex:")
 		{
 			if(!AutoIndex(line))
 			{
-				std::cout << line << "<-----";
+				std::cout << line << " <----- ";
 				error("Auto_index config error");
 				return false;
 			}
 		}
-		if(line.find("redirect:") != std::string::npos)
+		if (config  == "redirect:")
 		{
 			if(!Redirect(line))
 			{
-				std::cout << line << "<-----";
+				std::cout << line << " <----- ";
 				error("Redirect config error");
+				return false;
+			}
+		}
+ 		if (config == "error_page:")
+		{
+			if(!ErrorPage(line))
+			{
+				std::cout << line << " <----- ";
+				error("Error Page config error");
 				return false;
 			}
 		}
