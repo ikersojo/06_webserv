@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/14 06:42:29 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/16 12:20:39 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ Server::Server(Config * config)
 	FD_ZERO(&this->_sendSet);
 	this->_timeout.tv_sec = 0;
 	this->_timeout.tv_usec = TIMEOUT;
+	this->_maxSocket = -1;
 
 	int	i = -1;
 	while (++i < this->_maxPorts)
@@ -236,7 +237,7 @@ void	Server::acceptConnection(int locInServer)
 	// Print the new connection to terminal
 	char	ipAddress[INET_ADDRSTRLEN];
 	inet_ntop(AF_INET, &(clientAddr.sin_addr), ipAddress, INET_ADDRSTRLEN);
-	std::cout << now() << "  " << "Connection of client " << ipAddress << " in socket " << clientSocket 
+	std::cout << now() << "  " << "Connection of client " << ipAddress << " in socket " << clientSocket
 				<< " to http://" << this->_config->getAddress(locInServer) << ":" << this->_config->getPort(locInServer) << std::endl;
 
 	// Add the socket and setup the request and response strings, aligned in the same index of their vectors
