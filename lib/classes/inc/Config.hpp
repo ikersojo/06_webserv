@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/11 12:44:40 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/11 14:10:50 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,3 +99,7 @@
 	};
 
 #endif // CONFIG_HPP
+
+// faltan las redirecciones
+// error_page tiene que completarse con un código de error y un archivo
+// pueden configurarse más de un error page con distintos codigos de error

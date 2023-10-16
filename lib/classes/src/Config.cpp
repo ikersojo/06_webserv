@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/11 12:57:07 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/16 09:51:26 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ std::vector< std::vector< std::pair<std::string, std::string> > >	getListenPoint
 	std::ifstream														inFile(configFile);
 	std::vector< std::vector< std::pair<std::string, std::string> > >	res;
 	std::vector< std::pair<std::string, std::string> >					serv;
-	std::string															line;
+	std::string															line, address, port;
 	size_t																nServer = 0;
 
 	if (!inFile.is_open())
@@ -59,8 +59,19 @@ std::vector< std::vector< std::pair<std::string, std::string> > >	getListenPoint
 			nServer++;
 		}
 		if (line.find("listen:") != std::string::npos) {
-			std::string address = trimChars(line.substr(line.find(":")+1, line.rfind(":")-line.find(":")-1), " ");
-			std::string port = trimChars(line.substr(line.rfind(":")+1), " ");
+			line = line.substr(line.find(":")+1);
+			if (line.find(":") == std::string::npos) {
+				if (line.find(".") != std::string::npos) {
+					address = trimChars(line.substr(line.find(":")+1, line.rfind(":")-line.find(":")-1), " ");
+					port = "80";
+				} else {
+					address = "localhost";
+					port = trimChars(line.substr(line.rfind(":")+1), " ");
+				}
+			} else {
+				address = trimChars(line.substr(line.find(":")+1, line.rfind(":")-line.find(":")-1), " ");
+				port = trimChars(line.substr(line.rfind(":")+1), " ");
+			}
 			serv.push_back(make_pair(address, port));
 		}
 	}
@@ -141,7 +152,6 @@ std::vector< std::vector<Location> >	getAllServerLocs(const std::string & config
 	std::vector< std::vector<Location> > allServerLocs;
 	std::vector<Location> serverLocs;
 	Location general;
-	std::cout << "crea general!!\n";
 	setLocation(inFile, line, general);
 	while (line.find("location:") != std::string::npos || getline(inFile, line)) {
 		while (line.find("location:") != std::string::npos || getline(inFile, line)) {
@@ -155,7 +165,6 @@ std::vector< std::vector<Location> >	getAllServerLocs(const std::string & config
 		}
 		if (line.find("server:") != std::string::npos) {
 			general = Location();
-			std::cout << "crea general!!\n";
 			setLocation(inFile, line, general);
 		}
 		allServerLocs.push_back(serverLocs);
@@ -235,9 +244,10 @@ void	Config::printConfig(void) {
 		std::cout << std::endl << "  LISTENING LOCATION " << i << ":" << std::endl;
 		//std::cout << "    Server name :  " << _servername[i] << std::endl;
 		std::cout << "    Listening on : " << _address[i] << ":" << _port[i] << std::endl;
-
+//
 		std::map<std::string, std::string>& tempMap = _file[i];
 		std::map<std::string, std::string>::iterator it = tempMap.begin();
+		(void)it;
 		while ( it != tempMap.end())
 		{
 			std::cout << "    Request to route " << it->first << " :" << std::endl;
