@@ -1,50 +1,36 @@
 server:
-  listen:
-    - port: 80
-      address: localhost
-    - port: 61001
-      address: 127.0.0.1
-  root_directory: "./www/site1"
-  locations:
-    - path: "/"
-      file: "index.html"
-    - path: "/favicon.ico"
-      file: "icon1.png"
-    - path: "/images/sample"
-      file: "images/sample_image1.jpg"
-    - path: "/cgi-bin"
-      file: "cgi-bin"
+  listen:    localhost:80
+  root: "./www/site1"
+  allow: GET
+  location: "/"
+    file: "./www/site1/index.html"
+    allow: GET POST
+    buffer_size: "4096"
+    autoindex: "on"
+    error_page: "error.page"
+  location: "/favicon.ico"
+    root: "/icons/"
+    allow: POST GET
+    file: "./www/site1/icon1.png"
+  location: "/images/sample"
+    file: "./www/site1/images/sample_image1.jpg"
+  location: "/cgi-bin"
+    file: "cgi-bin"
+    autoindex: "on"
+    return: www.google.com
+    root: "ROOT"
 
 server:
-  listen:
-    - port: 62000
-      address: localhost
-    - port: 62001
-      address: 127.0.0.1
-  root_directory: "./www/site2"
-  locations:
-    - path: "/"
-      file: "index.html"
-    - path: "/favicon.ico"
-      file: "icon2.png"
-    - path: "/images/sample"
-      file: "images/sample_image2.png"
-    - path: "/cgi-bin"
-      file: "cgi-bin"
+  root: GENERAL ROOT
+  listen: fail:900
+  listen: fail:600
+  listen: fail:300
+  allow: GET
+  location: "/LOCATION/"
+    file: example.example
+    allow: DELETE
+  location: "/"
 
 server:
-  listen:
-    - port: 63000
-      address: localhost
-    - port: 63001
-      address: 127.0.0.1
-  root_directory: "./www/site3"
-  locations:
-    - path: "/"
-      file: "index.html"
-    - path: "/favicon.ico"
-      file: "icon3.png"
-    - path: "/images/sample"
-      file: "images/sample_image3.png"
-    - path: "/cgi-bin"
-      file: "cgi-bin"
+  listen: error:404
+  location:

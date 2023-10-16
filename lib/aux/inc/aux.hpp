@@ -1,6 +1,6 @@
 #ifndef AUX_HPP
 	#define AUX_HPP
-	
+
 	#include <iostream>
 	#include <string>
 	#include <sstream>
@@ -33,9 +33,13 @@
 
 	// intToString.cpp
 	std::string	intToString(int n);
+<<<<<<< HEAD
 
 	// trimDoubleQuotes.cpp
 	std::string	trimDoubleQuotes(const std::string& str);
+=======
+	std::string	trimChars(const std::string& str, const std::string& chars);
+>>>>>>> aarrien
 
 	// now.cpp
 	std::string	now(void);

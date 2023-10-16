@@ -3,17 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/14 11:06:00 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/16 12:36:11 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Config.hpp"
 
-size_t	getNumberOfPorts(const std::string & configFile)
-{
+std::string	extractCleanValue(std::string & line) {
+	return (trimChars(line.substr(line.find(":")+1), " \""));
+}
+
+size_t	getNumberOfPorts(const std::string & configFile) {
 	std::ifstream	inFile(configFile);
 	std::string		line;
 	size_t			n;
@@ -26,34 +29,13 @@ size_t	getNumberOfPorts(const std::string & configFile)
 	n = 0;
 	while (getline(inFile, line))
 	{
-		if ((line.find("port:") != std::string::npos))
+		if ((line.find("listen:") != std::string::npos))
 			n++;
 	}
 	inFile.close();
-	if (DEBUG == 1)
-		std::cout << GREY << "[DEBUG: " << n << " ports to listen to identified]"
-					<< DEF_COL << std::endl;
+	debug("ports to listen to identified");
 	return (n);
 }
-
-void	Config::resizeVectors(size_t size)
-{
-	this->_servername.resize(size);
-	this->_port.resize(size);
-	this->_address.resize(size);
-	this->_autoindex.resize(size);
-	this->_file.resize(size);
-	this->_allowedGET.resize(size);
-	this->_allowedPOST.resize(size);
-	this->_allowedDELETE.resize(size);
-	this->_errorPage.resize(size);
-	this->_bufferSize.resize(size);
-	this->_redir.resize(size);
-	this->_cgi.resize(size);
-	this->_handlePOST.resize(size);
-	this->_handleDELETE.resize(size);
-}
-
 
 void	Config::setAIFile(size_t i, std::string url, std::string path, std::string file)
 {
@@ -87,229 +69,237 @@ void	Config::setDeletePath(size_t i, std::string url, std::string task)
 	this->_handleDELETE[i][url] = "removeFromList";
 }
 
+std::vector< std::vector< std::pair<std::string, std::string> > >	getListenPoints(const std::string & configFile) {
+	std::ifstream														inFile(configFile);
+	std::vector< std::vector< std::pair<std::string, std::string> > >	res;
+	std::vector< std::pair<std::string, std::string> >					serv;
+	std::string															line, address, port;
+	size_t																nServer = 0;
+
+	if (!inFile.is_open())
+	{
+		error("Failed to open configuration file");
+		exit(EXIT_FAILURE);
+	}
+
+	while (getline(inFile, line)) {
+		if (line.find("server:") != std::string::npos) {
+			if (nServer != 0) {
+				res.push_back(serv);
+				serv.clear();
+			}
+			nServer++;
+		}
+		if (line.find("listen:") != std::string::npos) {
+			line = line.substr(line.find(":")+1);
+			if (line.find(":") == std::string::npos) {
+				if (line.find(".") != std::string::npos) {
+					address = trimChars(line.substr(line.find(":")+1, line.rfind(":")-line.find(":")-1), " ");
+					port = "80";
+				} else {
+					address = "localhost";
+					port = trimChars(line.substr(line.rfind(":")+1), " ");
+				}
+			} else {
+				address = trimChars(line.substr(line.find(":")+1, line.rfind(":")-line.find(":")-1), " ");
+				port = trimChars(line.substr(line.rfind(":")+1), " ");
+			}
+			serv.push_back(make_pair(address, port));
+		}
+	}
+	res.push_back(serv);
+	inFile.close();
+	return (res);
+}
+
+std::map<std::string, std::string>	createMapString(std::vector<Location> allServerLocs, std::string directive) {
+	std::map<std::string, std::string> Map;
+
+	for (size_t i = 0; i < allServerLocs.size(); i++) {
+		if (directive == "file") Map[allServerLocs[i].path] = allServerLocs[i].file;
+		else if (directive == "errorPage") Map[allServerLocs[i].path] = allServerLocs[i].errorPage;
+		else if (directive == "root") Map[allServerLocs[i].path] = allServerLocs[i].root;
+		else if (directive == "cgiExt") Map[allServerLocs[i].path] = allServerLocs[i].cgiExt;
+	}
+
+	return (Map);
+}
+
+std::map<std::string, bool>	createMapBool(std::vector<Location> allServerLocs, std::string directive) {
+	std::map<std::string, bool> Map;
+
+	for (size_t i = 0; i < allServerLocs.size(); i++) {
+		if (directive == "autoindex") Map[allServerLocs[i].path] = allServerLocs[i].autoindex;
+		else if (directive == "allowedGET") Map[allServerLocs[i].path] = allServerLocs[i].allowedGET;
+		else if (directive == "allowedPOST") Map[allServerLocs[i].path] = allServerLocs[i].allowedPOST;
+		else if (directive == "allowedDELETE") Map[allServerLocs[i].path] = allServerLocs[i].allowedDELETE;
+	}
+
+	return (Map);
+}
+
+std::map<std::string, int>	createMapInt(std::vector<Location> allServerLocs, std::string directive) {
+	std::map<std::string, int> Map;
+
+	for (size_t i = 0; i < allServerLocs.size(); i++) {
+		if (directive == "bufferSize") Map[allServerLocs[i].path] = allServerLocs[i].bufferSize;
+	}
+
+	return (Map);
+}
+
+void	setLocation(std::ifstream& inFile, std::string& line, Location& location) {
+	location.path = extractCleanValue(line);
+	while (getline(inFile, line) && !line.empty() && line.find("location:") == std::string::npos) {
+		if (line.find("root:") != std::string::npos)
+			location.root = extractCleanValue(line);
+		if (line.find("file:") != std::string::npos)
+			location.file = extractCleanValue(line);
+		if (line.find("autoindex:") != std::string::npos)
+			if (line.find("on") != std::string::npos) location.autoindex = true;
+		if (line.find("allow:") != std::string::npos) {
+			(line.find("GET") != std::string::npos) ? location.allowedGET = true : location.allowedGET = false;
+			(line.find("POST") != std::string::npos) ? location.allowedPOST = true : location.allowedPOST = false;
+			(line.find("DELETE") != std::string::npos) ? location.allowedDELETE = true : location.allowedDELETE = false;
+		}
+		if (line.find("error_page:") != std::string::npos)
+			location.errorPage = extractCleanValue(line);
+		if (line.find("buffer_size:") != std::string::npos)
+			location.bufferSize = std::atoi(extractCleanValue(line).c_str());
+		if (line.find("cgi_ext:") != std::string::npos)
+			location.cgiExt = extractCleanValue(line);
+	}
+}
+
+std::vector< std::vector<Location> >	getAllServerLocs(const std::string & configFile) {
+
+	std::string line;
+	std::ifstream inFile(configFile);
+	if (!inFile.is_open())
+	{
+		error("Failed to open configuration file");
+		exit(EXIT_FAILURE);
+	}
+
+	std::vector< std::vector<Location> > allServerLocs;
+	std::vector<Location> serverLocs;
+	Location general;
+	setLocation(inFile, line, general);
+	while (line.find("location:") != std::string::npos || getline(inFile, line)) {
+		while (line.find("location:") != std::string::npos || getline(inFile, line)) {
+			if (line.find("server:") != std::string::npos) break;
+			if (line.find("location:") == std::string::npos) continue;
+			else {
+				Location location(general);
+				setLocation(inFile, line, location);
+				serverLocs.push_back(location);
+			}
+		}
+		if (line.find("server:") != std::string::npos) {
+			general = Location();
+			setLocation(inFile, line, general);
+		}
+		allServerLocs.push_back(serverLocs);
+		serverLocs.clear();
+	}
+	inFile.close();
+	return (allServerLocs);
+}
 
 Config::Config(const std::string & configFile)
 {
-	std::cout << now() << "  Loading " << configFile << "..." << std::endl;
+	std::cout << "Loading " << configFile << "..." << std::endl << std::endl;
 
-	this->_maxPorts = 3;						// this->_maxPorts = getNumberOfPorts(configFile);
-	this->resizeVectors(this->_maxPorts);
+	_maxPorts = getNumberOfPorts(configFile);
+	std::vector< std::vector< std::pair<std::string, std::string> > > listenPoints = getListenPoints(configFile);
+	for (size_t j = 0; j < listenPoints.size(); j++) {
+		for (size_t i = 0; i < listenPoints[j].size(); i++) {
+			_port.push_back(std::atoi(listenPoints[j][i].second.c_str()));
+			_address.push_back(listenPoints[j][i].first);
+		}
+	}
 
-
-	size_t	i = 0;
-		this->_servername[i] = "myserver.com";
-		this->_port[i] = 61001;
-		this->_address[i] = "localhost";
-
-		this->_autoindex[i]["/"] = false;
-		this->_redir[i]["/"] = false;
-		this->_cgi[i]["/"] = false;
-		this->_file[i]["/"] = "./www/site1/index.html";
-		this->_allowedGET[i]["/"] = true;
-		this->_allowedPOST[i]["/"] = false;
-		this->_allowedDELETE[i]["/"] = false;
-		this->_errorPage[i]["/"] = "./www/def404.html";
-		this->_bufferSize[i]["/"] = 4096;
-		this->_handlePOST[i]["/"] = "";
-		this->_handleDELETE[i]["/"] = "";
-
-		this->_autoindex[i]["/favicon.ico"] = false;
-		this->_redir[i]["/favicon.ico"] = false;
-		this->_cgi[i]["/favicon.ico"] = false;
-		this->_file[i]["/favicon.ico"] = "./www/site1/icon1.png";
-		this->_allowedGET[i]["/favicon.ico"] = true;
-		this->_allowedPOST[i]["/favicon.ico"] = false;
-		this->_allowedDELETE[i]["/favicon.ico"] = false;
-		this->_errorPage[i]["/favicon.ico"] = "./www/def404.html";
-		this->_bufferSize[i]["/favicon.ico"] = 4096;
-		this->_handlePOST[i]["/favicon.ico"] = "";
-		this->_handleDELETE[i]["/favicon.ico"] = "";
-
-		this->_autoindex[i]["/images/sample"] = false;
-		this->_redir[i]["/images/sample"] = false;
-		this->_cgi[i]["/images/sample"] = false;
-		this->_file[i]["/images/sample"] = "./www/site1/images/sample_image1.jpg";
-		this->_allowedGET[i]["/images/sample"] = true;
-		this->_allowedPOST[i]["/images/sample"] = false;
-		this->_allowedDELETE[i]["/images/sample"] = false;
-		this->_errorPage[i]["/images/sample"] = "./www/def404.html";
-		this->_bufferSize[i]["/images/sample"] = 4096;
-		this->_handlePOST[i]["/images/sample"] = "";
-		this->_handleDELETE[i]["/images/sample"] = "";
-
-		this->_autoindex[i]["/images"] = true;
-		this->_redir[i]["/images"] = false;
-		this->_cgi[i]["/images"] = false;
-		this->_file[i]["/images"] = "./www/site1/images/";
-		this->_allowedGET[i]["/images"] = true;
-		this->_allowedPOST[i]["/images"] = false;
-		this->_allowedDELETE[i]["/images"] = false;
-		this->_errorPage[i]["/images"] = "./www/def404.html";
-		this->_bufferSize[i]["/images"] = 4096;
-		this->_handlePOST[i]["/images"] = "";
-		this->_handleDELETE[i]["/images"] = "";
-
-		this->_autoindex[i]["/redirect"] = false;
-		this->_redir[i]["/redirect"] = true;
-		this->_cgi[i]["/redirect"] = false;
-		this->_file[i]["/redirect"] = "https://www.42urduliz.com";
-		this->_allowedGET[i]["/redirect"] = true;
-		this->_allowedPOST[i]["/redirect"] = false;
-		this->_allowedDELETE[i]["/redirect"] = false;
-		this->_errorPage[i]["/redirect"] = "./www/def404.html";
-		this->_bufferSize[i]["/redirect"] = 4096;
-		this->_handlePOST[i]["/redirect"] = "";
-		this->_handleDELETE[i]["/redirect"] = "";
-
-	i = 1;
-		this->_servername[i] = "myserver.com";
-		this->_port[i] = 61002;
-		this->_address[i] = "localhost";
-
-		this->_autoindex[i]["/"] = false;
-		this->_redir[i]["/"] = false;
-		this->_cgi[i]["/"] = false;
-		this->_file[i]["/"] = "./www/stressTestSite/index.html";
-		this->_allowedGET[i]["/"] = true;
-		this->_allowedPOST[i]["/"] = false;
-		this->_allowedDELETE[i]["/"] = false;
-		this->_errorPage[i]["/"] = "./www/def404.html";
-		this->_bufferSize[i]["/"] = 4096;
-		this->_handlePOST[i]["/"] = "";
-		this->_handleDELETE[i]["/"] = "";
-
-	i = 2;
-		this->_servername[i] = "myserver.com";
-		this->_port[i] = 61003;
-		this->_address[i] = "localhost";
-
-		this->_autoindex[i]["/"] = false;
-		this->_redir[i]["/"] = false;
-		this->_cgi[i]["/"] = false;
-		this->_file[i]["/"] = "./www/todoSite/index.html";
-		this->_allowedGET[i]["/"] = true;
-		this->_allowedPOST[i]["/"] = false;
-		this->_handlePOST[i]["/"] = "";
-		this->_allowedDELETE[i]["/"] = false;
-		this->_handleDELETE[i]["/"] = "";
-		this->_errorPage[i]["/"] = "./www/def404.html";
-		this->_bufferSize[i]["/"] = 4096;
-
-		this->_autoindex[i]["/api"] = false;
-		this->_redir[i]["/api"] = false;
-		this->_cgi[i]["/api"] = false;
-		this->_file[i]["/api"] = "./www/todoSite/tasks.json";
-		this->_allowedGET[i]["/api"] = true;
-		this->_allowedPOST[i]["/api"] = true;
-		this->_handlePOST[i]["/api"] = "addToList";
-		this->_allowedDELETE[i]["/api"] = false;
-		this->_handleDELETE[i]["/api"] = "";
-		this->_errorPage[i]["/api"] = "./www/def404.html";
-		this->_bufferSize[i]["/api"] = 4096;
-
+	std::vector< std::vector<Location> > allServerLocs = getAllServerLocs(configFile);
+	size_t	nServer = 0;
+	for (std::vector< std::vector<Location> >::const_iterator it = allServerLocs.begin(); it < allServerLocs.end(); it++) {
+		for (std::vector< std::pair<std::string, std::string> >::const_iterator it2 = listenPoints[nServer].begin(); it2 < listenPoints[nServer].end(); it2++) {
+			_autoindex.push_back(createMapBool(*it, "autoindex"));
+			_file.push_back(createMapString(*it, "file"));
+			_root.push_back(createMapString(*it, "root"));
+			_allowedGET.push_back(createMapBool(*it, "allowedGET"));
+			_allowedPOST.push_back(createMapBool(*it, "allowedPOST"));
+			_allowedDELETE.push_back(createMapBool(*it, "allowedDELETE"));
+			_cgiExt.push_back(createMapString(*it, "cgiExt"));
+			_errorPage.push_back(createMapString(*it, "errorPage"));
+			_bufferSize.push_back(createMapInt(*it, "bufferSize"));
+		}
+		nServer++;
+	}
 	debug("Config Object Created");
 }
 
-
-Config::~Config(void)
-{
+Config::~Config(void) {
 	debug("Config Object Destroyed");
 }
 
+std::string		Config::getErrorPage(size_t i, std::string req) { return (this->_errorPage[i][req]); }
 
-size_t	Config::getMaxPorts(void)
-{
-	return (this->_maxPorts);
-}
+std::string		Config::getFile(size_t i, std::string req) { return (this->_file[i][req]); }
+
+bool			Config::isAutoIndex(size_t i, std::string req) { return (this->_autoindex[i][req]); }
+
+bool			Config::isRedir(size_t i, std::string req) { return (this->_redir[i][req]); }
+
+bool			Config::isGET(size_t i, std::string req) { return (this->_allowedGET[i][req]); }
+
+bool			Config::isPOST(size_t i, std::string req) { return (this->_allowedPOST[i][req]); }
+
+bool			Config::isDELETE(size_t i, std::string req) { return (this->_allowedDELETE[i][req]); }
+
+bool			Config::isCgi(size_t i, std::string req) { return (this->_cgi[i][req]); }
+
+size_t			Config::getMaxPorts(void) { return (_maxPorts); }
+
+std::string		Config::getServerName(size_t i) { return (_servername[i]); }
+
+int				Config::getPort(size_t i) { return (_port[i]); }
+
+std::string		Config::getAddress(size_t i) { return (_address[i]); }
+
+std::string		Config::getFile(size_t i, std::string req) { return (_file[i][req]); }
+
+std::string		Config::getErrorPage(size_t i, std::string req) { return (_errorPage[i][req]); }
+
+int				Config::getBufferSize(size_t i, std::string req) { return (_bufferSize[i][req]); }
 
 
-int		Config::getPort(size_t i)
-{
-	return (this->_port[i]);
-}
-
-
-std::string		Config::getAddress(size_t i)
-{
-	return (this->_address[i]);
-}
-
-std::string		Config::getErrorPage(size_t i, std::string req)
-{
-	return (this->_errorPage[i][req]);
-}
-
-std::string		Config::getFile(size_t i, std::string req)
-{
-	return (this->_file[i][req]);
-}
-
-bool	Config::isAutoIndex(size_t i, std::string req)
-{
-	return (this->_autoindex[i][req]);
-}
-
-bool	Config::isRedir(size_t i, std::string req)
-{
-	return (this->_redir[i][req]);
-}
-
-bool	Config::isGET(size_t i, std::string req)
-{
-	return (this->_allowedGET[i][req]);
-}
-
-bool	Config::isPOST(size_t i, std::string req)
-{
-	return (this->_allowedPOST[i][req]);
-}
-
-bool	Config::isDELETE(size_t i, std::string req)
-{
-	return (this->_allowedDELETE[i][req]);
-}
-
-bool	Config::isCgi(size_t i, std::string req)
-{
-	return (this->_cgi[i][req]);
-}
-
-void	Config::printConfig(void)
-{
+void	Config::printConfig(void) {
 	debug("Printing config...");
 	size_t	i = 0;
 	std::cout << GREY << std::endl << "------ CONFIG FILE INPUT (DEBUG) ------" << std::endl;
-	while (i < this->_maxPorts)
+	while (i < _maxPorts)
 	{
 		std::cout << std::endl << "  LISTENING LOCATION " << i << ":" << std::endl;
-		std::cout << "    http://" << this->_address[i] << ":" << this->_port[i] << std::endl;
+		//std::cout << "    Server name :  " << _servername[i] << std::endl;
+		std::cout << "    Listening on : " << _address[i] << ":" << _port[i] << std::endl;
 
-		std::map<std::string, std::string>& currentMap = this->_file[i];
-		std::map<std::string, std::string>::iterator it = currentMap.begin();
-		while ( it != currentMap.end())
+		std::map<std::string, std::string>& tempMap = _file[i];
+		std::map<std::string, std::string>::iterator it = tempMap.begin();
+		(void)it;
+		while ( it != tempMap.end())
 		{
-			std::cout << "    Requests to " << it->first;
-
-			if (this->isGET(i, it->first))
-				std::cout << " (G";
-			else
-				std::cout << "(-";
-			if (this->isPOST(i, it->first))
-				std::cout << "P";
-			else
-				std::cout << "-";
-			if (this->isDELETE(i, it->first))
-				std::cout << "D)";
-			else
-				std::cout << "-)";
-
-			std::cout << " will be replied by ";
-
-			if (this->isRedir(i, it->first))
-				std::cout << "a redirection to ";
-			if (this->isCgi(i, it->first))
-				std::cout << "a cgi script run of file ";
-			std::cout << it->second << std::endl;
+			std::cout << "    Request to route " << it->first << " :" << std::endl;
+			std::cout << "      autoindex : " << (_autoindex[i][it->first] ? " on" : " off") << std::endl;
+			std::cout << "      file :       " << _file[i][it->first] << std::endl;
+			std::cout << "      root :       " << _root[i][it->first] << std::endl;
+			std::cout << "      allow :      ";
+			if (_allowedGET[i][it->first]) std::cout << "GET ";
+			if (_allowedPOST[i][it->first]) std::cout << "POST ";
+			if (_allowedDELETE[i][it->first]) std::cout << "DELETE ";
+			std::cout << std::endl;
+			std::cout << "      errorPage :  " << _errorPage[i][it->first] << std::endl;
+			std::cout << "      bufferSize : " << _bufferSize[i][it->first] << std::endl;
+			std::cout << "      cgiExt :     " << _cgiExt[i][it->first] << std::endl;
 			it++;
 		}
 		i++;
@@ -339,101 +329,3 @@ std::string		Config::getHandleDELETE(size_t i, std::string req)
 {
 	return (this->_handleDELETE[i][req]);
 }
-
-
-
-
-
-
-
-
-// Config::Config(const std::string & configFile)
-// {
-// 	std::cout << "Loading " << configFile << "..." << std::endl << std::endl;
-
-// 	std::string line, item1, item2, item3, rootDir, path, fullPath;
-// 	int	nPortsPerServer;
-// 	int	nPortsPopulated = 0;
-// 	std::ifstream inFile(configFile);
-// 	if (!inFile.is_open())
-// 	{
-// 		error("Failed to open configuration file");
-// 		exit(EXIT_FAILURE);
-// 	}
-
-// 	this->_maxPorts = getNumberOfPorts(configFile);
-// 	this->_files.resize(this->_maxPorts);
-
-// 	while (getline(inFile, line))
-// 	{
-// 		std::istringstream iss(line);
-// 		if (iss >> item1 && item1 == "server:")
-// 		{
-
-// 			while (getline(inFile, line))
-// 			{
-// 				if (line.find("listen:") != std::string::npos)
-// 				{
-// 					nPortsPerServer = 0;
-// 					while (getline(inFile, line) && 
-// 							((line.find("port:") != std::string::npos) || (line.find("address:") != std::string::npos)))
-// 					{
-// 						std::istringstream issPort(line);
-// 						issPort >> item1 >> item2 >> item3;
-// 						if (item1 == "-" && item2 == "port:")
-// 						{
-// 							// std::cout << "PORT: " << item3 << std::endl; // do things with port
-// 							nPortsPerServer++;
-// 							this->_ports.push_back(atoi(item3.c_str()));
-
-// 							if (getline(inFile, line) && line.find("address:") != std::string::npos)
-// 							{
-// 								std::istringstream issAddress(line);
-// 								issAddress >> item2 >> item3;
-// 								// std::cout << "ADDRESS: " << item3 << std::endl; // do things with address
-// 								this->_addresses.push_back(trimDoubleQuotes(item3));
-// 							}
-// 						}
-// 					}
-// 				}
-// 				if (line.find("root_directory:") != std::string::npos)
-// 				{
-// 					std::istringstream issRootDir(line);
-// 					issRootDir >> item1 >> item2;
-// 					rootDir = trimDoubleQuotes(item2);
-// 					rootDir+= "/";
-// 					// std::cout << "ROOT DIR: " << rootDir << std::endl; // do things with root dir
-// 				}
-// 				if (line.find("locations:") != std::string::npos)
-// 				{
-// 					while (getline(inFile, line) && 
-// 							((line.find("path:") != std::string::npos) || (line.find("file:") != std::string::npos)))
-// 					{
-// 						std::istringstream issPath(line);
-// 						issPath >> item1 >> item2 >> item3;
-// 						if (item1 == "-" && item2 == "path:")
-// 						{
-// 							path = trimDoubleQuotes(item3);
-// 							// std::cout << "PATH: " << path << std::endl; // do things with path
-
-// 							if (getline(inFile, line) && line.find("file:") != std::string::npos)
-// 							{
-// 								std::istringstream issFile(line);
-// 								issFile >> item2 >> item3;
-// 								fullPath = rootDir;
-// 								fullPath+= trimDoubleQuotes(item3);
-// 								// std::cout << "FILE: " << fullPath << std::endl; // do things with file
-// 							}
-// 						}
-// 						int	i = -1;
-// 						while (++i < nPortsPerServer)
-// 							this->_files[nPortsPopulated + i].insert(std::make_pair(path, fullPath));
-// 					}
-// 					nPortsPopulated += nPortsPerServer;
-// 				}
-// 			}
-// 		}
-// 	}
-// 	inFile.close();
-// 	debug("Config Object Created");
-// }
