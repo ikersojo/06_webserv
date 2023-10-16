@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/14 11:06:00 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/16 10:26:36 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ Config::Config(const std::string & configFile)
 {
 	std::cout << now() << "  Loading " << configFile << "..." << std::endl;
 
-	this->_maxPorts = 3;						// this->_maxPorts = getNumberOfPorts(configFile);
+	this->_maxPorts = 4;						// this->_maxPorts = getNumberOfPorts(configFile);
 	this->resizeVectors(this->_maxPorts);
 
 
@@ -206,6 +206,47 @@ Config::Config(const std::string & configFile)
 		this->_handleDELETE[i]["/api"] = "";
 		this->_errorPage[i]["/api"] = "./www/def404.html";
 		this->_bufferSize[i]["/api"] = 4096;
+
+	i = 3;
+		this->_servername[i] = "myserver.com";
+		this->_port[i] = 61004;
+		this->_address[i] = "localhost";
+
+		this->_autoindex[i]["/"] = false;
+		this->_redir[i]["/"] = false;
+		this->_cgi[i]["/"] = false;
+		this->_file[i]["/"] = "./www/gallerySite/index.html";
+		this->_allowedGET[i]["/"] = true;
+		this->_allowedPOST[i]["/"] = false;
+		this->_handlePOST[i]["/"] = "";
+		this->_allowedDELETE[i]["/"] = false;
+		this->_handleDELETE[i]["/"] = "";
+		this->_errorPage[i]["/"] = "./www/def404.html";
+		this->_bufferSize[i]["/"] = 4096;
+
+		this->_autoindex[i]["/photos"] = false;
+		this->_redir[i]["/photos"] = false;
+		this->_cgi[i]["/photos"] = false;
+		this->_file[i]["/photos"] = "./www/gallerySite/photos.json";
+		this->_allowedGET[i]["/photos"] = true;
+		this->_allowedPOST[i]["/photos"] = false;
+		this->_handlePOST[i]["/photos"] = "";
+		this->_allowedDELETE[i]["/photos"] = false;
+		this->_handleDELETE[i]["/photos"] = "";
+		this->_errorPage[i]["/photos"] = "./www/def404.html";
+		this->_bufferSize[i]["/photos"] = 4096;
+
+		this->_autoindex[i]["/upload"] = false;
+		this->_redir[i]["/upload"] = false;
+		this->_cgi[i]["/upload"] = false;
+		this->_file[i]["/upload"] = "./www/gallerySite/upload.json";
+		this->_allowedGET[i]["/upload"] = true;
+		this->_allowedPOST[i]["/upload"] = true;
+		this->_handlePOST[i]["/upload"] = "addPhoto";
+		this->_allowedDELETE[i]["/upload"] = false;
+		this->_handleDELETE[i]["/upload"] = "";
+		this->_errorPage[i]["/upload"] = "./www/def404.html";
+		this->_bufferSize[i]["/upload"] = 4096;
 
 	debug("Config Object Created");
 }

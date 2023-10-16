@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/14 06:42:29 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/16 08:44:19 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ Server::Server(Config * config)
 	this->_maxPorts = this->_config->getMaxPorts();
 	FD_ZERO(&this->_recvSet);
 	FD_ZERO(&this->_sendSet);
+	this->_maxSocket = -1;
 	this->_timeout.tv_sec = 0;
 	this->_timeout.tv_usec = TIMEOUT;
 

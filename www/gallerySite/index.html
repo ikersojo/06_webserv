@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Photo Upload</title>
+	<style>
+		body {
+			background-color: black;
+			color: white;
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			height: 100vh;
+		}
+
+		h1 {
+			text-align: center;
+			margin-bottom: 20px;
+		}
+
+		input[type="file"] {
+			display: none;
+		}
+
+		label {
+			padding: 10px;
+			background-color: #3498db;
+			color: white;
+			cursor: pointer;
+		}
+
+		#photoGallery {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+
+		.photo {
+			margin: 10px;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+
+<h1>Photo Upload</h1>
+
+<input type="file" id="fileInput" accept="image/*">
+<label for="fileInput">Upload Photo</label>
+
+<div id="photoGallery"></div>
+
+<script>
+// Function to fetch and update the photo gallery
+function updatePhotoGallery() {
+	fetch("http://localhost:61004/photos")
+		.then(response => {
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
+			}
+			return response.json();
+		})
+		.then(photos => {
+			// Update the photo gallery in the HTML
+			const photoGalleryElement = document.getElementById("photoGallery");
+			photoGalleryElement.innerHTML = photos.map(photo => `
+				<div class="photo">
+					<img src="${photo.url}" alt="${photo.name}" width="150" height="150">
+				</div>
+			`).join("");
+		})
+		.catch(error => {
+			console.error("Error fetching photo gallery:", error);
+		});
+}
+
+// Attach event listener to the file input for photo upload
+document.getElementById("fileInput").addEventListener("change", function() {
+	const fileInput = this;
+	const file = fileInput.files[0];
+
+	if (file) {
+		// Create a FormData object and append the file to it
+		const formData = new FormData();
+		formData.append("photo", file);
+
+		// Send a POST request to the server for photo upload
+		fetch("http://localhost:61004/upload", {
+			method: "POST",
+			body: formData,
+		})
+		.then(response => {
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
+			}
+			return response.text();
+		})
+		.then(data => {
+			console.log("Photo upload successful:", data);
+			// Update the photo gallery after a successful upload
+			updatePhotoGallery();
+		})
+		.catch(error => {
+			console.error("Error during photo upload:", error);
+		});
+	}
+});
+
+// Initial update of the photo gallery
+updatePhotoGallery();
+</script>
+
+</body>
+</html>
