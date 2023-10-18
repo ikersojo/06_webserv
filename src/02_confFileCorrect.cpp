@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 21:34:37 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/18 16:43:19 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/18 17:06:26 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static bool	configError(void)
 	return (false);
 }
 
-static bool FirstCheck(std::string &line, int space) // El primer checkeo compruebo si esta [server:, listen:, root:, location:] dentro de la configuracion.
+static bool FirstCheck(std::string &line, int space)
 {
 	std::string checkline, option, null;
 	std::istringstream iss(line);
@@ -53,6 +53,18 @@ static bool FirstCheck(std::string &line, int space) // El primer checkeo compru
 		else if(line.find("location:") != std::string::npos)
 		{
 			if(checkline != "location:" || option.empty() || !null.empty())
+				return false;
+			return true;
+		}
+		else if(line.find("error_page:") != std::string::npos)
+		{
+			if(checkline != "error_page:" || !ErrorPage(line))
+				return false;
+			return true;
+		}
+		else if(line.find("servername:") != std::string::npos)
+		{
+			if(checkline != "servername:" || option.empty() || !null.empty())
 				return false;
 			return true;
 		}

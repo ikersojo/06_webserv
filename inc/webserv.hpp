@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:54:15 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/18 16:37:58 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/18 16:56:36 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@
 		bool isInteger(std::string numb);
 		bool isLocationConfigOf(std::string &line);
 
-		// 04_LocationConfig.cpp
+		// 04_Config_list.cpp
 		bool Allow(std::string &line);
 		bool Buffersize(std::string &line);
 		bool AutoIndex(std::string &line);

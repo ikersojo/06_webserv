@@ -8,7 +8,7 @@ server:
     allow: GET POST DELETE
     buffer_size: 4096
     autoindex: on
-    error_page: "406" "404.html"
+    error_page: "404" "404.html"
   location: "/favicon.ico"
     file: "icon1.png"
   location: "/images/sample"
