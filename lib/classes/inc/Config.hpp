@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/18 12:04:21 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/18 12:43:25 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@
 		std::map<int, std::string>	errorPage;
 		int							bufferSize;
 		bool						cgi;
+		std::string					cgiExt;
 		bool						redir;
 		std::string					handlePOST;
 		std::string					handleDELETE;
@@ -60,20 +61,7 @@
 			cgi(false), \
 			redir(false) {}
 
-		Location(const Location & ref) : \
-			path(ref.path), \
-			autoindex(ref.autoindex), \
-			file(ref.file), \
-			root(ref.root), \
-			allowedGET(ref.allowedGET), \
-			allowedPOST(ref.allowedPOST), \
-			allowedDELETE(ref.allowedDELETE), \
-			errorPage(ref.errorPage), \
-			bufferSize(ref.bufferSize), \
-			cgi(ref.cgi), \
-			redir(ref.redir), \
-			handlePOST(ref.handlePOST), \
-			handleDELETE(ref.handleDELETE) {}
+
 	};
 
 	class Config
@@ -120,7 +108,9 @@
 			std::vector < std::map < std::string, bool > >							_allowedPOST;
 			std::vector < std::map < std::string, bool > >							_allowedDELETE;
 			std::vector < std::map < std::string, bool > >							_cgi;
+			std::vector < std::map < std::string, std::string > >					_cgiExt;
 			std::vector < std::map < std::string, bool > >							_redir;
+			std::vector < std::map < std::string, std::string > >					_redirLoc;
 			std::vector < std::map < std::string, std::map < int, std::string > > >	_errorPage;
 			std::vector < std::map < std::string, int > >							_bufferSize;
 

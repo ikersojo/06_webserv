@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/18 12:19:02 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/18 12:37:01 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,7 @@ std::map<std::string, std::string>	createMapString(std::vector<Location> allServ
 	for (size_t i = 0; i < allServerLocs.size(); i++) {
 		if (directive == D_FILE) Map[allServerLocs[i].path] = allServerLocs[i].file;
 		else if (directive == D_ROOT) Map[allServerLocs[i].path] = allServerLocs[i].root;
+		else if (directive == D_CGI) Map[allServerLocs[i].path] = allServerLocs[i].cgiExt;
 		else if (directive == D_HANDLE_POST) Map[allServerLocs[i].path] = allServerLocs[i].handlePOST;
 		else if (directive == D_HANDLE_DELETE) Map[allServerLocs[i].path] = allServerLocs[i].handleDELETE;
 	}
@@ -210,8 +211,10 @@ void	setLocation(std::ifstream& inFile, std::string& line, Location& location) {
 		}
 		if (line.find(D_BUFFER_SIZE) != std::string::npos)
 			location.bufferSize = std::atoi(extractCleanValue(line).c_str());
-		if (line.find(D_CGI) != std::string::npos)
-			(line.find("on") != std::string::npos) ? location.cgi = true : location.cgi = false;
+		if (line.find(D_CGI) != std::string::npos) {
+			location.cgiExt = extractCleanValue(line);
+			(!location.cgiExt.empty()) ? location.cgi = true : location.cgi = false;
+		}
 		if (line.find(D_REDIR) != std::string::npos) {
 			location.file = extractCleanValue(line);
 			location.redir = true;
@@ -289,6 +292,7 @@ Config::Config(const std::string & configFile)
 			_allowedPOST.push_back(createMapBool(*it, "allowedPOST"));
 			_allowedDELETE.push_back(createMapBool(*it, "allowedDELETE"));
 			_cgi.push_back(createMapBool(*it, D_CGI));
+			_cgiExt.push_back(createMapString(*it, D_CGI));
 			_redir.push_back(createMapBool(*it, D_REDIR));
 			_errorPage.push_back(createMapMap(*it, D_ERROR_PAGE));
 			_bufferSize.push_back(createMapInt(*it, D_BUFFER_SIZE));
@@ -362,7 +366,7 @@ void	Config::printConfig(void) {
 			for (std::map<int, std::string>::iterator ite = _errorPage[i][it->first].begin(); ite != _errorPage[i][it->first].end(); ite++)
 				std::cout << "        - " << ite->first << " => (" << ite->second << ")" << std::endl;
 			std::cout << "      bufferSize : " << _bufferSize[i][it->first] << std::endl;
-			std::cout << "      cgi :        " << (_cgi[i][it->first] ? " on" : " off") << std::endl;
+			std::cout << "      cgi :        " << (_cgi[i][it->first] ? (" on => " + _cgiExt[i][it->first]) : " off") << std::endl;
 			std::cout << "      redir :      " << (_redir[i][it->first] ? " on" : " off") << std::endl;
 			std::cout << "      handlePOST :   " << _handlePOST[i][it->first] << std::endl;
 			std::cout << "      handleDELETE : " << _handleDELETE[i][it->first] << std::endl;
