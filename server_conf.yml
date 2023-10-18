@@ -19,6 +19,7 @@ server:
     autoindex: "on"
     return: www.google.com
     root: "ROOT"
+    handle_post: "aja"
 
 server:
   root: GENERAL ROOT
@@ -26,10 +27,12 @@ server:
   listen: fail:600
   listen: fail:300
   allow: GET
+  handle_post: "a"
   location: "/LOCATION/"
     file: example.example
     allow: DELETE
   location: "/"
+    handle_post: "ajaja"
 
 server:
   listen: error:404

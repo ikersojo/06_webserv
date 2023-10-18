@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/16 15:32:04 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/18 11:43:09 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 	#include <vector>
 	#include <map>
 	#include <fstream>
-
 
 	#include "../../aux/inc/aux.hpp"
 
@@ -34,8 +33,8 @@
 		int							bufferSize;
 		bool						cgi;
 		bool						redir;
-		std::string					handlePost;
-		std::string					handleDelete;
+		std::string					handlePOST;
+		std::string					handleDELETE;
 
 		Location() : \
 			autoindex(false), \
@@ -58,8 +57,8 @@
 			bufferSize(ref.bufferSize), \
 			cgi(ref.cgi), \
 			redir(ref.redir), \
-			handlePost(ref.handlePost), \
-			handleDelete(ref.handleDelete) {}
+			handlePOST(ref.handlePOST), \
+			handleDELETE(ref.handleDELETE) {}
 	};
 
 	class Config

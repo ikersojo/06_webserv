@@ -6,16 +6,18 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/16 15:31:15 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/18 11:38:51 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Config.hpp"
 
+// Returns the clean value of a certain directive contained in line (input parameter).
 std::string	extractCleanValue(std::string & line) {
 	return (trimChars(line.substr(line.find(":")+1), " \""));
 }
 
+// Returns the amount of listen (actual ports) directives found in the config file
 size_t	getNumberOfPorts(const std::string & configFile) {
 	std::ifstream	inFile(configFile);
 	std::string		line;
@@ -37,8 +39,7 @@ size_t	getNumberOfPorts(const std::string & configFile) {
 	return (n);
 }
 
-void	Config::setAIFile(size_t i, std::string url, std::string path, std::string file)
-{
+void	Config::setAIFile(size_t i, std::string url, std::string path, std::string file) {
 	std::string	fullPath;
 
 	fullPath = path + file;
@@ -54,9 +55,7 @@ void	Config::setAIFile(size_t i, std::string url, std::string path, std::string 
 	this->_bufferSize[i][url] = 4096;
 }
 
-
-void	Config::setDeletePath(size_t i, std::string url, std::string task)
-{
+void	Config::setDeletePath(size_t i, std::string url, std::string task) {
 	this->_autoindex[i][url] = false;
 	this->_redir[i][url] = false;
 	this->_cgi[i][url] = false;
@@ -69,6 +68,8 @@ void	Config::setDeletePath(size_t i, std::string url, std::string task)
 	this->_handleDELETE[i][url] = "removeFromList";
 }
 
+// Returns all address:port pairs in each server.
+// The first vector would be the server and the second each pair.
 std::vector< std::vector< std::pair<std::string, std::string> > >	getListenPoints(const std::string & configFile) {
 	std::ifstream														inFile(configFile);
 	std::vector< std::vector< std::pair<std::string, std::string> > >	res;
@@ -112,12 +113,17 @@ std::vector< std::vector< std::pair<std::string, std::string> > >	getListenPoint
 	return (res);
 }
 
+// Generates a map with each location's path as the key and the specified directive's value as the value.
+// Each CreateMap function creates a different map depending on the directive value type.
+
 std::map<std::string, std::string>	createMapString(std::vector<Location> allServerLocs, std::string directive) {
 	std::map<std::string, std::string> Map;
 
 	for (size_t i = 0; i < allServerLocs.size(); i++) {
 		if (directive == "file") Map[allServerLocs[i].path] = allServerLocs[i].file;
 		else if (directive == "root") Map[allServerLocs[i].path] = allServerLocs[i].root;
+		else if (directive == "handlePOST") Map[allServerLocs[i].path] = allServerLocs[i].handlePOST;
+		else if (directive == "handleDELETE") Map[allServerLocs[i].path] = allServerLocs[i].handleDELETE;
 	}
 
 	return (Map);
@@ -158,6 +164,8 @@ std::map<std::string, std::map<int, std::string> >	createMapMap(std::vector<Loca
 	return (Map);
 }
 
+// Modifies an existing Location structure based on the following lines it reads
+// until it finds an "location:" directive.
 void	setLocation(std::ifstream& inFile, std::string& line, Location& location) {
 	location.path = extractCleanValue(line);
 	while (getline(inFile, line) && !line.empty() && line.find("location:") == std::string::npos) {
@@ -189,12 +197,14 @@ void	setLocation(std::ifstream& inFile, std::string& line, Location& location) {
 			location.redir = true;
 		}
 		if (line.find("handle_post:") != std::string::npos)
-			location.handlePost = extractCleanValue(line);
+			location.handlePOST = extractCleanValue(line);
 		if (line.find("handle_delete:") != std::string::npos)
-			location.handleDelete = extractCleanValue(line);
+			location.handleDELETE = extractCleanValue(line);
 	}
 }
 
+// Returns all servers locations saved in a Location struct,
+// divided by server (first vector index) and location path (second vector index).
 std::vector< std::vector<Location> >	getAllServerLocs(const std::string & configFile) {
 
 	std::string line;
@@ -230,6 +240,10 @@ std::vector< std::vector<Location> >	getAllServerLocs(const std::string & config
 	return (allServerLocs);
 }
 
+// Creates the config object step by step:
+//   - Saves number of ports
+//   - Gets all listen points and saves them in corresponding vector position
+//   - Gets and saves all individual location directive values
 Config::Config(const std::string & configFile)
 {
 	std::cout << "Loading " << configFile << "..." << std::endl << std::endl;
@@ -257,8 +271,8 @@ Config::Config(const std::string & configFile)
 			_redir.push_back(createMapBool(*it, "redir"));
 			_errorPage.push_back(createMapMap(*it, "errorPage"));
 			_bufferSize.push_back(createMapInt(*it, "bufferSize"));
-			_handlePOST.push_back(createMapString(*it, "handlePost"));
-			_handleDELETE.push_back(createMapString(*it, "handleDelete"));
+			_handlePOST.push_back(createMapString(*it, "handlePOST"));
+			_handleDELETE.push_back(createMapString(*it, "handleDELETE"));
 		}
 		nServer++;
 	}
@@ -295,6 +309,9 @@ std::map<int, std::string>	Config::getErrorPage(size_t i, std::string req) { ret
 
 int							Config::getBufferSize(size_t i, std::string req) { return (_bufferSize[i][req]); }
 
+std::string					Config::getHandlePOST(size_t i, std::string req) { return (this->_handlePOST[i][req]); }
+
+std::string					Config::getHandleDELETE(size_t i, std::string req) { return (this->_handleDELETE[i][req]); }
 
 void	Config::printConfig(void) {
 	debug("Printing config...");
@@ -326,6 +343,8 @@ void	Config::printConfig(void) {
 			std::cout << "      bufferSize : " << _bufferSize[i][it->first] << std::endl;
 			std::cout << "      cgi :        " << (_cgi[i][it->first] ? " on" : " off") << std::endl;
 			std::cout << "      redir :      " << (_redir[i][it->first] ? " on" : " off") << std::endl;
+			std::cout << "      handlePOST :   " << _handlePOST[i][it->first] << std::endl;
+			std::cout << "      handleDELETE : " << _handleDELETE[i][it->first] << std::endl;
 			it++;
 		}
 		i++;
@@ -344,13 +363,3 @@ bool	Config::isValidRequest(size_t i, std::string req) {
 }
 
 
-std::string		Config::getHandlePOST(size_t i, std::string req)
-{
-	return (this->_handlePOST[i][req]);
-}
-
-
-std::string		Config::getHandleDELETE(size_t i, std::string req)
-{
-	return (this->_handleDELETE[i][req]);
-}
