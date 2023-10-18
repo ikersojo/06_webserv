@@ -6,88 +6,13 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 11:57:48 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/16 19:59:56 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/18 16:43:27 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/webserv.hpp"
 
-bool Allow(std::string &line)
-{
-	std::vector<std::string> valiOptions;
-	valiOptions.push_back("GET");
-	valiOptions.push_back("POST");
-	valiOptions.push_back("DELETE");
-	std::string config, option1, option2, option3, null;
-	std::istringstream iss(line);
-	iss >> config >> option1 >> option2 >> option3 >> null;
-	
-	if(!null.empty())
-		return false;
-
- 	if(std::find(valiOptions.begin(), valiOptions.end(), option1) != valiOptions.end())
-	{
-		if(!option2.empty())
-		{
-			if(std::find(valiOptions.begin(), valiOptions.end(), option2) != valiOptions.end())
-			{
-				if(option1 == option2)
-				{
-					std::cout << option1;
-					error(" <--- is repeated");
-					return false;
-				}
-				if(!option3.empty())
-				{ 
-					if(std::find(valiOptions.begin(), valiOptions.end(), option3) != valiOptions.end())
-					{
-						if(option3 == option1 || option2 == option3)
-						{
-							std::cout << option3;
-							error(" <---- is repeated");
-							return false;
-						}
-						return true;
-					}
-					return false;
-				}
-				return true;
-			}
-			return false;
-		}
-		return true;
-	}
-	return false;
-}
-
-bool Buffersize(std::string &line)
-{
-	std::string config;
-	int numb;
-	std::istringstream iss(line);
-	iss >> config >> numb;
-	
-	if(numb > 0)
-		return true;
-	return false;
-}
-
-bool AutoIndex(std::string &line)
-{
-	std::string config, option, null;
-	std::istringstream iss(line);
-	iss >> config >> option >> null;
-	std::transform(option.begin(), option.end(), option.begin(), ::tolower);
-	
-	if(!null.empty())
-		return false;
-	option = trimDoubleQuotes(option);
-	if(option != "on" && option != "off")
-		return false;
-	return true;
-}
-
-bool Redirect(std::string &line)
+bool Empty(std::string &line)
 {
 	std::string config, null;
 	std::istringstream iss(line);
@@ -95,37 +20,6 @@ bool Redirect(std::string &line)
 	
 	if(null.empty())
 		return false;
-	return true;
-}
-
-bool ErrorPage(std::string &line)
-{
-	std::string config, num, str, null;
-	std::istringstream iss(line);
-	iss >> config >> num >> str >> null;
-	
-	if(!null.empty())
-		return false;
-
-	num = trimDoubleQuotes(num);
-	if(!isInteger(num))
-	{
-		error("Error number");
-		return false;
-	}
-
-	if(!(str.find(num) != std::string::npos))
-	{
-		error("The file does not correspond to the error number");
-		return false;
-	}
-	
-	str = trimDoubleQuotes(str);
-	if (access(str.c_str(), F_OK) != 0)
-	{
-		error("The file does not exist");
-		return false;
-	}
 	return true;
 }
 
@@ -216,6 +110,7 @@ bool isLocationConfigOf(std::string &line)
 	valiOptions.push_back("buffer_size:");
 	valiOptions.push_back("autoindex:");
 	valiOptions.push_back("error_page:");
+	valiOptions.push_back("cgi:");
 	
 	iss >> option;
 
@@ -234,14 +129,75 @@ static std::string trimSpace(std::string &str)
 	return str.substr(start, end - start);
 }
 
+static bool LocationCheckConfig(std::string &line)
+{
+	std::istringstream iss(line);
+	std:: string config;
+	iss >> config;
+	
+	if(config == "allow:")
+	{
+		if(!Allow(line))
+		{
+			std::cout << line << " <----- ";
+			error("allow config error");
+			return false;
+		}
+	}
+	if(config == "buffer_size:")
+	{
+		if(!Buffersize(line))
+		{
+			std::cout << line << " <----- ";
+			error("Buffer_size config error");
+			return false;
+		}
+	}
+	if(config == "autoindex:")
+	{
+		if(!AutoIndex(line))
+		{
+			std::cout << line << " <----- ";
+			error("Auto_index config error");
+			return false;
+		}
+	}
+	if (config  == "redirect:")
+	{
+		if(!Empty(line))
+		{
+			std::cout << line << " <----- ";
+			error("Redirect config error");
+			return false;
+		}
+	}
+	if (config == "error_page:")
+	{
+		if(!ErrorPage(line))
+		{
+			std::cout << line << " <----- ";
+			error("Error Page config error");
+			return false;
+		}
+	}
+	if(config == "cgi:")
+	{
+		if(!Empty(line))
+		{
+			std::cout << line << " <----- ";
+			error("cgiconfig error");
+			return false;
+		}
+	}
+	return true;
+}
+
 bool CheckLocation(std::ifstream &file, std::string &line)
 {
 	int space, cont = 0;
-	std::string trimstr, config;
+	std::string trimstr;
 	while(std::getline(file, line))
 	{
-		std::istringstream iss(line);
-		iss >> config;
 		trimstr = line;
 		trimstr = trimSpace(trimstr);
 		space = SpaceCounter(line);
@@ -249,58 +205,17 @@ bool CheckLocation(std::ifstream &file, std::string &line)
 			break;
 		if(isOneOf(line))
 			cont++;
-		if(!isLocationConfigOf(line))
+		if(cont == 0 || !isLocationConfigOf(line))
 		{
 			std::cout << line << " <----- ";
 			error("The configuration does not exist");
 			return false;
 		}
-		if(config == "allow:")
-		{
-			if(!Allow(line))
-			{
-				std::cout << line << " <----- ";
-				error("allow config error");
-				return false;
-			}
-		}
-		if(config == "buffer_size:")
-		{
-			if(!Buffersize(line))
-			{
-				std::cout << line << " <----- ";
-				error("Buffer_size config error");
-				return false;
-			}
-		}
-		if(config == "autoindex:")
-		{
-			if(!AutoIndex(line))
-			{
-				std::cout << line << " <----- ";
-				error("Auto_index config error");
-				return false;
-			}
-		}
-		if (config  == "redirect:")
-		{
-			if(!Redirect(line))
-			{
-				std::cout << line << " <----- ";
-				error("Redirect config error");
-				return false;
-			}
-		}
- 		if (config == "error_page:")
-		{
-			if(!ErrorPage(line))
-			{
-				std::cout << line << " <----- ";
-				error("Error Page config error");
-				return false;
-			}
-		}
-		std::cout << line << std::endl;
+		if(!LocationCheckConfig(line))
+			return false;
+			
+		if(DEBUG)
+			std::cout << line << std::endl;
 	}
 	
 	if(!trimstr.empty() && !(line.find("location:") != std::string::npos) && !file.eof())
@@ -308,8 +223,6 @@ bool CheckLocation(std::ifstream &file, std::string &line)
 		error("No empty line");
 		return false;
 	}
-	if (cont > 0)
-		return true;
-	else
-		return false;
+	
+	return true;
 }

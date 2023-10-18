@@ -1,5 +1,5 @@
 server: 
-  listen: 127.0.0.1:61001
+  listen: 127.0.0.1:61011
   listen: 127.0.0.1:61002
   listen: 127.0.0.1:61003
   root: "./www/site1"
@@ -8,7 +8,7 @@ server:
     allow: GET POST DELETE
     buffer_size: 4096
     autoindex: on
-    error_page: "404" "404.html"
+    error_page: "406" "404.html"
   location: "/favicon.ico"
     file: "icon1.png"
   location: "/images/sample"
@@ -23,7 +23,7 @@ server:
     redirect: "www.google.com"
 
 server:
-  listen: 127.0.0.16:1011
+  listen: 127.0.0.1:61021
   listen: 127.0.0.1:61022
   listen: 127.0.0.1:61023
   root: "./www/site1"

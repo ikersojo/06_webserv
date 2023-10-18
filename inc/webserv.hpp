@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:54:15 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/16 19:54:05 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/18 16:37:58 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,8 @@
 		// 02_confFileCorrect.cpp 
 		bool confFileCorrect(const char **argv);
 
-		
-	// --- AUX FUNCTIONS --- //
 		// 03_utilsChecksConfig.cpp
-		bool Allow(std::string &line);
-		bool Buffersize(std::string &line);
-		bool AutoIndex(std::string &line);
-		bool Redirect(std::string &line);
+		bool Empty(std::string &line);
 		int checkAddress(std::string address);
 		bool Checkport(std::vector<int> &Allport);
 		int SpaceCounter(std::string &line);
@@ -54,6 +49,14 @@
 		bool isOneOf(std::string &line);
 		bool isInteger(std::string numb);
 		bool isLocationConfigOf(std::string &line);
+
+		// 04_LocationConfig.cpp
+		bool Allow(std::string &line);
+		bool Buffersize(std::string &line);
+		bool AutoIndex(std::string &line);
+		bool ErrorPage(std::string &line);
+		
+	// --- AUX FUNCTIONS --- //
 		
 		// 99_printLogo.cpp
 		void	printLogo(void);
