@@ -1,4 +1,5 @@
 server:
+  servername: ANDONI
   listen:    localhost:80
   root: "./www/site1"
   allow: GET
@@ -7,7 +8,8 @@ server:
     allow: GET POST
     buffer_size: "4096"
     autoindex: "on"
-    error_page: "error.page"
+    error_page: 404 "error.page"
+    error_page: 406 "error.page"
   location: "/favicon.ico"
     root: "/icons/"
     allow: POST GET
@@ -17,7 +19,7 @@ server:
   location: "/cgi-bin"
     file: "cgi-bin"
     autoindex: "on"
-    return: www.google.com
+    redirect: www.google.com
     root: "ROOT"
     handle_post: "aja"
 
@@ -35,5 +37,7 @@ server:
     handle_post: "ajaja"
 
 server:
+  servername: ERROR
   listen: error:404
   location:
+    error_page: "error"

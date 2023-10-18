@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/18 11:56:39 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/18 12:04:21 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 	#include "../../aux/inc/aux.hpp"
 
 	#define D_SERVER		"server:"
+	#define D_SERVER_NAME	"servername:"
 	#define D_LISTEN		"listen:"
 	#define D_LOCATION		"location:"
 	#define D_ROOT			"root:"

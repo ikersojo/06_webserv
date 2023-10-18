@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/18 12:01:54 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/18 12:19:02 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,40 @@ size_t	getNumberOfPorts(const std::string & configFile) {
 	std::string		line;
 	size_t			n;
 
-	if (!inFile.is_open())
-	{
+	if (!inFile.is_open()) {
 		error("Failed to open configuration file");
 		exit(EXIT_FAILURE);
 	}
 	n = 0;
-	while (getline(inFile, line))
-	{
-		if ((line.find(D_LISTEN) != std::string::npos))
+	while (getline(inFile, line)) {
+		if (line.find(D_LISTEN) != std::string::npos)
 			n++;
 	}
 	inFile.close();
 	debug("ports to listen to identified");
 	return (n);
+}
+
+std::vector<std::string>	getServerNames(const std::string & configFile) {
+	std::ifstream	inFile(configFile);
+	std::string		line, serverName;
+	std::vector<std::string> serverNames;
+
+	if (!inFile.is_open()) {
+		error("Failed to open configuration file");
+		exit(EXIT_FAILURE);
+	}
+	while (getline(inFile, line)) {
+		if (line.find(D_SERVER) != std::string::npos)
+			serverName.clear();
+		if (line.find(D_SERVER_NAME) != std::string::npos)
+			serverName = extractCleanValue(line);
+		if (line.find(D_LISTEN) != std::string::npos)
+			serverNames.push_back(serverName);
+	}
+	inFile.close();
+	debug("server names identified");
+	return (serverNames);
 }
 
 void	Config::setAIFile(size_t i, std::string url, std::string path, std::string file) {
@@ -158,7 +178,7 @@ std::map<std::string, std::map<int, std::string> >	createMapMap(std::vector<Loca
 	std::map<std::string, std::map<int, std::string> > Map;
 
 	for (size_t i = 0; i < allServerLocs.size(); i++) {
-		if (directive == "errorPage") Map[allServerLocs[i].path] = allServerLocs[i].errorPage;
+		if (directive == D_ERROR_PAGE) Map[allServerLocs[i].path] = allServerLocs[i].errorPage;
 	}
 
 	return (Map);
@@ -249,6 +269,7 @@ Config::Config(const std::string & configFile)
 	std::cout << "Loading " << configFile << "..." << std::endl << std::endl;
 
 	_maxPorts = getNumberOfPorts(configFile);
+	_servername = getServerNames(configFile);
 	std::vector< std::vector< std::pair<std::string, std::string> > > listenPoints = getListenPoints(configFile);
 	for (size_t j = 0; j < listenPoints.size(); j++) {
 		for (size_t i = 0; i < listenPoints[j].size(); i++) {
@@ -320,15 +341,15 @@ void	Config::printConfig(void) {
 	while (i < _maxPorts)
 	{
 		std::cout << std::endl << "  LISTENING LOCATION " << i << ":" << std::endl;
-		//std::cout << "    Server name :  " << _servername[i] << std::endl;
-		std::cout << "    Listening on : " << _address[i] << ":" << _port[i] << std::endl;
+		std::cout << "    Server name :      " << _servername[i] << std::endl;
+		std::cout << "    Listening on :     " << _address[i] << ":" << _port[i] << std::endl;
 
 		std::map<std::string, std::string>& tempMap = _file[i];
 		std::map<std::string, std::string>::iterator it = tempMap.begin();
 		(void)it;
 		while ( it != tempMap.end())
 		{
-			std::cout << "    Request to route " << it->first << " :" << std::endl;
+			std::cout << "    Request to route : [" << it->first << "]" << std::endl;
 			std::cout << "      autoindex : " << (_autoindex[i][it->first] ? " on" : " off") << std::endl;
 			std::cout << "      file :       " << _file[i][it->first] << std::endl;
 			std::cout << "      root :       " << _root[i][it->first] << std::endl;
