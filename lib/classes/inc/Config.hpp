@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/18 11:50:55 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/18 11:56:39 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,19 @@
 
 	#include "../../aux/inc/aux.hpp"
 
-	#define DIRECTIVE_ROOT			"root:"
-	#define DIRECTIVE_FILE			"file:"
-	#define DIRECTIVE_AUTO_INDEX	"autoindex:"
-	#define DIRECTIVE_ALLOW			"allow:"
-	#define DIRECTIVE_ERROR_PAGE	"error_page:"
-	#define DIRECTIVE_BUFFER_SIZE	"buffer_size:"
-	#define DIRECTIVE_CGI			"cgi:"
-	#define DIRECTIVE_REDIR			"redirect:"
-	#define DIRECTIVE_HANDLE_POST	"handle_post:"
-	#define DIRECTIVE_HANDLE_DELETE	"handle_delete:"
+	#define D_SERVER		"server:"
+	#define D_LISTEN		"listen:"
+	#define D_LOCATION		"location:"
+	#define D_ROOT			"root:"
+	#define D_FILE			"file:"
+	#define D_AUTO_INDEX	"autoindex:"
+	#define D_ALLOW			"allow:"
+	#define D_ERROR_PAGE	"error_page:"
+	#define D_BUFFER_SIZE	"buffer_size:"
+	#define D_CGI			"cgi:"
+	#define D_REDIR			"redirect:"
+	#define D_HANDLE_POST	"handle_post:"
+	#define D_HANDLE_DELETE	"handle_delete:"
 
 	struct Location {
 		std::string					path;
