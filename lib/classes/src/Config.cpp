@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/16 12:36:11 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/16 15:31:15 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	Config::setAIFile(size_t i, std::string url, std::string path, std::string 
 	this->_allowedGET[i][url] = true;
 	this->_allowedPOST[i][url] = false;
 	this->_allowedDELETE[i][url] = false;
-	this->_errorPage[i][url] = "./www/def404.html";
+	//this->_errorPage[i][url] = "./www/def404.html";
 	this->_bufferSize[i][url] = 4096;
 }
 
@@ -64,7 +64,7 @@ void	Config::setDeletePath(size_t i, std::string url, std::string task)
 	this->_allowedGET[i][url] = false;
 	this->_allowedPOST[i][url] = false;
 	this->_allowedDELETE[i][url] = true;
-	this->_errorPage[i][url] = "./www/def404.html";
+	//this->_errorPage[i][url] = "./www/def404.html";
 	this->_bufferSize[i][url] = 4096;
 	this->_handleDELETE[i][url] = "removeFromList";
 }
@@ -101,7 +101,7 @@ std::vector< std::vector< std::pair<std::string, std::string> > >	getListenPoint
 					port = trimChars(line.substr(line.rfind(":")+1), " ");
 				}
 			} else {
-				address = trimChars(line.substr(line.find(":")+1, line.rfind(":")-line.find(":")-1), " ");
+				address = trimChars(line.substr(0, line.find(":")), " ");
 				port = trimChars(line.substr(line.rfind(":")+1), " ");
 			}
 			serv.push_back(make_pair(address, port));
@@ -117,9 +117,7 @@ std::map<std::string, std::string>	createMapString(std::vector<Location> allServ
 
 	for (size_t i = 0; i < allServerLocs.size(); i++) {
 		if (directive == "file") Map[allServerLocs[i].path] = allServerLocs[i].file;
-		else if (directive == "errorPage") Map[allServerLocs[i].path] = allServerLocs[i].errorPage;
 		else if (directive == "root") Map[allServerLocs[i].path] = allServerLocs[i].root;
-		else if (directive == "cgiExt") Map[allServerLocs[i].path] = allServerLocs[i].cgiExt;
 	}
 
 	return (Map);
@@ -133,6 +131,8 @@ std::map<std::string, bool>	createMapBool(std::vector<Location> allServerLocs, s
 		else if (directive == "allowedGET") Map[allServerLocs[i].path] = allServerLocs[i].allowedGET;
 		else if (directive == "allowedPOST") Map[allServerLocs[i].path] = allServerLocs[i].allowedPOST;
 		else if (directive == "allowedDELETE") Map[allServerLocs[i].path] = allServerLocs[i].allowedDELETE;
+		else if (directive == "cgi") Map[allServerLocs[i].path] = allServerLocs[i].cgi;
+		else if (directive == "redir") Map[allServerLocs[i].path] = allServerLocs[i].redir;
 	}
 
 	return (Map);
@@ -148,13 +148,25 @@ std::map<std::string, int>	createMapInt(std::vector<Location> allServerLocs, std
 	return (Map);
 }
 
+std::map<std::string, std::map<int, std::string> >	createMapMap(std::vector<Location> allServerLocs, std::string directive) {
+	std::map<std::string, std::map<int, std::string> > Map;
+
+	for (size_t i = 0; i < allServerLocs.size(); i++) {
+		if (directive == "errorPage") Map[allServerLocs[i].path] = allServerLocs[i].errorPage;
+	}
+
+	return (Map);
+}
+
 void	setLocation(std::ifstream& inFile, std::string& line, Location& location) {
 	location.path = extractCleanValue(line);
 	while (getline(inFile, line) && !line.empty() && line.find("location:") == std::string::npos) {
 		if (line.find("root:") != std::string::npos)
 			location.root = extractCleanValue(line);
-		if (line.find("file:") != std::string::npos)
-			location.file = extractCleanValue(line);
+		if (line.find("file:") != std::string::npos) {
+			if (!location.redir)
+				location.file = extractCleanValue(line);
+		}
 		if (line.find("autoindex:") != std::string::npos)
 			if (line.find("on") != std::string::npos) location.autoindex = true;
 		if (line.find("allow:") != std::string::npos) {
@@ -162,12 +174,24 @@ void	setLocation(std::ifstream& inFile, std::string& line, Location& location) {
 			(line.find("POST") != std::string::npos) ? location.allowedPOST = true : location.allowedPOST = false;
 			(line.find("DELETE") != std::string::npos) ? location.allowedDELETE = true : location.allowedDELETE = false;
 		}
-		if (line.find("error_page:") != std::string::npos)
-			location.errorPage = extractCleanValue(line);
+		if (line.find("error_page:") != std::string::npos) {
+			line = trimChars(line.substr(line.find(":")+1), " ");
+			int code = std::atoi(trimChars(line.substr(0, line.find(" ")), " \"").c_str());
+			std::string page = trimChars(line.substr(line.find(" ")+1), " \"");
+			location.errorPage[code] = page;
+		}
 		if (line.find("buffer_size:") != std::string::npos)
 			location.bufferSize = std::atoi(extractCleanValue(line).c_str());
-		if (line.find("cgi_ext:") != std::string::npos)
-			location.cgiExt = extractCleanValue(line);
+		if (line.find("cgi:") != std::string::npos)
+			(line.find("on") != std::string::npos) ? location.cgi = true : location.cgi = false;
+		if (line.find("redirect:") != std::string::npos) {
+			location.file = extractCleanValue(line);
+			location.redir = true;
+		}
+		if (line.find("handle_post:") != std::string::npos)
+			location.handlePost = extractCleanValue(line);
+		if (line.find("handle_delete:") != std::string::npos)
+			location.handleDelete = extractCleanValue(line);
 	}
 }
 
@@ -229,9 +253,12 @@ Config::Config(const std::string & configFile)
 			_allowedGET.push_back(createMapBool(*it, "allowedGET"));
 			_allowedPOST.push_back(createMapBool(*it, "allowedPOST"));
 			_allowedDELETE.push_back(createMapBool(*it, "allowedDELETE"));
-			_cgiExt.push_back(createMapString(*it, "cgiExt"));
-			_errorPage.push_back(createMapString(*it, "errorPage"));
+			_cgi.push_back(createMapBool(*it, "cgi"));
+			_redir.push_back(createMapBool(*it, "redir"));
+			_errorPage.push_back(createMapMap(*it, "errorPage"));
 			_bufferSize.push_back(createMapInt(*it, "bufferSize"));
+			_handlePOST.push_back(createMapString(*it, "handlePost"));
+			_handleDELETE.push_back(createMapString(*it, "handleDelete"));
 		}
 		nServer++;
 	}
@@ -242,35 +269,31 @@ Config::~Config(void) {
 	debug("Config Object Destroyed");
 }
 
-std::string		Config::getErrorPage(size_t i, std::string req) { return (this->_errorPage[i][req]); }
+bool						Config::isAutoIndex(size_t i, std::string req) { return (this->_autoindex[i][req]); }
 
-std::string		Config::getFile(size_t i, std::string req) { return (this->_file[i][req]); }
+bool						Config::isRedir(size_t i, std::string req) { return (this->_redir[i][req]); }
 
-bool			Config::isAutoIndex(size_t i, std::string req) { return (this->_autoindex[i][req]); }
+bool						Config::isGET(size_t i, std::string req) { return (this->_allowedGET[i][req]); }
 
-bool			Config::isRedir(size_t i, std::string req) { return (this->_redir[i][req]); }
+bool						Config::isPOST(size_t i, std::string req) { return (this->_allowedPOST[i][req]); }
 
-bool			Config::isGET(size_t i, std::string req) { return (this->_allowedGET[i][req]); }
+bool						Config::isDELETE(size_t i, std::string req) { return (this->_allowedDELETE[i][req]); }
 
-bool			Config::isPOST(size_t i, std::string req) { return (this->_allowedPOST[i][req]); }
+bool						Config::isCgi(size_t i, std::string req) { return (this->_cgi[i][req]); }
 
-bool			Config::isDELETE(size_t i, std::string req) { return (this->_allowedDELETE[i][req]); }
+size_t						Config::getMaxPorts(void) { return (_maxPorts); }
 
-bool			Config::isCgi(size_t i, std::string req) { return (this->_cgi[i][req]); }
+std::string					Config::getServerName(size_t i) { return (_servername[i]); }
 
-size_t			Config::getMaxPorts(void) { return (_maxPorts); }
+int							Config::getPort(size_t i) { return (_port[i]); }
 
-std::string		Config::getServerName(size_t i) { return (_servername[i]); }
+std::string					Config::getAddress(size_t i) { return (_address[i]); }
 
-int				Config::getPort(size_t i) { return (_port[i]); }
+std::string					Config::getFile(size_t i, std::string req) { return (_file[i][req]); }
 
-std::string		Config::getAddress(size_t i) { return (_address[i]); }
+std::map<int, std::string>	Config::getErrorPage(size_t i, std::string req) { return (_errorPage[i][req]); }
 
-std::string		Config::getFile(size_t i, std::string req) { return (_file[i][req]); }
-
-std::string		Config::getErrorPage(size_t i, std::string req) { return (_errorPage[i][req]); }
-
-int				Config::getBufferSize(size_t i, std::string req) { return (_bufferSize[i][req]); }
+int							Config::getBufferSize(size_t i, std::string req) { return (_bufferSize[i][req]); }
 
 
 void	Config::printConfig(void) {
@@ -297,9 +320,12 @@ void	Config::printConfig(void) {
 			if (_allowedPOST[i][it->first]) std::cout << "POST ";
 			if (_allowedDELETE[i][it->first]) std::cout << "DELETE ";
 			std::cout << std::endl;
-			std::cout << "      errorPage :  " << _errorPage[i][it->first] << std::endl;
+			std::cout << "      errorPage :\n";
+			for (std::map<int, std::string>::iterator ite = _errorPage[i][it->first].begin(); ite != _errorPage[i][it->first].end(); ite++)
+				std::cout << "        - " << ite->first << " => (" << ite->second << ")" << std::endl;
 			std::cout << "      bufferSize : " << _bufferSize[i][it->first] << std::endl;
-			std::cout << "      cgiExt :     " << _cgiExt[i][it->first] << std::endl;
+			std::cout << "      cgi :        " << (_cgi[i][it->first] ? " on" : " off") << std::endl;
+			std::cout << "      redir :      " << (_redir[i][it->first] ? " on" : " off") << std::endl;
 			it++;
 		}
 		i++;
@@ -308,8 +334,7 @@ void	Config::printConfig(void) {
 }
 
 
-bool	Config::isValidRequest(size_t i, std::string req)
-{
+bool	Config::isValidRequest(size_t i, std::string req) {
 	std::map < std::string, std::string >::iterator it;
 
 	it = this->_file[i].find(req);
