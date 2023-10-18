@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/18 11:43:09 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/18 11:50:55 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,17 @@
 	#include <fstream>
 
 	#include "../../aux/inc/aux.hpp"
+
+	#define DIRECTIVE_ROOT			"root:"
+	#define DIRECTIVE_FILE			"file:"
+	#define DIRECTIVE_AUTO_INDEX	"autoindex:"
+	#define DIRECTIVE_ALLOW			"allow:"
+	#define DIRECTIVE_ERROR_PAGE	"error_page:"
+	#define DIRECTIVE_BUFFER_SIZE	"buffer_size:"
+	#define DIRECTIVE_CGI			"cgi:"
+	#define DIRECTIVE_REDIR			"redirect:"
+	#define DIRECTIVE_HANDLE_POST	"handle_post:"
+	#define DIRECTIVE_HANDLE_DELETE	"handle_delete:"
 
 	struct Location {
 		std::string					path;

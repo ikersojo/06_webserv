@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/18 11:38:51 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/18 11:52:10 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,36 +169,36 @@ std::map<std::string, std::map<int, std::string> >	createMapMap(std::vector<Loca
 void	setLocation(std::ifstream& inFile, std::string& line, Location& location) {
 	location.path = extractCleanValue(line);
 	while (getline(inFile, line) && !line.empty() && line.find("location:") == std::string::npos) {
-		if (line.find("root:") != std::string::npos)
+		if (line.find(DIRECTIVE_ROOT) != std::string::npos)
 			location.root = extractCleanValue(line);
-		if (line.find("file:") != std::string::npos) {
+		if (line.find(DIRECTIVE_FILE) != std::string::npos) {
 			if (!location.redir)
 				location.file = extractCleanValue(line);
 		}
-		if (line.find("autoindex:") != std::string::npos)
+		if (line.find(DIRECTIVE_AUTO_INDEX) != std::string::npos)
 			if (line.find("on") != std::string::npos) location.autoindex = true;
-		if (line.find("allow:") != std::string::npos) {
+		if (line.find(DIRECTIVE_ALLOW) != std::string::npos) {
 			(line.find("GET") != std::string::npos) ? location.allowedGET = true : location.allowedGET = false;
 			(line.find("POST") != std::string::npos) ? location.allowedPOST = true : location.allowedPOST = false;
 			(line.find("DELETE") != std::string::npos) ? location.allowedDELETE = true : location.allowedDELETE = false;
 		}
-		if (line.find("error_page:") != std::string::npos) {
+		if (line.find(DIRECTIVE_ERROR_PAGE) != std::string::npos) {
 			line = trimChars(line.substr(line.find(":")+1), " ");
 			int code = std::atoi(trimChars(line.substr(0, line.find(" ")), " \"").c_str());
 			std::string page = trimChars(line.substr(line.find(" ")+1), " \"");
 			location.errorPage[code] = page;
 		}
-		if (line.find("buffer_size:") != std::string::npos)
+		if (line.find(DIRECTIVE_BUFFER_SIZE) != std::string::npos)
 			location.bufferSize = std::atoi(extractCleanValue(line).c_str());
-		if (line.find("cgi:") != std::string::npos)
+		if (line.find(DIRECTIVE_CGI) != std::string::npos)
 			(line.find("on") != std::string::npos) ? location.cgi = true : location.cgi = false;
-		if (line.find("redirect:") != std::string::npos) {
+		if (line.find(DIRECTIVE_REDIR) != std::string::npos) {
 			location.file = extractCleanValue(line);
 			location.redir = true;
 		}
-		if (line.find("handle_post:") != std::string::npos)
+		if (line.find(DIRECTIVE_HANDLE_POST) != std::string::npos)
 			location.handlePOST = extractCleanValue(line);
-		if (line.find("handle_delete:") != std::string::npos)
+		if (line.find(DIRECTIVE_HANDLE_DELETE) != std::string::npos)
 			location.handleDELETE = extractCleanValue(line);
 	}
 }
