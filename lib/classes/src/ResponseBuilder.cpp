@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/14 15:19:24 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/17 23:09:52 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ ResponseBuilder::~ResponseBuilder(void)
 }
 
 
-std::string		ResponseBuilder::computeRegularResponse(void)
+std::string		ResponseBuilder::computeResponse(void)
 {
 	this->assessRequest();
 	if (!this->_ok)
@@ -110,6 +110,11 @@ std::string	ResponseBuilder::getResponse(void)
 	{
 		debug("...redirection requested");
 		return (this->redirResponse());
+	}
+	else if (this->_config->isCgi(this->_configIndex, this->_requestParams[1]))
+	{
+		debug("CGI requested");
+		return (this->cgiResponse());
 	}
 	else if (this->_config->isAutoIndex(this->_configIndex, this->_requestParams[1]))
 	{
@@ -544,5 +549,52 @@ void	ResponseBuilder::initJson(std::string filePath)
 		std::string url = this->_requestParams[1] + "/" + stringArray[i];
 		this->_config->setDeletePath(this->_configIndex, url, stringArray[i]);
 		i++;
+	}
+}
+
+std::string	ResponseBuilder::cgiResponse(void)
+{
+	int			fd[2];
+	pid_t		pid;
+	std::string	response = "";
+	std::string	execFile = this->_config->getFile(this->_configIndex, this->_requestParams[1]).c_str();
+
+	if (pipe(fd) == -1)
+		error("pipe failed");
+
+	pid = fork();
+
+	if (pid == -1)
+		return ("fork failed");
+
+	else if (pid == 0) // Child process
+	{
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO);
+		close(fd[0]);
+
+		// Execute the CGI script
+		char* const argv[] = {const_cast<char*>(execFile.c_str())};
+		char* const envp[] = {NULL};
+		execve(argv[0], argv, envp);
+		return ("execve failed");
+	}
+	else // Parent process
+	{
+		close(fd[0]);
+		write(fd[1], command.c_str(), command.length());
+		close(fd[1]);
+
+		// Wait for the child process to finish
+		int status;
+		waitpid(pid, &status, 0);
+
+		// Read the response from the child process
+		char buffer[1024];
+		while (read(fd[0], buffer, sizeof(buffer)) != 0)
+			response += buffer;
+		close(fd[0]);
+
+		return response;
 	}
 }
