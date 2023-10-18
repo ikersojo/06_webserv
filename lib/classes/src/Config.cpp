@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/18 12:37:01 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/18 14:04:23 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,19 +307,6 @@ Config::Config(const std::string & configFile)
 Config::~Config(void) {
 	debug("Config Object Destroyed");
 }
-
-bool						Config::isAutoIndex(size_t i, std::string req) { return (this->_autoindex[i][req]); }
-
-bool						Config::isRedir(size_t i, std::string req) { return (this->_redir[i][req]); }
-
-bool						Config::isGET(size_t i, std::string req) { return (this->_allowedGET[i][req]); }
-
-bool						Config::isPOST(size_t i, std::string req) { return (this->_allowedPOST[i][req]); }
-
-bool						Config::isDELETE(size_t i, std::string req) { return (this->_allowedDELETE[i][req]); }
-
-bool						Config::isCgi(size_t i, std::string req) { return (this->_cgi[i][req]); }
-
 size_t						Config::getMaxPorts(void) { return (_maxPorts); }
 
 std::string					Config::getServerName(size_t i) { return (_servername[i]); }
@@ -330,13 +317,38 @@ std::string					Config::getAddress(size_t i) { return (_address[i]); }
 
 std::string					Config::getFile(size_t i, std::string req) { return (_file[i][req]); }
 
+std::string					Config::getRoot(size_t i, std::string req) { return (_root[i][req]); }
+
+bool						Config::isAutoIndex(size_t i, std::string req) { return (this->_autoindex[i][req]); }
+
+bool						Config::isGET(size_t i, std::string req) { return (this->_allowedGET[i][req]); }
+
+bool						Config::isPOST(size_t i, std::string req) { return (this->_allowedPOST[i][req]); }
+
+bool						Config::isDELETE(size_t i, std::string req) { return (this->_allowedDELETE[i][req]); }
+
 std::map<int, std::string>	Config::getErrorPage(size_t i, std::string req) { return (_errorPage[i][req]); }
 
 int							Config::getBufferSize(size_t i, std::string req) { return (_bufferSize[i][req]); }
 
+bool						Config::isRedir(size_t i, std::string req) { return (this->_redir[i][req]); }
+
+bool						Config::isCgi(size_t i, std::string req) { return (this->_cgi[i][req]); }
+
+std::string					Config::getCgi(size_t i, std::string req) { return (_cgiExt[i][req]); }
+
 std::string					Config::getHandlePOST(size_t i, std::string req) { return (this->_handlePOST[i][req]); }
 
 std::string					Config::getHandleDELETE(size_t i, std::string req) { return (this->_handleDELETE[i][req]); }
+
+bool	Config::isValidRequest(size_t i, std::string req) {
+	std::map < std::string, std::string >::iterator it;
+
+	it = this->_file[i].find(req);
+	if (it != this->_file[i].end())
+		return (true);
+	return (false);
+}
 
 void	Config::printConfig(void) {
 	debug("Printing config...");
@@ -375,14 +387,4 @@ void	Config::printConfig(void) {
 		i++;
 	}
 	std::cout << DEF_COL << std::endl;
-}
-
-
-bool	Config::isValidRequest(size_t i, std::string req) {
-	std::map < std::string, std::string >::iterator it;
-
-	it = this->_file[i].find(req);
-	if (it != this->_file[i].end())
-		return (true);
-	return (false);
 }

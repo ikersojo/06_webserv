@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/18 12:43:25 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/18 14:03:46 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,6 @@
 			bufferSize(4096), \
 			cgi(false), \
 			redir(false) {}
-
-
 	};
 
 	class Config
@@ -74,8 +72,9 @@
 			std::string					getServerName(size_t i);
 			int							getPort(size_t i);
 			std::string					getAddress(size_t i);
-			bool						isAutoIndex(size_t i, std::string req);
 			std::string					getFile(size_t i, std::string req);
+			std::string					getRoot(size_t i, std::string req);
+			bool						isAutoIndex(size_t i, std::string req);
 			bool						isGET(size_t i, std::string req);
 			bool						isPOST(size_t i, std::string req);
 			bool						isDELETE(size_t i, std::string req);
@@ -83,6 +82,7 @@
 			int							getBufferSize(size_t i, std::string req);
 			bool						isRedir(size_t i, std::string req);
 			bool						isCgi(size_t i, std::string req);
+			std::string					getCgi(size_t i, std::string req);
 
 			std::string					getHandlePOST(size_t i, std::string req);
 			std::string					getHandleDELETE(size_t i, std::string req);
@@ -110,7 +110,6 @@
 			std::vector < std::map < std::string, bool > >							_cgi;
 			std::vector < std::map < std::string, std::string > >					_cgiExt;
 			std::vector < std::map < std::string, bool > >							_redir;
-			std::vector < std::map < std::string, std::string > >					_redirLoc;
 			std::vector < std::map < std::string, std::map < int, std::string > > >	_errorPage;
 			std::vector < std::map < std::string, int > >							_bufferSize;
 
