@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/14 15:19:24 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/19 13:58:35 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,22 +123,47 @@ std::string	ResponseBuilder::getResponse(void)
 	}
 }
 
+std::string	resolveErrorCode(int code) {
+	switch (code) {
+		case 400:
+			return ("Bad Request");
+		case 404:
+			return ("Not Found");
+		case 405:
+			return ("Method Not Allowed");
+		case 500:
+			return ("Internal Server Error");
+		case 505:
+			return ("HTTP Version Not Supported");
+		default:
+			return ("Unknown Error");
+	}
+}
 
 std::string	ResponseBuilder::errorResponse(int code) // TODO: Add files
 {
-	if (code == 400)
-		this->_responseStr = "HTTP/1.1 400 Bad Request\r\n";
-	else if (code == 404)
-		this->_responseStr = "HTTP/1.1 404 Not Found\r\n";
-	else if (code == 405)
-		this->_responseStr = "HTTP/1.1 405 Method Not Allowed\r\n";
-	else if (code == 500)
-		this->_responseStr = "HTTP/1.1 500 Internal Server Error\r\n";
-	else if (code == 505)
-		this->_responseStr = "HTTP/1.1 505 HTTP Version Not Supported\r\n";
-	else
-		this->_responseStr = "HTTP/1.1 XXX Unkown Error\r\n";
+	std::map<int, std::string> errorPages;
+	std::ifstream		inFile;
+	std::ostringstream	fileContentStream;
+	std::string			fileContent;
 
+	errorPages = this->_config->getErrorPage(this->_configIndex, _config->getNearestLocation(_configIndex, this->_requestParams[1]));
+	if (errorPages[code] != "") {
+		inFile.open(errorPages[code]);
+		if (!inFile.is_open())
+			error("Requested file not found");
+		else {
+			fileContentStream << inFile.rdbuf();
+			fileContent = fileContentStream.str();
+
+			this->_responseStr = "HTTP/1.1 " + std::to_string(code) + " " + resolveErrorCode(code) + "\r\n";
+			this->_responseStr += "Content-Type: text/html\r\n\r\n";
+			this->_responseStr += fileContent;
+			return (this->_responseStr);
+		}
+	}
+
+	this->_responseStr = "HTTP/1.1 " + std::to_string(code) + " " + resolveErrorCode(code) + "\r\n";
 	this->_responseStr += "Content-Type: text/html\r\n\r\n";
 	this->_responseStr += "<html><head><title>Error " + intToString(code) + "</title></head><body>";
 	this->_responseStr +=  "<h1>Error " + intToString(code) + "</h1>";
@@ -214,6 +239,7 @@ std::string	ResponseBuilder::fileResponse(void)
 	std::string			fileContent;
 	int					fileSize;
 
+	// el file path depende del uri, root y file (lo ideal sería hacer una función que devolviese el verdadero filePath)
 	filePath = this->_config->getFile(this->_configIndex, this->_requestParams[1]);
 	if (DEBUG)
 		std::cout << GREY << "[DEBUG: ...requested file: " << filePath << "]" << DEF_COL << std::endl;
@@ -377,7 +403,7 @@ void	ResponseBuilder::writeToJsonFile(std::string task, std::string filePath)
 	// Insert the new task at the position after the first "[" character
 	if (countOccurrences(fileContent, '\"') > 0)
 		fileContent.insert(position + 1, "\"" + task + "\", ");
-	else 
+	else
 		fileContent.insert(position + 1, "\"" + task + "\"");
 
 	// Open the file in output mode to write the updated content
