@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/18 14:03:46 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/18 15:27:03 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,8 @@
 			std::string					getHandleDELETE(size_t i, std::string req);
 			bool						isValidRequest(size_t i, std::string req);
 
-			void						resizeVectors(size_t size);
 			void						printConfig(void);
+			std::string					getNearestLocation(size_t i, std::string uri);
 
 			void						setAIFile(size_t i, std::string url, std::string path, std::string file);
 			void						setDeletePath(size_t i, std::string url, std::string task);

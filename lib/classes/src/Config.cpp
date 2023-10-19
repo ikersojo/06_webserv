@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/18 14:04:23 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/19 13:31:07 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -360,10 +360,10 @@ void	Config::printConfig(void) {
 		std::cout << "    Server name :      " << _servername[i] << std::endl;
 		std::cout << "    Listening on :     " << _address[i] << ":" << _port[i] << std::endl;
 
-		std::map<std::string, std::string>& tempMap = _file[i];
-		std::map<std::string, std::string>::iterator it = tempMap.begin();
+		std::map<std::string, std::string>& uriMap = _file[i];
+		std::map<std::string, std::string>::iterator it = uriMap.begin();
 		(void)it;
-		while ( it != tempMap.end())
+		while ( it != uriMap.end())
 		{
 			std::cout << "    Request to route : [" << it->first << "]" << std::endl;
 			std::cout << "      autoindex : " << (_autoindex[i][it->first] ? " on" : " off") << std::endl;
@@ -387,4 +387,44 @@ void	Config::printConfig(void) {
 		i++;
 	}
 	std::cout << DEF_COL << std::endl;
+}
+
+std::string	Config::getNearestLocation(size_t i, std::string uri) {
+	std::vector<std::string> avaliableLocations;
+	bool catchAll = false;
+	size_t pos;
+
+	if (_file.size() <= i)
+		return ("");
+	for (std::map<std::string, std::string>::const_iterator it = _file[i].begin(); it != _file[i].end(); it++) {
+		if (it->first == "/")
+			catchAll = true;
+		avaliableLocations.push_back(it->first);
+	}
+
+	if (uri.empty() && catchAll)
+		return ("/");
+	while (!uri.empty()) {
+		for (std::vector<std::string>::iterator it = avaliableLocations.begin(); it != avaliableLocations.end(); it++) {
+			if (uri[0] != '/' && uri[uri.size()-1] != '/' && *it == ('/' + uri + '/'))
+				return ('/' + uri + '/');
+			if (uri[0] != '/' && *it == ('/' + uri))
+				return ('/' + uri);
+			if (uri[uri.size()-1] != '/' && *it == (uri + '/'))
+				return (uri + '/');
+			if (*it == uri)
+				return (uri);
+		}
+		pos = uri.rfind('/');
+		if (pos != std::string::npos) {
+			if (pos == 0 && catchAll)
+				return ("/");
+			else
+				uri = uri.substr(0, pos);
+		} else if (catchAll)
+			return ("/");
+		else
+			uri.clear();
+	}
+	return (uri);
 }
