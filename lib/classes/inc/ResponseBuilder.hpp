@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:00 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/19 15:23:06 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/19 19:37:53 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,16 +40,17 @@
 		private:
 			ResponseBuilder(void);
 
-			static bool			_shutdownRequested;
+			static bool	_shutdownRequested;
 
-			Config * 			_config;
-			int					_configIndex;
-			bool				_ok;
+			Config * 	_config;
+			int			_configIndex;
+			bool		_ok;
 
 			std::string					_requestStr;
 			std::vector < std::string >	_requestParams;
 			std::string					_responseStr;
 
+			std::map < std::string, std::string >	_mime;
 
 			void		assessRequest(void);
 			std::string	getResponse(void);

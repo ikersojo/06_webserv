@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:53:16 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/18 23:08:54 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/19 17:03:28 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,6 @@ isojo-go:
 	- CGI will expect EOF as end of the body
 	- If no content_length is returned from the CGI, EOF will mark the end of the returned data
 	Cookies
+
+	Decidir como repartimos root/uri/location en el conf (tendremos que checkear y parsear alineadamente)
  */
