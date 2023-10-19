@@ -6,16 +6,11 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/19 13:31:07 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/19 17:51:53 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Config.hpp"
-
-// Returns the clean value of a certain directive contained in line (input parameter).
-std::string	extractCleanValue(std::string & line) {
-	return (trimChars(line.substr(line.find(":")+1), " \""));
-}
 
 // Returns the amount of listen (actual ports) directives found in the config file
 size_t	getNumberOfPorts(const std::string & configFile) {
@@ -50,7 +45,7 @@ std::vector<std::string>	getServerNames(const std::string & configFile) {
 		if (line.find(D_SERVER) != std::string::npos)
 			serverName.clear();
 		if (line.find(D_SERVER_NAME) != std::string::npos)
-			serverName = extractCleanValue(line);
+			serverName = EXTRACT_CLEAN_VALUE(line);
 		if (line.find(D_LISTEN) != std::string::npos)
 			serverNames.push_back(serverName);
 	}
@@ -188,41 +183,41 @@ std::map<std::string, std::map<int, std::string> >	createMapMap(std::vector<Loca
 // Modifies an existing Location structure based on the following lines it reads
 // until it finds an "location:" directive.
 void	setLocation(std::ifstream& inFile, std::string& line, Location& location) {
-	location.path = extractCleanValue(line);
+	location.path = EXTRACT_CLEAN_VALUE(line);
 	while (getline(inFile, line) && !line.empty() && line.find(D_LOCATION) == std::string::npos) {
-		if (line.find(D_ROOT) != std::string::npos)
-			location.root = extractCleanValue(line);
-		if (line.find(D_FILE) != std::string::npos) {
+		if (STRING_CONTAINS(line, D_ROOT))
+			location.root = EXTRACT_CLEAN_VALUE(line);
+		if (STRING_CONTAINS(line, D_FILE)) {
 			if (!location.redir)
-				location.file = extractCleanValue(line);
+				location.file = EXTRACT_CLEAN_VALUE(line);
 		}
-		if (line.find(D_AUTO_INDEX) != std::string::npos)
-			if (line.find("on") != std::string::npos) location.autoindex = true;
-		if (line.find(D_ALLOW) != std::string::npos) {
-			(line.find("GET") != std::string::npos) ? location.allowedGET = true : location.allowedGET = false;
-			(line.find("POST") != std::string::npos) ? location.allowedPOST = true : location.allowedPOST = false;
-			(line.find("DELETE") != std::string::npos) ? location.allowedDELETE = true : location.allowedDELETE = false;
+		if (STRING_CONTAINS(line, D_AUTO_INDEX))
+			if (STRING_CONTAINS(line, "on")) location.autoindex = true;
+		if (STRING_CONTAINS(line, D_ALLOW)) {
+			(STRING_CONTAINS(line, "GET")) ?    location.allowedGET = true : location.allowedGET = false;
+			(STRING_CONTAINS(line, "POST")) ?   location.allowedPOST = true : location.allowedPOST = false;
+			(STRING_CONTAINS(line, "DELETE")) ? location.allowedDELETE = true : location.allowedDELETE = false;
 		}
-		if (line.find(D_ERROR_PAGE) != std::string::npos) {
+		if (STRING_CONTAINS(line, D_ERROR_PAGE)) {
 			line = trimChars(line.substr(line.find(":")+1), " ");
 			int code = std::atoi(trimChars(line.substr(0, line.find(" ")), " \"").c_str());
 			std::string page = trimChars(line.substr(line.find(" ")+1), " \"");
 			location.errorPage[code] = page;
 		}
-		if (line.find(D_BUFFER_SIZE) != std::string::npos)
-			location.bufferSize = std::atoi(extractCleanValue(line).c_str());
-		if (line.find(D_CGI) != std::string::npos) {
-			location.cgiExt = extractCleanValue(line);
+		if (STRING_CONTAINS(line, D_BUFFER_SIZE))
+			location.bufferSize = std::atoi(EXTRACT_CLEAN_VALUE(line).c_str());
+		if (STRING_CONTAINS(line, D_CGI)) {
+			location.cgiExt = EXTRACT_CLEAN_VALUE(line);
 			(!location.cgiExt.empty()) ? location.cgi = true : location.cgi = false;
 		}
-		if (line.find(D_REDIR) != std::string::npos) {
-			location.file = extractCleanValue(line);
+		if (STRING_CONTAINS(line, D_REDIR)) {
+			location.file = EXTRACT_CLEAN_VALUE(line);
 			location.redir = true;
 		}
-		if (line.find(D_HANDLE_POST) != std::string::npos)
-			location.handlePOST = extractCleanValue(line);
-		if (line.find(D_HANDLE_DELETE) != std::string::npos)
-			location.handleDELETE = extractCleanValue(line);
+		if (STRING_CONTAINS(line, D_HANDLE_POST))
+			location.handlePOST = EXTRACT_CLEAN_VALUE(line);
+		if (STRING_CONTAINS(line, D_HANDLE_DELETE))
+			location.handleDELETE = EXTRACT_CLEAN_VALUE(line);
 	}
 }
 

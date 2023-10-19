@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/18 15:27:03 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/19 17:51:25 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,9 @@
 	#define D_REDIR			"redirect:"
 	#define D_HANDLE_POST	"handle_post:"
 	#define D_HANDLE_DELETE	"handle_delete:"
+
+	#define EXTRACT_CLEAN_VALUE(line) trimChars((line).substr((line).find(":") + 1), " \"")
+	#define STRING_CONTAINS(str, target) ((str).find(target) != std::string::npos)
 
 	struct Location {
 		std::string					path;
