@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 21:34:37 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/19 17:53:03 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/19 18:22:56 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,8 @@ bool confFileCorrect(const char **argv)
 						filename.close();
 						return(configError());
 					}
+					listen_cont = 0;
+					location_cont = 0;
 				}
 				firts_time = false;
 			}
