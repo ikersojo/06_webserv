@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/19 13:58:35 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/19 14:17:20 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,18 +125,12 @@ std::string	ResponseBuilder::getResponse(void)
 
 std::string	resolveErrorCode(int code) {
 	switch (code) {
-		case 400:
-			return ("Bad Request");
-		case 404:
-			return ("Not Found");
-		case 405:
-			return ("Method Not Allowed");
-		case 500:
-			return ("Internal Server Error");
-		case 505:
-			return ("HTTP Version Not Supported");
-		default:
-			return ("Unknown Error");
+		case 400: return "Bad Request";
+		case 404: return "Not Found";
+		case 405: return "Method Not Allowed";
+		case 500: return "Internal Server Error";
+		case 505: return "HTTP Version Not Supported";
+		default:  return "Unknown Error";
 	}
 }
 
