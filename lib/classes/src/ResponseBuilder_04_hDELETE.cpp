@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/19 19:42:32 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/19 19:43:06 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,16 +93,3 @@ void	ResponseBuilder::removeFromList(std::string task)
 		i++;
 	}
 }
-
-void	ResponseBuilder::clearJsonFile(std::string filePath)
-{
-	std::ofstream outFile(filePath);
-	if (!outFile.is_open())
-	{
-		error("Unable to open the JSON file for writing");
-		return;
-	}
-	outFile << "[]";
-	outFile.close();
-}
-

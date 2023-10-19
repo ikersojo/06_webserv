@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/19 19:37:53 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/19 19:59:35 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ std::string	ResponseBuilder::fileResponse(void)
 	std::ifstream		inFile;
 	std::ostringstream	fileContentStream;
 	std::string			fileContent;
+	std::string			fileExtension;
 	int					fileSize;
 
 	filePath = this->_config->getFile(this->_configIndex, this->_requestParams[1]);
@@ -115,27 +116,38 @@ std::string	ResponseBuilder::fileResponse(void)
 		error("Requested file not found");
 		return (this->errorResponse(404));
 	}
-    fileContentStream << inFile.rdbuf();
-    fileContent = fileContentStream.str();
+	fileContentStream << inFile.rdbuf();
+	fileContent = fileContentStream.str();
 	fileSize = fileContent.size();
+	inFile.close();
 
 	this->_responseStr = "HTTP/1.1 200 OK\r\n";
-	if (filePath.find(".html") != std::string::npos)
-		this->_responseStr += "Content-Type: text/html\r\n";
-	else if (this->_requestParams[1] == "/favicon.ico" || this->_requestParams[1] == "/image" || this->_requestParams[1].find(".jpg") != std::string::npos || this->_requestParams[1].find(".png") != std::string::npos)
-		this->_responseStr += "Content-Type: image/vnd.microsoft.icon\r\n";
-	else if (filePath.find(".json") != std::string::npos)
+
+	this->_responseStr += "Content-Type: ";
+	if (filePath.rfind("."))
 	{
-		this->_responseStr += "Content-Type: application/json\r\n";
-		this->initJson(filePath);
+		fileExtension = filePath.substr(filePath.rfind("."), filePath.size());
+		if (DEBUG)
+			std::cout << GREY << "[DEBUG: ...file extension: " << fileExtension << "]" << DEF_COL << std::endl;
+
+		std::map<std::string, std::string>::iterator it = this->_mime.find(fileExtension);
+		if (it != this->_mime.end())
+		{
+			if (fileExtension == ".json")
+				this->initJson(filePath);
+			this->_responseStr += this->_mime[fileExtension];
+			this->_responseStr += "\r\n";
+		}
+		else
+			this->_responseStr += "text/plain\r\n";
 	}
 	else
-		this->_responseStr += "Content-Type: text/plain\r\n";
+		this->_responseStr += "text/plain\r\n";
+
 	this->_responseStr += "Content-Length: ";
 	this->_responseStr += intToString(fileSize);
 	this->_responseStr += "\r\n\r\n";
 	this->_responseStr += fileContent;
-	inFile.close();
 	debug("...file response built");
 	return (this->_responseStr);
 }

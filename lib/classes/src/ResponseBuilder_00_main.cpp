@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/19 19:41:13 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/19 19:57:58 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ ResponseBuilder::ResponseBuilder(Config * config, int configIndex, std::string r
 	this->_mime[".txt"] = "text/plain";
 	this->_mime[".mp3"] = "audio/mp3";
 	this->_mime[".pdf"] = "application/pdf";
+	this->_mime[".json"] = "application/json";
 	this->_mime["default"] = "text/html";
 
 	debug("ResponseBuilder Object Created");
