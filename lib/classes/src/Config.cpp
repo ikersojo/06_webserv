@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/19 19:37:53 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/19 23:16:12 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void	Config::resizeVectors(size_t size)
 	this->_port.resize(size);
 	this->_address.resize(size);
 	this->_autoindex.resize(size);
+	this->_rootDir.resize(size);
 	this->_file.resize(size);
 	this->_allowedGET.resize(size);
 	this->_allowedPOST.resize(size);
@@ -64,7 +65,24 @@ void	Config::setAIFile(size_t i, std::string url, std::string path, std::string 
 	this->_autoindex[i][url] = false;
 	this->_redir[i][url] = false;
 	this->_cgi[i][url] = false;
+	this->_rootDir[i][url] = path;
 	this->_file[i][url] = fullPath;
+	this->_allowedGET[i][url] = true;
+	this->_allowedPOST[i][url] = false;
+	this->_allowedDELETE[i][url] = false;
+	this->_errorPage[i][url] = "./www/def404.html";
+	this->_bufferSize[i][url] = 4096;
+}
+
+
+void	Config::setAIDir(size_t i, std::string url, std::string path)
+{
+	std::cout << "url: " << url << ", path: " << path << std::endl;
+	this->_autoindex[i][url] = true;
+	this->_redir[i][url] = false;
+	this->_cgi[i][url] = false;
+	this->_rootDir[i][url] = path;
+	this->_file[i][url] = path;
 	this->_allowedGET[i][url] = true;
 	this->_allowedPOST[i][url] = false;
 	this->_allowedDELETE[i][url] = false;
@@ -105,6 +123,7 @@ Config::Config(const std::string & configFile)
 		this->_redir[i]["/"] = false;
 		this->_cgi[i]["/"] = false;
 		this->_file[i]["/"] = "./www/site1/index.html";
+		this->_rootDir[i]["/"] = "./www/site1/";
 		this->_allowedGET[i]["/"] = true;
 		this->_allowedPOST[i]["/"] = false;
 		this->_allowedDELETE[i]["/"] = false;
@@ -117,6 +136,7 @@ Config::Config(const std::string & configFile)
 		this->_redir[i]["/favicon.ico"] = false;
 		this->_cgi[i]["/favicon.ico"] = false;
 		this->_file[i]["/favicon.ico"] = "./www/site1/icon1.png";
+		this->_rootDir[i]["/favicon.ico"] = "./www/site1/";
 		this->_allowedGET[i]["/favicon.ico"] = true;
 		this->_allowedPOST[i]["/favicon.ico"] = false;
 		this->_allowedDELETE[i]["/favicon.ico"] = false;
@@ -129,6 +149,7 @@ Config::Config(const std::string & configFile)
 		this->_redir[i]["/images/sample"] = false;
 		this->_cgi[i]["/images/sample"] = false;
 		this->_file[i]["/images/sample"] = "./www/site1/images/sample_image1.jpg";
+		this->_rootDir[i]["/images/sample"] = "./www/site1/images/";
 		this->_allowedGET[i]["/images/sample"] = true;
 		this->_allowedPOST[i]["/images/sample"] = false;
 		this->_allowedDELETE[i]["/images/sample"] = false;
@@ -141,6 +162,7 @@ Config::Config(const std::string & configFile)
 		this->_redir[i]["/images"] = false;
 		this->_cgi[i]["/images"] = false;
 		this->_file[i]["/images"] = "./www/site1/images/";
+		this->_rootDir[i]["/images"] = "./www/site1/images/";
 		this->_allowedGET[i]["/images"] = true;
 		this->_allowedPOST[i]["/images"] = false;
 		this->_allowedDELETE[i]["/images"] = false;
@@ -153,6 +175,7 @@ Config::Config(const std::string & configFile)
 		this->_redir[i]["/redirect"] = true;
 		this->_cgi[i]["/redirect"] = false;
 		this->_file[i]["/redirect"] = "https://www.42urduliz.com";
+		this->_rootDir[i]["/redirect"] = "/";
 		this->_allowedGET[i]["/redirect"] = true;
 		this->_allowedPOST[i]["/redirect"] = false;
 		this->_allowedDELETE[i]["/redirect"] = false;
@@ -170,6 +193,7 @@ Config::Config(const std::string & configFile)
 		this->_redir[i]["/"] = false;
 		this->_cgi[i]["/"] = false;
 		this->_file[i]["/"] = "./www/stressTestSite/index.html";
+		this->_rootDir[i]["/"] = "./www/stressTestSite/";
 		this->_allowedGET[i]["/"] = true;
 		this->_allowedPOST[i]["/"] = false;
 		this->_allowedDELETE[i]["/"] = false;
@@ -187,6 +211,7 @@ Config::Config(const std::string & configFile)
 		this->_redir[i]["/"] = false;
 		this->_cgi[i]["/"] = false;
 		this->_file[i]["/"] = "./www/todoSite/index.html";
+		this->_rootDir[i]["/"] = "./www/todoSite/index.html/";
 		this->_allowedGET[i]["/"] = true;
 		this->_allowedPOST[i]["/"] = false;
 		this->_handlePOST[i]["/"] = "";
@@ -199,6 +224,7 @@ Config::Config(const std::string & configFile)
 		this->_redir[i]["/api"] = false;
 		this->_cgi[i]["/api"] = false;
 		this->_file[i]["/api"] = "./www/todoSite/tasks.json";
+		this->_rootDir[i]["/api"] = "./www/todoSite/";
 		this->_allowedGET[i]["/api"] = true;
 		this->_allowedPOST[i]["/api"] = true;
 		this->_handlePOST[i]["/api"] = "addToList";
@@ -216,6 +242,7 @@ Config::Config(const std::string & configFile)
 		this->_redir[i]["/"] = false;
 		this->_cgi[i]["/"] = false;
 		this->_file[i]["/"] = "./www/gallerySite/index.html";
+		this->_rootDir[i]["/"] = "./www/gallerySite/";
 		this->_allowedGET[i]["/"] = true;
 		this->_allowedPOST[i]["/"] = false;
 		this->_handlePOST[i]["/"] = "";
@@ -228,6 +255,7 @@ Config::Config(const std::string & configFile)
 		this->_redir[i]["/photos"] = false;
 		this->_cgi[i]["/photos"] = false;
 		this->_file[i]["/photos"] = "./www/gallerySite/photos.json";
+		this->_rootDir[i]["/photos"] = "./www/gallerySite/";
 		this->_allowedGET[i]["/photos"] = true;
 		this->_allowedPOST[i]["/photos"] = false;
 		this->_handlePOST[i]["/photos"] = "";
@@ -240,6 +268,7 @@ Config::Config(const std::string & configFile)
 		this->_redir[i]["/upload"] = false;
 		this->_cgi[i]["/upload"] = false;
 		this->_file[i]["/upload"] = "./www/gallerySite/upload.json";
+		this->_rootDir[i]["/upload"] = "./www/gallerySite/";
 		this->_allowedGET[i]["/upload"] = true;
 		this->_allowedPOST[i]["/upload"] = true;
 		this->_handlePOST[i]["/upload"] = "addPhoto";
@@ -258,6 +287,7 @@ Config::Config(const std::string & configFile)
 		this->_redir[i]["/"] = false;
 		this->_cgi[i]["/"] = true;
 		this->_file[i]["/"] = "/Users/ikersojo/01_PROJECTS/06_webserver/www/cgi-bin/print.out";
+		this->_rootDir[i]["/"] = "/Users/ikersojo/01_PROJECTS/06_webserver/www/cgi-bin/";
 		this->_allowedGET[i]["/"] = true;
 		this->_allowedPOST[i]["/"] = false;
 		this->_handlePOST[i]["/"] = "";
@@ -301,6 +331,11 @@ std::string		Config::getErrorPage(size_t i, std::string req)
 std::string		Config::getFile(size_t i, std::string req)
 {
 	return (this->_file[i][req]);
+}
+
+std::string		Config::getRootDir(size_t i, std::string req)
+{
+	return (this->_rootDir[i][req]);
 }
 
 bool	Config::isAutoIndex(size_t i, std::string req)

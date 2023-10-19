@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:00 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/19 19:37:53 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/19 23:28:48 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@
 			std::map < std::string, std::string >	_mime;
 
 			void		assessRequest(void);
+			void		checkLocation(std::string trimmedURL);
 			std::string	getResponse(void);
 			std::string	postResponse(void);
 			std::string	deleteResponse(void);

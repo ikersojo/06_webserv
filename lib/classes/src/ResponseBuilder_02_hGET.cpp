@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/19 19:59:35 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/19 20:35:39 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ std::string	ResponseBuilder::redirResponse(void)
 
 std::string	ResponseBuilder::aiResponse(void)
 {
-	std::string	requestedDir = this->_config->getFile(this->_configIndex, this->_requestParams[1]);
+	std::string	requestedDir = this->_config->getRootDir(this->_configIndex, this->_requestParams[1]);
 	std::string	path = this->_requestParams[1];
 
 	DIR* dir = opendir(requestedDir.c_str());

@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/14 10:58:27 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/19 23:11:42 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@
 			int				getPort(size_t i);
 			std::string		getAddress(size_t i);
 			std::string		getFile(size_t i, std::string req);
+			std::string		getRootDir(size_t i, std::string req);
 			std::string		getErrorPage(size_t i, std::string req);
 			int				getBufferSize(size_t i, std::string req);
 			bool			isAutoIndex(size_t i, std::string req);
@@ -51,6 +52,7 @@
 			void			printConfig(void);
 
 			void			setAIFile(size_t i, std::string url, std::string path, std::string file);
+			void			setAIDir(size_t i, std::string url, std::string path);
 			void			setDeletePath(size_t i, std::string url, std::string task);
 
 		private:
@@ -61,6 +63,7 @@
 			std::vector < int >										_port;
 			std::vector < std::string >								_address;
 			std::vector < std::map < std::string, bool > >			_autoindex;
+			std::vector < std::map < std::string, std::string > >	_rootDir;
 			std::vector < std::map < std::string, std::string > >	_file;
 			std::vector < std::map < std::string, bool > >			_allowedGET;
 			std::vector < std::map < std::string, bool > >			_allowedPOST;
