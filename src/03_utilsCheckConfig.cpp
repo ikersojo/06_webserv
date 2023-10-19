@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 11:57:48 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/18 16:53:38 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/19 18:05:24 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,6 +186,15 @@ static bool LocationCheckConfig(std::string &line)
 		{
 			std::cout << line << " <----- ";
 			error("cgi config error");
+			return false;
+		}
+	}
+	if(config == "file:")
+	{
+		if(!Empty(line))
+		{
+			std::cout << line << " <----- ";
+			error("file config error");
 			return false;
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 21:34:37 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/18 17:06:26 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/19 17:53:03 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static bool	configError(void)
 	return (false);
 }
 
-static bool FirstCheck(std::string &line, int space)
+static bool FirstCheck(std::string &line, int space, int &server_cont)
 {
 	std::string checkline, option, null;
 	std::istringstream iss(line);
@@ -33,10 +33,16 @@ static bool FirstCheck(std::string &line, int space)
 		iss >> checkline >> null;
 		if(checkline != "server:" || !null.empty())
 			return false;
+		server_cont ++;
 		return true;
 	}
 	else if(space == 2)
 	{
+		if(server_cont == 0)
+		{
+			error("Error No server:");
+			return false;
+		}
 		iss >> checkline >> option >> null;
 		if(line.find("listen:") != std::string::npos)
 		{
@@ -77,6 +83,10 @@ bool confFileCorrect(const char **argv)
 {
 	std::string line;
 	int space, port;
+	int listen_cont = 0;
+	int location_cont = 0;
+	int server_cont = 0;
+	bool firts_time = true;
 	
 	std::vector<int> Allport;
 	std::ifstream filename(argv[1]);
@@ -109,7 +119,7 @@ bool confFileCorrect(const char **argv)
 				return(configError());
 			}
 			
-			if(!FirstCheck(line, space))
+			if(!FirstCheck(line, space, server_cont))
 			{
 				std::cout << line << " <---- ";
 				error("Check error");
@@ -122,6 +132,7 @@ bool confFileCorrect(const char **argv)
 			
 			if(line.find("listen:") != std::string::npos && space == 2) //En esta funcion mi objetivo es recolectar puertos para verificar si se repiten.
 			{
+				listen_cont ++;
 				std::istringstream iss(line);
 				std::string option, address;
 				iss >> option >> address;
@@ -137,6 +148,7 @@ bool confFileCorrect(const char **argv)
 			
 			if(line.find("location:") != std::string::npos && space == 2)
 			{
+				location_cont ++;
 				//std::cout << "******Compruebo el bloque location******\n";
 				if(!CheckLocation(filename, line))
 				{
@@ -145,9 +157,32 @@ bool confFileCorrect(const char **argv)
 					return(configError());
 				}
 			}
+
+			if(line.find("server:") != std::string::npos && space == 0)
+			{
+				if(!firts_time)
+				{
+					if(listen_cont == 0 || location_cont == 0)
+					{
+						error("Error: Bad configuration");
+						filename.close();
+						return(configError());
+					}
+				}
+				firts_time = false;
+			}
 		}
 	}
-	
+	if(filename.eof())
+	{
+		if(listen_cont == 0 || location_cont == 0)
+		{
+			std::cout << "entra\n";
+			filename.close();
+			return(configError());
+		}
+	}
+	filename.close();
 	if(!Checkport(Allport))
 	{
 		error("Error Repeated port");
