@@ -6,13 +6,13 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:53:16 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/17 22:30:55 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/18 23:08:54 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/webserv.hpp"
 
-int		main(int argc, const char** argv)
+int		main(int argc, const char ** argv)
 {
 	signal(SIGPIPE, SIG_IGN);
 	echoOff();

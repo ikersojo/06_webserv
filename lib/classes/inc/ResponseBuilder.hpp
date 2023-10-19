@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:00 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/17 22:48:55 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/19 15:23:06 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,9 @@
 			std::string	fileResponse(void);
 			std::string	redirResponse(void);
 			std::string	aiResponse(void);
-			std::string	cgiResponse(void);
+
+			std::string	cgiGETResponse(void);
+			std::string	cgiPOSTResponse(void);
 
 			// TODO App
 			void	addToList(void);
@@ -68,8 +70,6 @@
 			void	writeToJsonFile(std::string task, std::string filePath);
 			void	clearJsonFile(std::string filePath);
 			void	initJson(std::string filePath);
-			// std::string	postResponse(void);
-			// std::string	deleteResponse(void);
 
 	};
 

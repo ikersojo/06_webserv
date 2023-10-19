@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/16 08:44:19 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/18 22:27:28 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,7 +199,7 @@ void Server::startListeningSelect(void) // MAIN LOOP
 				{
 					debug("...fd ready to send data");
 					ResponseBuilder reponse(this->_config, this->_configIndex[locInClient], this->_requestStr[locInClient]);
-					this->_responseStr[locInClient] = reponse.computeRegularResponse();
+					this->_responseStr[locInClient] = reponse.computeResponse();
 					this->sendResponse(locInClient);
 				}
 				fd++;

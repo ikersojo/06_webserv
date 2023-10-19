@@ -302,3 +302,54 @@ Communication: close
 ![Flowchart](_doc/img/webserv_flowchart.png)
 ## Reference Material:
 [Beej's Guide to Network Programming, Apr 2023](https://beej.us/guide/bgnet/html/split/)
+
+
+
+
+
+# CGI Functionality
+
+**1. Understanding CGI:**
+
+CGI is a standard protocol for web servers to execute external programs and return their output as HTTP responses.
+The web server passes information about the request to the CGI script using environment variables and reads the script's output as the HTTP response body.
+The CGI script is executed with the user's permissions, so security is crucial.
+
+**2. Determine a CGI-Bin Directory:**
+
+Create a directory on your server where CGI scripts will be placed. Conventionally, this directory is named "cgi-bin."
+
+**3. Configure the Web Server:**
+
+Update your web server configuration to recognize the "cgi-bin" directory.
+Ensure that the script files within "cgi-bin" have executable permission.
+
+**4. Parse CGI Environment Variables:**
+
+In your C++98 web server, you'll need to parse the environment variables from the incoming HTTP request and prepare them for the CGI script. Common variables include `REQUEST_METHOD`, `QUERY_STRING`, `CONTENT_LENGTH`...
+
+**5. Execute the CGI Script:**
+
+Use C++98 system calls like fork() and exec() to execute the CGI script.
+```c
+int pid = fork();
+
+if (pid == -1) // Error
+{
+	// Handle error
+}
+else if (pid == 0) // Child process
+{
+	setenv("QUERY_STRING", query_string, 1); // Set CGI environment variables
+	exece();
+}
+else // Parent process
+{
+	waitpid(pid, NULL, 0); // Wait for the child to finish
+}
+```
+
+**6. Capture and Send CGI Output:**
+
+After executing the CGI script, read its output and send it back as an HTTP response.
+∫

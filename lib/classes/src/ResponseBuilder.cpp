@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/17 23:09:52 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/19 15:16:27 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ std::string	ResponseBuilder::getResponse(void)
 	else if (this->_config->isCgi(this->_configIndex, this->_requestParams[1]))
 	{
 		debug("CGI requested");
-		return (this->cgiResponse());
+		return (this->cgiGETResponse());
 	}
 	else if (this->_config->isAutoIndex(this->_configIndex, this->_requestParams[1]))
 	{
@@ -552,49 +552,63 @@ void	ResponseBuilder::initJson(std::string filePath)
 	}
 }
 
-std::string	ResponseBuilder::cgiResponse(void)
+std::string	ResponseBuilder::cgiGETResponse(void)
 {
-	int			fd[2];
 	pid_t		pid;
+	int			fd[2];
+	int			status;
+	int			exitStatus = 0;
 	std::string	response = "";
 	std::string	execFile = this->_config->getFile(this->_configIndex, this->_requestParams[1]).c_str();
 
 	if (pipe(fd) == -1)
 		error("pipe failed");
-
 	pid = fork();
-
 	if (pid == -1)
-		return ("fork failed");
-
+	{
+		error("fork failed");
+		return response;
+	}
 	else if (pid == 0) // Child process
 	{
-		close(fd[1]);
-		dup2(fd[0], STDIN_FILENO);
-		close(fd[0]);
+		setenv("REQUEST_METHOD", this->_requestParams[0].c_str(), 1);
+		setenv("SCRIPT_NAME", execFile.c_str(), 1);
+
+		if (DEBUG)
+		{
+			std::cout << GREY << "[DEBUG: ...REQUEST_METHOD: " << this->_requestParams[0] << "]" << DEF_COL << std::endl;
+			std::cout << GREY << "[DEBUG: ...SCRIPT_NAME: " << execFile << "]" << DEF_COL << std::endl;
+		}
 
 		// Execute the CGI script
-		char* const argv[] = {const_cast<char*>(execFile.c_str())};
+		char* const argv[] = {const_cast<char*>(execFile.c_str()), NULL};
 		char* const envp[] = {NULL};
-		execve(argv[0], argv, envp);
-		return ("execve failed");
+
+		dup2(fd[1], STDOUT_FILENO);
+		close(fd[0]);
+		close(fd[1]);
+		exitStatus = execve(argv[0], argv, envp);
+		error("Execve failed");
+		exit(exitStatus);
 	}
 	else // Parent process
 	{
-		close(fd[0]);
-		write(fd[1], command.c_str(), command.length());
 		close(fd[1]);
-
-		// Wait for the child process to finish
-		int status;
 		waitpid(pid, &status, 0);
-
-		// Read the response from the child process
 		char buffer[1024];
-		while (read(fd[0], buffer, sizeof(buffer)) != 0)
+		while (ssize_t bytesRead = read(fd[0], buffer, sizeof(buffer)))
+		{
+			if (bytesRead == -1)
+			{
+				error("Read from CGI script failed");
+				break;
+			}
+			buffer[bytesRead] = '\0';
 			response += buffer;
+		}
 		close(fd[0]);
-
+		if (DEBUG)
+			std::cout << GREY << "[DEBUG: ...generating response:\n" << response << "\n]" << DEF_COL << std::endl;
 		return response;
 	}
 }
