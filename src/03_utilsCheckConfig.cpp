@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 11:57:48 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/19 18:05:24 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/19 18:38:40 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int checkAddress(std::string address)
 		if(isInteger(address.substr(pos + 1)))
 		{
 			port = std::stoi(address.substr(pos + 1));
-			if(port > 0)
+			if(port > 0 && port <= 65535)
 				return port;
 		}
 	}
@@ -210,6 +210,12 @@ bool CheckLocation(std::ifstream &file, std::string &line)
 		trimstr = line;
 		trimstr = trimSpace(trimstr);
 		space = SpaceCounter(line);
+		if(space != 4 && !line.empty() && !(line.find("location:") != std::string::npos))
+		{
+			std::cout << line << " <----- ";
+			error("Wrong space format");
+			return false;
+		}
 		if(space != 4 || trimstr.empty())
 			break;
 		if(isOneOf(line))
