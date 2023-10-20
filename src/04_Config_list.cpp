@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   04_Config_list.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:34:41 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/19 17:59:26 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/20 15:38:53 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ bool Allow(std::string &line)
 	std::string config, option1, option2, option3, null;
 	std::istringstream iss(line);
 	iss >> config >> option1 >> option2 >> option3 >> null;
-	
+
 	if(!null.empty())
 		return false;
 
@@ -38,7 +38,7 @@ bool Allow(std::string &line)
 					return false;
 				}
 				if(!option3.empty())
-				{ 
+				{
 					if(std::find(valiOptions.begin(), valiOptions.end(), option3) != valiOptions.end())
 					{
 						if(option3 == option1 || option2 == option3)
@@ -66,7 +66,7 @@ bool Buffersize(std::string &line)
 	int numb;
 	std::istringstream iss(line);
 	iss >> config >> numb;
-	
+
 	if(numb > 0)
 		return true;
 	return false;
@@ -78,10 +78,10 @@ bool AutoIndex(std::string &line)
 	std::istringstream iss(line);
 	iss >> config >> option >> null;
 	std::transform(option.begin(), option.end(), option.begin(), ::tolower);
-	
+
 	if(!null.empty())
 		return false;
-	option = trimDoubleQuotes(option);
+	option = trimChars(option, "\"");
 	if(option != "on" && option != "off")
 		return false;
 	return true;
@@ -92,11 +92,11 @@ bool ErrorPage(std::string &line)
 	std::string config, num, str, null;
 	std::istringstream iss(line);
 	iss >> config >> num >> str >> null;
-	
+
 	if(!null.empty())
 		return false;
 
-	num = trimDoubleQuotes(num);
+	num = trimChars(num, "\"");
 	if(!isInteger(num))
 	{
 		error("Error number");
@@ -108,8 +108,8 @@ bool ErrorPage(std::string &line)
 		error("The file does not correspond to the error number");
 		return false;
 	}
-	
-	str = trimDoubleQuotes(str);
+
+	str = trimChars(str, "\"");
 	if (access(str.c_str(), F_OK) != 0)
 	{
 		error("The file does not exist");
