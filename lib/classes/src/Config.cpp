@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/19 17:51:53 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/20 15:12:07 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ void	Config::setAIFile(size_t i, std::string url, std::string path, std::string 
 	this->_autoindex[i][url] = false;
 	this->_redir[i][url] = false;
 	this->_cgi[i][url] = false;
+	this->_root[i][url] = path;
 	this->_file[i][url] = fullPath;
 	this->_allowedGET[i][url] = true;
 	this->_allowedPOST[i][url] = false;

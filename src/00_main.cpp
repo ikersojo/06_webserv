@@ -6,13 +6,13 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:53:16 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/18 13:08:35 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/20 15:08:36 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/webserv.hpp"
 
-int		main(int argc, const char** argv)
+int		main(int argc, const char ** argv)
 {
 	signal(SIGPIPE, SIG_IGN);
 	echoOff();
@@ -37,18 +37,21 @@ int		main(int argc, const char** argv)
 }
 
 /*
-TODO List (specific items, with identified locations):
-	02_confFileCorrect.cpp
-		Implemenent all the checks
-			Sequence: Server -> Listen / Root / Location
-				In Listen, each port, folowed by address (each one strating with '-')
-				In Location, each target path, followed by the associated file/dir (each one strating with '-')
-			All values with "" for strings, without for ints
+TODO List:
 
-PENDING Functionalities List (not defined where):
+isojo-go:
+	Include custom error pages
+	Implement uploads
+	Limit client body size (for POST)
+	Chunked POST requests
+	autoindex default file (currently manually included index.html)
+	Implement CGI:
+	- use the full path as PATH_INFO
+	- CGI with the file requested as first argument
+	- run in the correct directory for relative path file access
+	- CGI will expect EOF as end of the body
+	- If no content_length is returned from the CGI, EOF will mark the end of the returned data
+	Cookies
 
-BUG List:
-
-
-
+	Decidir como repartimos root/uri/location en el conf (tendremos que checkear y parsear alineadamente)
  */
