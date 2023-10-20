@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/19 23:16:12 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/20 11:57:19 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ void	Config::setAIFile(size_t i, std::string url, std::string path, std::string 
 
 void	Config::setAIDir(size_t i, std::string url, std::string path)
 {
-	std::cout << "url: " << url << ", path: " << path << std::endl;
 	this->_autoindex[i][url] = true;
 	this->_redir[i][url] = false;
 	this->_cgi[i][url] = false;

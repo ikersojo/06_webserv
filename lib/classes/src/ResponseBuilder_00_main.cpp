@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/19 23:37:07 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/20 11:57:42 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ std::string		ResponseBuilder::computeResponse(void)
 	if (this->_ok && !this->_config->isValidRequest(this->_configIndex, this->_requestParams[1]))
 	{
 		this->checkLocation(this->_requestParams[1]);
-		if (!this->_ok)
+		if (this->_ok && !this->_config->isValidRequest(this->_configIndex, this->_requestParams[1]))
 		{
 			error("Not valid url");
 			return (this->errorResponse(404));
@@ -129,99 +129,46 @@ void	ResponseBuilder::checkLocation(std::string trimmedURL)
 {
 	std::string	requestedDir = "";
 	std::string	remainder = "";
-	bool		found = false;
+	size_t 		max = countOccurrences(trimmedURL, '/');
 
-	while (trimmedURL.find("/") != std::string::npos)
+	size_t i = 0;
+	while (i < max)
 	{
-		std::cout << "trimmedURL: " << trimmedURL << std::endl;
-		std::cout << "requestedDir: " << requestedDir << "\n------\n" << std::endl;
-		
-		if (trimmedURL[trimmedURL.size() - 1] == '/')
-			trimmedURL = trimmedURL.substr(0, trimmedURL.rfind("/"));
-		remainder = trimmedURL.substr(trimmedURL.rfind("/") + 1, trimmedURL.size());
-		trimmedURL = trimmedURL.substr(0, trimmedURL.rfind("/") + 1);
-		if (this->_config->isValidRequest(this->_configIndex, trimmedURL))
-			requestedDir = this->_config->getRootDir(this->_configIndex, trimmedURL);
-
-		std::cout << "trimmedURL: " << trimmedURL << std::endl;
-		std::cout << "requestedDir: " << requestedDir << "\n------\n" << std::endl;
-
-
-		DIR* dir = opendir(requestedDir.c_str());
-		if (dir != NULL)
+		if (DEBUG)
+			std::cout << GREY << "[DEBUG: ...location not found. Iterating over the full path: "
+				<< i << " / " << max << "]" << DEF_COL << std::endl;
+		trimmedURL = this->_requestParams[1];
+		while (trimmedURL.find("/") != std::string::npos)
 		{
-			struct dirent *	entry;
-			while ((entry = readdir(dir)) != NULL)
+			if (trimmedURL[trimmedURL.size() - 1] == '/')
+				trimmedURL = trimmedURL.substr(0, trimmedURL.rfind("/"));
+			remainder = trimmedURL.substr(trimmedURL.rfind("/") + 1, trimmedURL.size());
+			trimmedURL = trimmedURL.substr(0, trimmedURL.rfind("/") + 1);
+			if (this->_config->isValidRequest(this->_configIndex, trimmedURL))
+				requestedDir = this->_config->getRootDir(this->_configIndex, trimmedURL);
+
+			DIR* dir = opendir(requestedDir.c_str());
+			if (dir != NULL)
 			{
-				if (entry->d_type == DT_DIR)
+				struct dirent *	entry;
+				while ((entry = readdir(dir)) != NULL)
 				{
-					std::string url = trimmedURL + remainder;
-					this->_config->setAIDir(this->_configIndex, url, requestedDir + remainder);
-					found = true;
+					if (entry->d_type == DT_DIR)
+					{
+						std::string url = trimmedURL + remainder;
+						this->_config->setAIDir(this->_configIndex, url, requestedDir + remainder);
+					}
+					else if (entry->d_type == DT_REG)
+					{
+						std::string url = trimmedURL + entry->d_name;
+						this->_config->setAIFile(this->_configIndex, url, requestedDir, entry->d_name);
+					}
 				}
-				else if (entry->d_type == DT_REG)
-				{
-					std::string url = trimmedURL + entry->d_name;
-					this->_config->setAIFile(this->_configIndex, url, requestedDir, entry->d_name);
-					found = true;
-				}
+				closedir(dir);
+				if (DEBUG)
+					this->_config->printConfig();
 			}
-			closedir(dir);
-			if (DEBUG)
-				this->_config->printConfig();
 		}
-		if (found)
-			break;
+		i++;
 	}
-	if (found)
-	{
-		if (!this->_config->isValidRequest(this->_configIndex, this->_requestParams[1]))
-			this->checkLocation(this->_requestParams[1]);
-	}
-	else
-		this->_ok = false;
 }
-
-
-
-// std::string	ResponseBuilder::aiResponse(void)
-// {
-// 	std::string	requestedDir = this->_config->getRootDir(this->_configIndex, this->_requestParams[1]);
-// 	std::string	path = this->_requestParams[1];
-
-// 	DIR* dir = opendir(requestedDir.c_str());
-// 	if (dir != NULL)
-// 	{
-// 		this->_responseStr = "HTTP/1.1 200 OK\r\n";
-// 		this->_responseStr += "Content-Type: text/html\r\n\r\n";
-// 		this->_responseStr += "<html><head><title>Index of " + path + "</title></head><body>";
-// 		this->_responseStr +=  "<h1>Index of " + path + "</h1><ul>";
-
-// 		struct dirent *	entry;
-// 		while ((entry = readdir(dir)) != NULL)
-// 		{
-// 			std::string url = this->_requestParams[1] + "/" + entry->d_name;
-// 			this->_responseStr += "<li><a href=\"" + this->_requestParams[1] + "/" + entry->d_name + "\">" + entry->d_name + "</a></li>";
-// 			this->_config->setAIFile(this->_configIndex, url, requestedDir, entry->d_name);
-// 		}
-// 		this->_responseStr += "</ul></body></html>";
-// 		closedir(dir);
-// 		debug("...files in directory listed and added to config");
-// 		if (DEBUG)
-// 			this->_config->printConfig();
-
-// 		if (this->_config->isValidRequest(this->_configIndex, this->_requestParams[1] + "/index.html"))
-// 		{
-// 			this->_requestParams[1] = this->_requestParams[1] + "/index.html";
-// 			debug("...index file found");
-// 			return (this->fileResponse());
-// 		}
-// 		debug("...auto index response built");
-// 		return (this->_responseStr);
-// 	}
-// 	else
-// 	{
-// 		error("Directory not found");
-// 		return (this->errorResponse(500));
-// 	}
-// }
