@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 11:57:48 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/19 18:53:25 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/20 16:07:39 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,20 +84,7 @@ int SpaceCounter(std::string &line)
 	return cont;
 }
 
-bool isOneOf(std::string &line)
-{
-	std::vector<std::string> valiOptions;
-	std::string option;
-	std::istringstream iss(line);
-	valiOptions.push_back("file:");
-	valiOptions.push_back("redirect:");
-	valiOptions.push_back("autoindex:");
-	valiOptions.push_back("cgi:");
-	
-	iss >> option;
 
-	return std::find(valiOptions.begin(),valiOptions.end(), option) != valiOptions.end();
-}
 
 bool isLocationConfigOf(std::string &line)
 {
@@ -112,6 +99,7 @@ bool isLocationConfigOf(std::string &line)
 	valiOptions.push_back("autoindex:");
 	valiOptions.push_back("error_page:");
 	valiOptions.push_back("cgi:");
+	valiOptions.push_back("root:");
 	
 	iss >> option;
 
@@ -204,7 +192,7 @@ static bool LocationCheckConfig(std::string &line)
 
 bool CheckLocation(std::ifstream &file, std::string &line)
 {
-	int space, cont = 0;
+	int space;
 	std::string trimstr;
 	while(std::getline(file, line))
 	{
@@ -219,9 +207,7 @@ bool CheckLocation(std::ifstream &file, std::string &line)
 		}
 		if(space != 4 || trimstr.empty())
 			break;
-		if(isOneOf(line))
-			cont++;
-		if(cont == 0 || !isLocationConfigOf(line))
+		if(!isLocationConfigOf(line))
 		{
 			std::cout << line << " <----- ";
 			error("The configuration does not exist");

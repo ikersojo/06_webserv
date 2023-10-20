@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   04_Config_list.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:34:41 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/20 15:38:53 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/20 15:46:38 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,17 +103,5 @@ bool ErrorPage(std::string &line)
 		return false;
 	}
 
-	if(!(str.find(num) != std::string::npos))
-	{
-		error("The file does not correspond to the error number");
-		return false;
-	}
-
-	str = trimChars(str, "\"");
-	if (access(str.c_str(), F_OK) != 0)
-	{
-		error("The file does not exist");
-		return false;
-	}
 	return true;
 }
