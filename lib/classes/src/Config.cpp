@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/20 15:12:07 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/20 15:16:33 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,34 +54,46 @@ std::vector<std::string>	getServerNames(const std::string & configFile) {
 	return (serverNames);
 }
 
-void	Config::setAIFile(size_t i, std::string url, std::string path, std::string file) {
-	std::string	fullPath;
-
-	fullPath = path + file;
-
-	this->_autoindex[i][url] = false;
-	this->_redir[i][url] = false;
-	this->_cgi[i][url] = false;
-	this->_root[i][url] = path;
-	this->_file[i][url] = fullPath;
-	this->_allowedGET[i][url] = true;
-	this->_allowedPOST[i][url] = false;
-	this->_allowedDELETE[i][url] = false;
-	//this->_errorPage[i][url] = "./www/def404.html";
-	this->_bufferSize[i][url] = 4096;
+void    Config::setAIFile(size_t i, std::string url, std::string path, std::string file)
+{
+    std::string fullPath;
+    fullPath = path + file;
+    this->_autoindex[i][url] = false;
+    this->_redir[i][url] = false;
+    this->_cgi[i][url] = false;
+    this->_root[i][url] = path;
+    this->_file[i][url] = fullPath;
+    this->_allowedGET[i][url] = true;
+    this->_allowedPOST[i][url] = false;
+    this->_allowedDELETE[i][url] = false;
+    //this->_errorPage[i][url] = “./www/def404.html”;
+    this->_bufferSize[i][url] = 4096;
 }
-
-void	Config::setDeletePath(size_t i, std::string url, std::string task) {
-	this->_autoindex[i][url] = false;
-	this->_redir[i][url] = false;
-	this->_cgi[i][url] = false;
-	this->_file[i][url] = task;
-	this->_allowedGET[i][url] = false;
-	this->_allowedPOST[i][url] = false;
-	this->_allowedDELETE[i][url] = true;
-	//this->_errorPage[i][url] = "./www/def404.html";
-	this->_bufferSize[i][url] = 4096;
-	this->_handleDELETE[i][url] = "removeFromList";
+void    Config::setAIDir(size_t i, std::string url, std::string path)
+{
+    this->_autoindex[i][url] = true;
+    this->_redir[i][url] = false;
+    this->_cgi[i][url] = false;
+    this->_root[i][url] = path;
+    this->_file[i][url] = path;
+    this->_allowedGET[i][url] = true;
+    this->_allowedPOST[i][url] = false;
+    this->_allowedDELETE[i][url] = false;
+    //this->_errorPage[i][url] = “./www/def404.html”;
+    this->_bufferSize[i][url] = 4096;
+}
+void    Config::setDeletePath(size_t i, std::string url, std::string task)
+{
+    this->_autoindex[i][url] = false;
+    this->_redir[i][url] = false;
+    this->_cgi[i][url] = false;
+    this->_file[i][url] = task;
+    this->_allowedGET[i][url] = false;
+    this->_allowedPOST[i][url] = false;
+    this->_allowedDELETE[i][url] = true;
+    //this->_errorPage[i][url] = “./www/def404.html”;
+    this->_bufferSize[i][url] = 4096;
+    this->_handleDELETE[i][url] = "removeFromList";
 }
 
 // Returns all address:port pairs in each server.

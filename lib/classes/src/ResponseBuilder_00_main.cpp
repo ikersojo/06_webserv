@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_00_main.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/20 11:57:42 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/20 15:14:00 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,7 @@ void	ResponseBuilder::checkLocation(std::string trimmedURL)
 			remainder = trimmedURL.substr(trimmedURL.rfind("/") + 1, trimmedURL.size());
 			trimmedURL = trimmedURL.substr(0, trimmedURL.rfind("/") + 1);
 			if (this->_config->isValidRequest(this->_configIndex, trimmedURL))
-				requestedDir = this->_config->getRootDir(this->_configIndex, trimmedURL);
+				requestedDir = this->_config->getRoot(this->_configIndex, trimmedURL);
 
 			DIR* dir = opendir(requestedDir.c_str());
 			if (dir != NULL)

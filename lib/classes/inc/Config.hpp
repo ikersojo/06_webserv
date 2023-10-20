@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/20 15:10:33 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/20 15:16:14 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@
 
 			void						setAIFile(size_t i, std::string url, std::string path, std::string file);
 			void						setDeletePath(size_t i, std::string url, std::string task);
+			void						setAIDir(size_t i, std::string url, std::string path);
 
 		private:
 			Config(void);

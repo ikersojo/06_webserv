@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_02_hGET.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/19 20:35:39 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/20 15:17:44 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ std::string	ResponseBuilder::redirResponse(void)
 
 std::string	ResponseBuilder::aiResponse(void)
 {
-	std::string	requestedDir = this->_config->getRootDir(this->_configIndex, this->_requestParams[1]);
+	std::string	requestedDir = this->_config->getRoot(this->_configIndex, this->_requestParams[1]);
 	std::string	path = this->_requestParams[1];
 
 	DIR* dir = opendir(requestedDir.c_str());
