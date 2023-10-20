@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 11:57:48 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/20 16:07:39 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/20 17:15:35 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ static std::string trimSpace(std::string &str)
 	return str.substr(start, end - start);
 }
 
-static bool LocationCheckConfig(std::string &line)
+static bool LocationCheckConfig(std::string &line, int &cline)
 {
 	std::istringstream iss(line);
 	std:: string config;
@@ -128,7 +128,7 @@ static bool LocationCheckConfig(std::string &line)
 	{
 		if(!Allow(line))
 		{
-			std::cout << line << " <----- ";
+			std:: cout << line << " <--- " << "[line: " << cline << "] ";
 			error("allow config error");
 			return false;
 		}
@@ -137,7 +137,7 @@ static bool LocationCheckConfig(std::string &line)
 	{
 		if(!Buffersize(line))
 		{
-			std::cout << line << " <----- ";
+			std:: cout << line << " <--- " << "[line: " << cline << "] ";
 			error("Buffer_size config error");
 			return false;
 		}
@@ -146,7 +146,7 @@ static bool LocationCheckConfig(std::string &line)
 	{
 		if(!AutoIndex(line))
 		{
-			std::cout << line << " <----- ";
+			std:: cout << line << " <--- " << "[line: " << cline << "] ";
 			error("Auto_index config error");
 			return false;
 		}
@@ -155,7 +155,7 @@ static bool LocationCheckConfig(std::string &line)
 	{
 		if(!Empty(line))
 		{
-			std::cout << line << " <----- ";
+			std:: cout << line << " <--- " << "[line: " << cline << "] ";
 			error("Redirect config error");
 			return false;
 		}
@@ -164,7 +164,7 @@ static bool LocationCheckConfig(std::string &line)
 	{
 		if(!ErrorPage(line))
 		{
-			std::cout << line << " <----- ";
+			std:: cout << line << " <--- " << "[line: " << cline << "] ";
 			error("Error_Page config error");
 			return false;
 		}
@@ -173,7 +173,7 @@ static bool LocationCheckConfig(std::string &line)
 	{
 		if(!Empty(line))
 		{
-			std::cout << line << " <----- ";
+			std:: cout << line << " <--- " << "[line: " << cline << "] ";
 			error("cgi config error");
 			return false;
 		}
@@ -182,7 +182,7 @@ static bool LocationCheckConfig(std::string &line)
 	{
 		if(!Empty(line))
 		{
-			std::cout << line << " <----- ";
+			std:: cout << line << " <--- " << "[line: " << cline << "] ";
 			error("File config error");
 			return false;
 		}
@@ -190,30 +190,31 @@ static bool LocationCheckConfig(std::string &line)
 	return true;
 }
 
-bool CheckLocation(std::ifstream &file, std::string &line)
+bool CheckLocation(std::ifstream &file, std::string &line, int &cline)
 {
 	int space;
 	std::string trimstr;
 	while(std::getline(file, line))
 	{
+		cline++;
 		trimstr = line;
 		trimstr = trimSpace(trimstr);
 		space = SpaceCounter(line);
-		if(space != 4 && !line.empty() && !(line.find("location:") != std::string::npos))
+	 	if(space != 4 && !line.empty()  && !(line.find("location:") != std::string::npos))
 		{
-			std::cout << line << " <----- ";
-			error("Wrong space format");
-			return false;
-		}
+			std:: cout << line << " <--- " << "[line: " << cline << "] ";
+			error("Wrong space format or No empty line");
+			return (false);
+		} 
 		if(space != 4 || trimstr.empty())
 			break;
 		if(!isLocationConfigOf(line))
 		{
-			std::cout << line << " <----- ";
+			std:: cout << line << " <--- " << "[line: " << cline << "] ";
 			error("The configuration does not exist");
 			return false;
 		}
-		if(!LocationCheckConfig(line))
+		if(!LocationCheckConfig(line, cline))
 			return false;
 			
 		if(DEBUG)

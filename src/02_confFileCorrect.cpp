@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 21:34:37 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/19 18:26:19 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/20 16:50:57 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ bool confFileCorrect(const char **argv)
 	int listen_cont = 0;
 	int location_cont = 0;
 	int server_cont = 0;
+	int cline = 1;
 	bool firts_time = true;
 	
 	std::vector<int> Allport;
@@ -113,18 +114,18 @@ bool confFileCorrect(const char **argv)
 			space = SpaceCounter(line);
 			if(space != 0 && space != 2)
 			{
-				std:: cout << line << " <--- "; 
+				std:: cout << line << " <--- " << "[line: " << cline << "] " ; 
 				error("Wrong space format");
 				filename.close();
-				return(configError());
+				return(false);
 			}
 			
 			if(!FirstCheck(line, space, server_cont))
 			{
-				std::cout << line << " <---- ";
+				std:: cout << line << " <--- " << "[line: " << cline << "] " ;
 				error("Check error");
 				filename.close();
-				return(configError());
+				return(false);
 			}
 			
 			if(DEBUG)
@@ -138,10 +139,10 @@ bool confFileCorrect(const char **argv)
 				iss >> option >> address;
 				if((port = checkAddress(address)) == -1)
 				{
-					std::cout << line << "<----";
+					std:: cout << line << " <--- " << "[line: " << cline << "] " ;
 					error("Check Address error");
 					filename.close();
-					return(configError());
+					return(false);
 				}
 				Allport.push_back(port);
 			}
@@ -150,12 +151,12 @@ bool confFileCorrect(const char **argv)
 			{
 				location_cont ++;
 				//std::cout << "******Compruebo el bloque location******\n";
-				if(!CheckLocation(filename, line))
+				if(!CheckLocation(filename, line, cline))
 				{
-					error("Error Location Config");
 					filename.close();
-					return(configError());
+					return(false);
 				}
+				cline--;
 			}
 
 			if(line.find("server:") != std::string::npos && space == 0)
@@ -166,7 +167,7 @@ bool confFileCorrect(const char **argv)
 					{
 						error("Error: Bad configuration");
 						filename.close();
-						return(configError());
+						return(false);
 					}
 					listen_cont = 0;
 					location_cont = 0;
@@ -174,12 +175,12 @@ bool confFileCorrect(const char **argv)
 				firts_time = false;
 			}
 		}
+		cline++;
 	}
 	if(filename.eof())
 	{
 		if(listen_cont == 0 || location_cont == 0)
 		{
-			std::cout << "entra\n";
 			filename.close();
 			return(configError());
 		}
@@ -188,7 +189,7 @@ bool confFileCorrect(const char **argv)
 	if(!Checkport(Allport))
 	{
 		error("Error Repeated port");
-		return(configError());
+		return(false);
 	}
 	return (configOK());
 }

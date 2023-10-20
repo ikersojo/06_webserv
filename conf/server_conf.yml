@@ -2,7 +2,7 @@ server:
   servername: ANDONI
   listen:    localhost:80
   root: "./www/site1"
-  location: "/"
+  location: a
     file: "./www/site1/index.html"
     allow: GET POST
     buffer_size: 4096
@@ -11,8 +11,8 @@ server:
   location: "/redir"
     redirect: "/"
   location: "/favicon.ico"
-    root: "/icons/"
     allow: POST GET
+    root: "/icons/"
     file: "./www/site1/icon1.png"
   location: "/images/sample"
     file: "./www/site1/images/sample_image1.jpg"
@@ -20,3 +20,5 @@ server:
     cgi: "sh"
     file: "cgi-bin"
     root: "ROOT"
+
+    
