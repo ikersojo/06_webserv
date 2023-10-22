@@ -1,0 +1,54 @@
+server:
+  servername: site1_1.com
+  listen: 127.0.0.1:61001
+  root: "./www/site1"
+  location: / 
+    file: "index.html"
+  location: "/favicon.ico"
+    file: "icon1.png"
+  location: "/images/sample"
+    file: "images/sample_image1.jpg"
+  location: "/goto42"
+    redirect: "www.42urduliz.com"
+
+server:
+  servername: site1_2.com
+  listen: 127.0.0.1:61002
+  root: "./www/site1"
+  location: / 
+    file: "index.html"
+    allow: GET POST DELETE
+    buffer_size: 4096
+  location: "/favicon.ico"
+    file: "icon1.png"
+  location: "/images/sample"
+    file: "images/sample_image1.jpg"
+  location: "/cgi-bin/print.out"
+    file: "./cgi-bin/print.out"
+  location: "/vault"
+    file: "vault"
+    autoindex: on
+  location: "/goto42"
+    redirect: "www.42urduliz.com"
+
+server:
+  servername: site1_3.com
+  listen: 127.0.0.1:61003
+  root: "./www/site1"
+  location: / 
+    file: "index.html"
+    allow: GET POST DELETE
+    buffer_size: 4096
+    autoindex: on
+    error_page: "404" "404.html"
+  location: "/favicon.ico"
+    file: "icon1.png"
+  location: "/images/sample"
+    file: "images/sample_image1.jpg"
+  location: "/cgi-bin/print.out"
+    file: "/cgi-bin/print.out"
+  location: "/vault"
+    file: "vault"
+    autoindex: on
+  location: "/goto42"
+    redirect: "www.42urduliz.com"

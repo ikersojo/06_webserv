@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_00_main.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/20 15:14:00 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/22 10:14:53 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,15 +113,30 @@ std::string		ResponseBuilder::computeResponse(void)
 
 	// Checks ok, build response based on the request type:
 	if (this->_ok && this->_requestParams[0] == "GET")
+	{
+		debug("...GET request identified");
 		return (this->getResponse());
+	}
 	else if (this->_ok && this->_requestParams[0] == "POST")
+	{
+		debug("...POST request identified");
 		return (this->postResponse());
+	}
 	else if (this->_ok && this->_requestParams[0] == "DELETE")
+	{
+		debug("...DELETE request identified");
 		return (this->deleteResponse());
+	}
 	else if (this->_ok)
+	{
+		error("Request OK, but method not implemented");
 		return (this->errorResponse(405));
+	}
 	else
+	{
+		error("Request is not OK");
 		return (this->errorResponse(500));
+	}
 }
 
 
@@ -165,8 +180,8 @@ void	ResponseBuilder::checkLocation(std::string trimmedURL)
 					}
 				}
 				closedir(dir);
-				if (DEBUG)
-					this->_config->printConfig();
+				// if (DEBUG)
+				// 	this->_config->printConfig();
 			}
 		}
 		i++;

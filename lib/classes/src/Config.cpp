@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/20 15:16:33 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/22 22:11:56 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,46 +54,44 @@ std::vector<std::string>	getServerNames(const std::string & configFile) {
 	return (serverNames);
 }
 
-void    Config::setAIFile(size_t i, std::string url, std::string path, std::string file)
+void    Config::setAIFile(size_t i, std::string url, std::string dir, std::string file)
 {
-    std::string fullPath;
-    fullPath = path + file;
-    this->_autoindex[i][url] = false;
-    this->_redir[i][url] = false;
-    this->_cgi[i][url] = false;
-    this->_root[i][url] = path;
-    this->_file[i][url] = fullPath;
-    this->_allowedGET[i][url] = true;
-    this->_allowedPOST[i][url] = false;
-    this->_allowedDELETE[i][url] = false;
-    //this->_errorPage[i][url] = “./www/def404.html”;
-    this->_bufferSize[i][url] = 4096;
+	this->_autoindex[i][url] = false;
+	this->_redir[i][url] = false;
+	this->_cgi[i][url] = false;
+	this->_root[i][url] = dir;
+	this->_file[i][url] = file;
+	this->_allowedGET[i][url] = true;
+	this->_allowedPOST[i][url] = false;
+	this->_allowedDELETE[i][url] = false;
+	//this->_errorPage[i][url] = “./www/def404.html”;
+	this->_bufferSize[i][url] = 4096;
 }
-void    Config::setAIDir(size_t i, std::string url, std::string path)
+void    Config::setAIDir(size_t i, std::string url, std::string dir)
 {
-    this->_autoindex[i][url] = true;
-    this->_redir[i][url] = false;
-    this->_cgi[i][url] = false;
-    this->_root[i][url] = path;
-    this->_file[i][url] = path;
-    this->_allowedGET[i][url] = true;
-    this->_allowedPOST[i][url] = false;
-    this->_allowedDELETE[i][url] = false;
-    //this->_errorPage[i][url] = “./www/def404.html”;
-    this->_bufferSize[i][url] = 4096;
+	this->_autoindex[i][url] = true;
+	this->_redir[i][url] = false;
+	this->_cgi[i][url] = false;
+	this->_root[i][url] = dir;
+	this->_file[i][url] = dir;
+	this->_allowedGET[i][url] = true;
+	this->_allowedPOST[i][url] = false;
+	this->_allowedDELETE[i][url] = false;
+	//this->_errorPage[i][url] = “./www/def404.html”;
+	this->_bufferSize[i][url] = 4096;
 }
 void    Config::setDeletePath(size_t i, std::string url, std::string task)
 {
-    this->_autoindex[i][url] = false;
-    this->_redir[i][url] = false;
-    this->_cgi[i][url] = false;
-    this->_file[i][url] = task;
-    this->_allowedGET[i][url] = false;
-    this->_allowedPOST[i][url] = false;
-    this->_allowedDELETE[i][url] = true;
-    //this->_errorPage[i][url] = “./www/def404.html”;
-    this->_bufferSize[i][url] = 4096;
-    this->_handleDELETE[i][url] = "removeFromList";
+	this->_autoindex[i][url] = false;
+	this->_redir[i][url] = false;
+	this->_cgi[i][url] = false;
+	this->_file[i][url] = task;
+	this->_allowedGET[i][url] = false;
+	this->_allowedPOST[i][url] = false;
+	this->_allowedDELETE[i][url] = true;
+	//this->_errorPage[i][url] = “./www/def404.html”;
+	this->_bufferSize[i][url] = 4096;
+	this->_handleDELETE[i][url] = "removeFromList";
 }
 
 // Returns all address:port pairs in each server.
@@ -348,6 +346,21 @@ std::string					Config::getCgi(size_t i, std::string req) { return (_cgiExt[i][r
 std::string					Config::getHandlePOST(size_t i, std::string req) { return (this->_handlePOST[i][req]); }
 
 std::string					Config::getHandleDELETE(size_t i, std::string req) { return (this->_handleDELETE[i][req]); }
+
+std::string					Config::getFullPath(size_t i, std::string req)
+{
+	std::string	fullPath, root, file;
+
+	root = this->getRoot(i, req);
+	if (root[root.size() - 1] == '/')
+		root = root.substr(0, root.rfind("/"));
+	file = this->getFile(i, req);
+	if (file[file[0]] == '.')
+		file = file.substr(2, file.size());
+	fullPath = root + "/" + file;
+	return (fullPath);
+}
+
 
 bool	Config::isValidRequest(size_t i, std::string req) {
 	std::map < std::string, std::string >::iterator it;

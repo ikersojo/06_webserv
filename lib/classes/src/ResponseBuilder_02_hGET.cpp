@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_02_hGET.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/20 15:17:44 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/22 23:17:07 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,12 @@ std::string	ResponseBuilder::getResponse(void)
 	}
 	else if (this->_config->isCgi(this->_configIndex, this->_requestParams[1]))
 	{
-		debug("CGI requested");
+		debug("..CGI requested");
 		return (this->cgiGETResponse());
 	}
 	else if (this->_config->isAutoIndex(this->_configIndex, this->_requestParams[1]))
 	{
-		debug("autoindex requested");
+		debug("...autoindex requested");
 		return (this->aiResponse());
 	}
 	else
@@ -56,44 +56,65 @@ std::string	ResponseBuilder::redirResponse(void)
 
 std::string	ResponseBuilder::aiResponse(void)
 {
-	std::string	requestedDir = this->_config->getRoot(this->_configIndex, this->_requestParams[1]);
-	std::string	path = this->_requestParams[1];
-
-	DIR* dir = opendir(requestedDir.c_str());
-	if (dir != NULL)
+	std::string	requestedDir;
+	int i = -1;
+	while (++i < 2)
 	{
-		this->_responseStr = "HTTP/1.1 200 OK\r\n";
-		this->_responseStr += "Content-Type: text/html\r\n\r\n";
-		this->_responseStr += "<html><head><title>Index of " + path + "</title></head><body>";
-		this->_responseStr +=  "<h1>Index of " + path + "</h1><ul>";
+		if (i == 0)
+			requestedDir = this->_config->getFullPath(this->_configIndex, this->_requestParams[1]);
+		else
+			requestedDir = this->_config->getRoot(this->_configIndex, this->_requestParams[1]);
+		std::string	path = this->_requestParams[1];
 
-		struct dirent *	entry;
-		while ((entry = readdir(dir)) != NULL)
-		{
-			std::string url = this->_requestParams[1] + "/" + entry->d_name;
-			this->_responseStr += "<li><a href=\"" + this->_requestParams[1] + "/" + entry->d_name + "\">" + entry->d_name + "</a></li>";
-			this->_config->setAIFile(this->_configIndex, url, requestedDir, entry->d_name);
-		}
-		this->_responseStr += "</ul></body></html>";
-		closedir(dir);
-		debug("...files in directory listed and added to config");
 		if (DEBUG)
-			this->_config->printConfig();
+			std::cout << GREY << "[DEBUG: ...openning directory: " << requestedDir << "]" << DEF_COL << std::endl;
 
-		if (this->_config->isValidRequest(this->_configIndex, this->_requestParams[1] + "/index.html"))
+		DIR* dir = opendir(requestedDir.c_str());
+		if (dir != NULL)
 		{
-			this->_requestParams[1] = this->_requestParams[1] + "/index.html";
+			this->_responseStr = "HTTP/1.1 200 OK\r\n";
+			this->_responseStr += "Content-Type: text/html\r\n\r\n";
+			this->_responseStr += "<html><head><title>Index of " + path + "</title></head><body>";
+			this->_responseStr +=  "<h1>Index of " + path + "</h1><ul>";
+
+			struct dirent *	entry;
+			while ((entry = readdir(dir)) != NULL)
+			{
+				std::string name(entry->d_name);
+				if (name != "." && name != "..")
+				{
+					if (entry->d_type == DT_REG)
+					{
+						if (DEBUG)
+							std::cout << GREY << "[DEBUG: ...file found: " << name << "]" << DEF_COL << std::endl;
+						std::string url = "http://" + this->_config->getAddress(this->_configIndex) + ":" + intToString(this->_config->getPort(this->_configIndex)) + this->_requestParams[1] + name;
+						this->_responseStr += "<li><a href=\"" + url + "\">" + name + "</a></li>";
+						this->_config->setAIFile(this->_configIndex, this->_requestParams[1] + name, requestedDir, name);
+					}
+				}
+			}
+			this->_responseStr += "</ul></body></html>";
+			closedir(dir);
+			debug("...files in directory listed and added to config");
+		}
+		else
+			continue;;
+
+
+		std::string root = this->_requestParams[1];
+		if (root[root.size()] != '/')
+			root += "/";
+		if (this->_config->isValidRequest(this->_configIndex, this->_requestParams[1] + "index.html"))
+		{
+			this->_requestParams[1] = this->_requestParams[1] + "index.html";
 			debug("...index file found");
 			return (this->fileResponse());
 		}
 		debug("...auto index response built");
 		return (this->_responseStr);
 	}
-	else
-	{
-		error("Directory not found");
-		return (this->errorResponse(500));
-	}
+	error("Directory not found");
+	return (this->errorResponse(500));
 }
 
 
@@ -106,7 +127,7 @@ std::string	ResponseBuilder::fileResponse(void)
 	std::string			fileExtension;
 	int					fileSize;
 
-	filePath = this->_config->getFile(this->_configIndex, this->_requestParams[1]);
+	filePath = this->_config->getFullPath(this->_configIndex, this->_requestParams[1]);
 	if (DEBUG)
 		std::cout << GREY << "[DEBUG: ...requested file: " << filePath << "]" << DEF_COL << std::endl;
 

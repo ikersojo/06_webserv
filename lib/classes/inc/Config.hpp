@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/20 15:16:14 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/22 13:10:18 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@
 			bool						isRedir(size_t i, std::string req);
 			bool						isCgi(size_t i, std::string req);
 			std::string					getCgi(size_t i, std::string req);
+			std::string					getFullPath(size_t i, std::string req);
 
 			std::string					getHandlePOST(size_t i, std::string req);
 			std::string					getHandleDELETE(size_t i, std::string req);
