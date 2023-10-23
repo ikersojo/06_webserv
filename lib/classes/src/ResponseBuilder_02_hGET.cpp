@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_02_hGET.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/22 23:17:07 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/23 09:46:38 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,22 +56,11 @@ std::string	ResponseBuilder::redirResponse(void)
 
 std::string	ResponseBuilder::aiResponse(void)
 {
-	std::string	requestedDir;
-	int i = -1;
-	while (++i < 2)
-	{
-		if (i == 0)
-			requestedDir = this->_config->getFullPath(this->_configIndex, this->_requestParams[1]);
-		else
-			requestedDir = this->_config->getRoot(this->_configIndex, this->_requestParams[1]);
-		std::string	path = this->_requestParams[1];
+	std::string	path = this->_requestParams[1];
 
-		if (DEBUG)
-			std::cout << GREY << "[DEBUG: ...openning directory: " << requestedDir << "]" << DEF_COL << std::endl;
-
-		DIR* dir = opendir(requestedDir.c_str());
-		if (dir != NULL)
-		{
+	if (_config->isAutoIndex(_configIndex, path)) {
+		DIR* dir = opendir((_config->getRoot(_configIndex, path) + path).c_str());
+		if (dir != NULL) {
 			this->_responseStr = "HTTP/1.1 200 OK\r\n";
 			this->_responseStr += "Content-Type: text/html\r\n\r\n";
 			this->_responseStr += "<html><head><title>Index of " + path + "</title></head><body>";
@@ -79,42 +68,24 @@ std::string	ResponseBuilder::aiResponse(void)
 
 			struct dirent *	entry;
 			while ((entry = readdir(dir)) != NULL)
-			{
-				std::string name(entry->d_name);
-				if (name != "." && name != "..")
-				{
-					if (entry->d_type == DT_REG)
-					{
-						if (DEBUG)
-							std::cout << GREY << "[DEBUG: ...file found: " << name << "]" << DEF_COL << std::endl;
-						std::string url = "http://" + this->_config->getAddress(this->_configIndex) + ":" + intToString(this->_config->getPort(this->_configIndex)) + this->_requestParams[1] + name;
-						this->_responseStr += "<li><a href=\"" + url + "\">" + name + "</a></li>";
-						this->_config->setAIFile(this->_configIndex, this->_requestParams[1] + name, requestedDir, name);
-					}
-				}
-			}
+				this->_responseStr += "<li><a href=\"" + path + "/" + entry->d_name + "\">" + entry->d_name + "</a></li>";
 			this->_responseStr += "</ul></body></html>";
 			closedir(dir);
+
 			debug("...files in directory listed and added to config");
-		}
-		else
-			continue;;
+			if (DEBUG)
+				this->_config->printConfig();
+			debug("...auto index response built");
 
-
-		std::string root = this->_requestParams[1];
-		if (root[root.size()] != '/')
-			root += "/";
-		if (this->_config->isValidRequest(this->_configIndex, this->_requestParams[1] + "index.html"))
-		{
-			this->_requestParams[1] = this->_requestParams[1] + "index.html";
-			debug("...index file found");
-			return (this->fileResponse());
+			return (this->_responseStr);
+		} else {
+			error("Directory not found");
+			return (this->errorResponse(500));
 		}
-		debug("...auto index response built");
-		return (this->_responseStr);
+	} else {
+		error("Directory doesn't support autoindex");
+		return (this->errorResponse(403));
 	}
-	error("Directory not found");
-	return (this->errorResponse(500));
 }
 
 
