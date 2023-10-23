@@ -6,11 +6,26 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 11:57:48 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/23 16:42:31 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/23 18:47:48 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/webserv.hpp"
+
+bool doesNotStartWithDot(std::string &line)
+{
+	std::string config, dir;
+	std::istringstream iss(line);
+	iss >> config >> dir;
+
+	dir = trimChars(dir, "\"");
+	if(dir.empty())
+		return false;
+	if(dir.length() >= 1 && (dir[0] == '/' || (dir[0] == '.' && dir[1] == '/')))
+		return false;
+	return true;
+}
+
 
 bool Empty(std::string &line)
 {
@@ -180,11 +195,20 @@ static bool LocationCheckConfig(std::string &line, int &cline)
 	}
 	if(config == "file:")
 	{
-		if(!Empty(line))
+		if(!Empty(line) || !doesNotStartWithDot(line))
 		{
 			std:: cout << line << " <--- " << "[line: " << cline << "] ";
 			error("File config error");
 			return false;
+		}
+	}
+	if(config == "root:")
+	{
+		if(!Empty(line) || !doesNotStartWithDot(line))
+		{
+			std:: cout << line << " <--- " << "[line: " << cline << "] ";
+			error("root config error");
+			return false;	
 		}
 	}
 	return true;

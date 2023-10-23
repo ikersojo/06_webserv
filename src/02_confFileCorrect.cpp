@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 21:34:37 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/23 15:49:40 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/23 18:39:19 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static bool FirstCheck(std::string &line, int space, int &server_cont)
 		}
 		else if(line.find("root:") != std::string::npos)
 		{
-			if(checkline != "root:" || !null.empty())
+			if(checkline != "root:" || !null.empty() || !doesNotStartWithDot(line))
 				return false;
 			return true;
 		}
