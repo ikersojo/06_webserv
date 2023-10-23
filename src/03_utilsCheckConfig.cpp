@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 11:57:48 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/20 17:15:35 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/23 16:42:31 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ bool Empty(std::string &line)
 	std::string config, null;
 	std::istringstream iss(line);
 	iss >> config >> null;
-	
+	null = trimChars(null, "\"");
 	if(null.empty())
 		return false;
 	return true;

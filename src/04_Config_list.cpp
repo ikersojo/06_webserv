@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:34:41 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/23 16:36:22 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/23 16:39:13 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ bool AutoIndex(std::string &line)
 	iss >> config >> option >> null;
 	std::transform(option.begin(), option.end(), option.begin(), ::tolower);
 
-	if(!null.empty())
+	if(!null.empty() || option.empty())
 		return false;
 	option = trimChars(option, "\"");
 	if(option != "on" && option != "off")
