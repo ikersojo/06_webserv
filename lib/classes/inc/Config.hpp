@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/23 10:09:18 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/23 10:23:04 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 	#define D_HANDLE_POST			"handle_post:"
 	#define D_HANDLE_DELETE			"handle_delete:"
 
-	#define GENERAL_LOCATION_ROUTE	""
+	#define GENERAL_LOCATION_ROUTE	"GENERAL"
 
 	#define EXTRACT_CLEAN_VALUE(line) trimChars((line).substr((line).find(":") + 1), " \"")
 	#define STRING_CONTAINS(str, target) ((str).find(target) != std::string::npos)

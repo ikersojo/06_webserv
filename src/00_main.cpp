@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:53:16 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/20 15:08:36 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/23 10:18:35 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,9 @@ int		main(int argc, const char ** argv)
 	echoOff();
 	printLogo();
 	debug("starting main program");
-	if (syntaxCorrect(argc, argv) && confFileCorrect(argv))
-	{
+	(void)argc;
+	//if (syntaxCorrect(argc, argv) && confFileCorrect//(argv))
+	//{
 		debug("syntax and config file are valid");
 		std::string configFile(argv[1]);
 
@@ -32,7 +33,7 @@ int		main(int argc, const char ** argv)
 
 		delete config;
 		echoOn();
-	}
+	//}
 	return (0);
 }
 

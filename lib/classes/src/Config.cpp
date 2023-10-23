@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/23 10:10:01 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/23 10:49:57 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,11 +247,9 @@ std::vector< std::vector<Location> >	getAllServerLocs(const std::string & config
 	std::vector< std::vector<Location> > allServerLocs;
 	std::vector<Location> serverLocs;
 	Location general, tmpGeneral;
-	
+
 	setLocation(inFile, line, general);
-	tmpGeneral = general;
-	tmpGeneral.path = GENERAL_LOCATION_ROUTE;
-	serverLocs.push_back(tmpGeneral);
+	serverLocs.push_back((tmpGeneral = general, tmpGeneral.path = GENERAL_LOCATION_ROUTE, tmpGeneral));
 	while (line.find(D_LOCATION) != std::string::npos || getline(inFile, line)) {
 		while (line.find(D_LOCATION) != std::string::npos || getline(inFile, line)) {
 			if (line.find(D_SERVER) != std::string::npos) break;
@@ -265,12 +263,10 @@ std::vector< std::vector<Location> >	getAllServerLocs(const std::string & config
 		if (line.find(D_SERVER) != std::string::npos) {
 			general = Location();
 			setLocation(inFile, line, general);
-			tmpGeneral = general;
-			tmpGeneral.path = GENERAL_LOCATION_ROUTE;
-			serverLocs.push_back(tmpGeneral);
 		}
 		allServerLocs.push_back(serverLocs);
 		serverLocs.clear();
+		serverLocs.push_back((tmpGeneral = general, tmpGeneral.path = GENERAL_LOCATION_ROUTE, tmpGeneral));
 	}
 	inFile.close();
 	return (allServerLocs);

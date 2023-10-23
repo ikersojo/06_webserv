@@ -21,4 +21,21 @@ server:
     file: "cgi-bin"
     root: "ROOT"
 
-    
+server:
+  listen: localhost:120
+  allow: DELETE
+  location: "/"
+    root: www
+    allow: GET
+    error_page: 500 "500.html"
+    file: "index.html"
+
+server:
+  listen: localhost:150
+  allow: DELETE
+  location: "/"
+    root: www
+    allow: GET
+    error_page: 500 "500.html"
+    file: "index.html"
+
