@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 21:34:37 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/20 16:50:57 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/23 15:49:40 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static bool FirstCheck(std::string &line, int space, int &server_cont)
 		}
 		else if(line.find("location:") != std::string::npos)
 		{
-			if(checkline != "location:" || option.empty() || !null.empty())
+			if(checkline != "location:" || option.empty() || !null.empty() || !location(line))
 				return false;
 			return true;
 		}

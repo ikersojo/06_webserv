@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:54:15 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/20 16:50:41 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/23 15:48:01 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@
 		bool Buffersize(std::string &line);
 		bool AutoIndex(std::string &line);
 		bool ErrorPage(std::string &line);
+		bool location(std::string &line);
 
 	// --- AUX FUNCTIONS --- //
 
