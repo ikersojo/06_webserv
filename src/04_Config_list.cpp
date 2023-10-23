@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:34:41 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/23 16:39:13 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/23 16:45:31 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,11 +92,12 @@ bool ErrorPage(std::string &line)
 	std::string config, num, str, null;
 	std::istringstream iss(line);
 	iss >> config >> num >> str >> null;
-
-	if(!null.empty())
-		return false;
-
 	num = trimChars(num, "\"");
+	str = trimChars(num, "\"");
+
+	if(!null.empty() || num.empty() || str.empty())
+		return false;
+		
 	if(!isInteger(num))
 	{
 		error("Error number");
