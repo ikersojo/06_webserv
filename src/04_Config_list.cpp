@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:34:41 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/23 16:14:47 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/23 16:36:22 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,8 @@ bool location(std::string &line)
 	
 	str = trimChars(str, "\"");
 	lastchar = str[0];
-	
+	if(str.empty())
+		return false;
 	if (str.length() == 1 && lastchar != '/')
 		return false;
 	else if (str.length() > 1)
