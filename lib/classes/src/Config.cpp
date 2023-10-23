@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/23 10:49:57 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/23 11:33:18 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -324,31 +324,31 @@ int							Config::getPort(size_t i) { return (_port[i]); }
 
 std::string					Config::getAddress(size_t i) { return (_address[i]); }
 
-std::string					Config::getFile(size_t i, std::string req) { return (_file[i][req]); }
+std::string					Config::getFile(size_t i, std::string req) { return (_file[i][getNearestLocation(i, req)]); }
 
-std::string					Config::getRoot(size_t i, std::string req) { return (_root[i][req]); }
+std::string					Config::getRoot(size_t i, std::string req) { return (_root[i][getNearestLocation(i, req)]); }
 
-bool						Config::isAutoIndex(size_t i, std::string req) { return (this->_autoindex[i][req]); }
+bool						Config::isAutoIndex(size_t i, std::string req) { return (this->_autoindex[i][getNearestLocation(i, req)]); }
 
-bool						Config::isGET(size_t i, std::string req) { return (this->_allowedGET[i][req]); }
+bool						Config::isGET(size_t i, std::string req) { return (this->_allowedGET[i][getNearestLocation(i, req)]); }
 
-bool						Config::isPOST(size_t i, std::string req) { return (this->_allowedPOST[i][req]); }
+bool						Config::isPOST(size_t i, std::string req) { return (this->_allowedPOST[i][getNearestLocation(i, req)]); }
 
-bool						Config::isDELETE(size_t i, std::string req) { return (this->_allowedDELETE[i][req]); }
+bool						Config::isDELETE(size_t i, std::string req) { return (this->_allowedDELETE[i][getNearestLocation(i, req)]); }
 
-std::map<int, std::string>	Config::getErrorPage(size_t i, std::string req) { return (_errorPage[i][req]); }
+std::map<int, std::string>	Config::getErrorPage(size_t i, std::string req) { return (_errorPage[i][getNearestLocation(i, req)]); }
 
-int							Config::getBufferSize(size_t i, std::string req) { return (_bufferSize[i][req]); }
+int							Config::getBufferSize(size_t i, std::string req) { return (_bufferSize[i][getNearestLocation(i, req)]); }
 
-bool						Config::isRedir(size_t i, std::string req) { return (this->_redir[i][req]); }
+bool						Config::isRedir(size_t i, std::string req) { return (this->_redir[i][getNearestLocation(i, req)]); }
 
-bool						Config::isCgi(size_t i, std::string req) { return (this->_cgi[i][req]); }
+bool						Config::isCgi(size_t i, std::string req) { return (this->_cgi[i][getNearestLocation(i, req)]); }
 
-std::string					Config::getCgi(size_t i, std::string req) { return (_cgiExt[i][req]); }
+std::string					Config::getCgi(size_t i, std::string req) { return (_cgiExt[i][getNearestLocation(i, req)]); }
 
-std::string					Config::getHandlePOST(size_t i, std::string req) { return (this->_handlePOST[i][req]); }
+std::string					Config::getHandlePOST(size_t i, std::string req) { return (this->_handlePOST[i][getNearestLocation(i, req)]); }
 
-std::string					Config::getHandleDELETE(size_t i, std::string req) { return (this->_handleDELETE[i][req]); }
+std::string					Config::getHandleDELETE(size_t i, std::string req) { return (this->_handleDELETE[i][getNearestLocation(i, req)]); }
 
 std::string					Config::getFullPath(size_t i, std::string req)
 {
@@ -443,6 +443,8 @@ std::string	Config::getNearestLocation(size_t i, std::string uri) {
 		if (pos != std::string::npos) {
 			if (pos == 0 && catchAll)
 				return ("/");
+			else if (pos == 0 && !catchAll)
+				return (GENERAL_LOCATION_ROUTE);
 			else
 				uri = uri.substr(0, pos);
 		} else if (catchAll)

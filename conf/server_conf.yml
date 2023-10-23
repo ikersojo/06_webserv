@@ -2,8 +2,8 @@ server:
   servername: ANDONI
   listen:    localhost:80
   root: "./www/site1"
-  location: a
-    file: "./www/site1/index.html"
+  location: /
+    file: "index.html"
     allow: GET POST
     buffer_size: 4096
     error_page: 404 "www/def404.html"
@@ -12,30 +12,12 @@ server:
     redirect: "/"
   location: "/favicon.ico"
     allow: POST GET
-    root: "/icons/"
-    file: "./www/site1/icon1.png"
+    file: "icon1.png"
   location: "/images/sample"
-    file: "./www/site1/images/sample_image1.jpg"
+    file: "images/sample_image1.jpg"
   location: "/cgi-bin"
     cgi: "sh"
     file: "cgi-bin"
     root: "ROOT"
-
-server:
-  listen: localhost:120
-  allow: DELETE
-  location: "/"
-    root: www
-    allow: GET
-    error_page: 500 "500.html"
-    file: "index.html"
-
-server:
-  listen: localhost:150
-  allow: DELETE
-  location: "/"
-    root: www
-    allow: GET
-    error_page: 500 "500.html"
-    file: "index.html"
-
+  location: /ai
+    autoindex: "on"

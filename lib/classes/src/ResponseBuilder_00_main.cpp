@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_00_main.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/22 10:14:53 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/23 10:58:17 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,15 +101,15 @@ std::string		ResponseBuilder::computeResponse(void)
 		error("webserv only work with HTTP/1.1 requests");
 		return (this->errorResponse(505));
 	}
-	if (this->_ok && !this->_config->isValidRequest(this->_configIndex, this->_requestParams[1]))
-	{
-		this->checkLocation(this->_requestParams[1]);
-		if (this->_ok && !this->_config->isValidRequest(this->_configIndex, this->_requestParams[1]))
-		{
-			error("Not valid url");
-			return (this->errorResponse(404));
-		}
-	}
+	//if (this->_ok && !this->_config->isValidRequest(this->_configIndex, this->_requestParams[1]))
+	//{
+	//	this->checkLocation(this->_requestParams[1]);
+	//	if (this->_ok && !this->_config->isValidRequest(this->_configIndex, this->_requestParams[1]))
+	//	{
+	//		error("Not valid url");
+	//		return (this->errorResponse(404));
+	//	}
+	//}
 
 	// Checks ok, build response based on the request type:
 	if (this->_ok && this->_requestParams[0] == "GET")

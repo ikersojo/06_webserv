@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/23 09:46:38 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/23 11:58:43 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,8 @@ std::string	ResponseBuilder::aiResponse(void)
 	std::string	path = this->_requestParams[1];
 
 	if (_config->isAutoIndex(_configIndex, path)) {
-		DIR* dir = opendir((_config->getRoot(_configIndex, path) + path).c_str());
+		std::cout << (_config->getRoot(_configIndex, path) + (path.substr(_config->getNearestLocation(_configIndex, path).size()))).c_str() << std::endl;
+		DIR* dir = opendir((_config->getRoot(_configIndex, path) + (path.substr(_config->getNearestLocation(_configIndex, path).size()))).c_str());
 		if (dir != NULL) {
 			this->_responseStr = "HTTP/1.1 200 OK\r\n";
 			this->_responseStr += "Content-Type: text/html\r\n\r\n";
@@ -71,16 +72,9 @@ std::string	ResponseBuilder::aiResponse(void)
 				this->_responseStr += "<li><a href=\"" + path + "/" + entry->d_name + "\">" + entry->d_name + "</a></li>";
 			this->_responseStr += "</ul></body></html>";
 			closedir(dir);
-
-			debug("...files in directory listed and added to config");
-			if (DEBUG)
-				this->_config->printConfig();
-			debug("...auto index response built");
-
 			return (this->_responseStr);
 		} else {
-			error("Directory not found");
-			return (this->errorResponse(500));
+			return (this->fileResponse());
 		}
 	} else {
 		error("Directory doesn't support autoindex");
@@ -98,7 +92,12 @@ std::string	ResponseBuilder::fileResponse(void)
 	std::string			fileExtension;
 	int					fileSize;
 
-	filePath = this->_config->getFullPath(this->_configIndex, this->_requestParams[1]);
+	std::string nl = _config->getNearestLocation(_configIndex, _requestParams[1]);
+	std::string actualFile = _requestParams[1].substr(nl.size());
+	
+	if (actualFile.size() == 0)
+		actualFile = "/" + _config->getFile(_configIndex, nl);
+	filePath = _config->getRoot(_configIndex, nl) + actualFile;
 	if (DEBUG)
 		std::cout << GREY << "[DEBUG: ...requested file: " << filePath << "]" << DEF_COL << std::endl;
 
