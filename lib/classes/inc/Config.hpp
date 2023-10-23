@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/22 13:10:18 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/23 10:09:18 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,22 @@
 
 	#include "../../aux/inc/aux.hpp"
 
-	#define D_SERVER		"server:"
-	#define D_SERVER_NAME	"servername:"
-	#define D_LISTEN		"listen:"
-	#define D_LOCATION		"location:"
-	#define D_ROOT			"root:"
-	#define D_FILE			"file:"
-	#define D_AUTO_INDEX	"autoindex:"
-	#define D_ALLOW			"allow:"
-	#define D_ERROR_PAGE	"error_page:"
-	#define D_BUFFER_SIZE	"buffer_size:"
-	#define D_CGI			"cgi:"
-	#define D_REDIR			"redirect:"
-	#define D_HANDLE_POST	"handle_post:"
-	#define D_HANDLE_DELETE	"handle_delete:"
+	#define D_SERVER				"server:"
+	#define D_SERVER_NAME			"servername:"
+	#define D_LISTEN				"listen:"
+	#define D_LOCATION				"location:"
+	#define D_ROOT					"root:"
+	#define D_FILE					"file:"
+	#define D_AUTO_INDEX			"autoindex:"
+	#define D_ALLOW					"allow:"
+	#define D_ERROR_PAGE			"error_page:"
+	#define D_BUFFER_SIZE			"buffer_size:"
+	#define D_CGI					"cgi:"
+	#define D_REDIR					"redirect:"
+	#define D_HANDLE_POST			"handle_post:"
+	#define D_HANDLE_DELETE			"handle_delete:"
+
+	#define GENERAL_LOCATION_ROUTE	""
 
 	#define EXTRACT_CLEAN_VALUE(line) trimChars((line).substr((line).find(":") + 1), " \"")
 	#define STRING_CONTAINS(str, target) ((str).find(target) != std::string::npos)
