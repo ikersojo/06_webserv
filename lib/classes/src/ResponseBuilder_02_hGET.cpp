@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/24 17:56:56 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/24 18:00:37 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,8 +120,6 @@ std::string	ResponseBuilder::fileResponse(void)
 	fileContent = fileContentStream.str();
 	fileSize = fileContent.size();
 	inFile.close();
-
-	std::cout << "file content [" << fileContent << "]\n"; //
 
 	this->_responseStr = "HTTP/1.1 200 OK\r\n";
 
