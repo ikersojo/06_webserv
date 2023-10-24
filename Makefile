@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+         #
+#    By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/23 16:00:17 by isojo-go          #+#    #+#              #
-#    Updated: 2023/10/01 16:45:26 by isojo-go         ###   ########.fr        #
+#    Updated: 2023/10/23 12:23:40 by aarrien-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ BINDIR		=	bin
 ## Libraries / Classes:
 LIBCLASS	=	./lib/classes
 LIBAUX		=	./lib/aux
-LIBS		=	$(LIBCLASS)/libclasses.a $(LIBAUX)/libaux.a 
+LIBS		=	$(LIBCLASS)/libclasses.a $(LIBAUX)/libaux.a
 
 ## Header Files (dedicated and from libraries):
 HEADERS	=	-I ./inc -I $(LIBCLASS)/inc -I $(LIBAUX)/inc
@@ -36,7 +36,7 @@ OBJ		=	$(SRC:$(SRCDIR)/%$(EXT)=$(OBJDIR)/%.o)
 
 ## Compilation flags:
 CC			=	c++
-CFLAGS		=	-Wall -Wextra -Werror -std=c++98 -pedantic -Wshadow
+CFLAGS		=	-Wall -Wextra -Werror -std=c++98 -pedantic -Wshadow -fsanitize=address
 RM			=	rm -rf
 DEBUG		=
 

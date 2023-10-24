@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_03_hPOST.cpp                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/19 19:41:13 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/23 12:05:30 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ std::string	ResponseBuilder::postResponse(void)
 		error("POST is not allowed");
 		return(this->errorResponse(405));
 	}
+	
 	if (this->_config->getHandlePOST(this->_configIndex, this->_requestParams[1]) == "addToList")
 	{
 		this->addToList();
@@ -140,7 +141,7 @@ void	ResponseBuilder::writeToJsonFile(std::string task, std::string filePath)
 	// Insert the new task at the position after the first "[" character
 	if (countOccurrences(fileContent, '\"') > 0)
 		fileContent.insert(position + 1, "\"" + task + "\", ");
-	else 
+	else
 		fileContent.insert(position + 1, "\"" + task + "\"");
 
 	// Open the file in output mode to write the updated content

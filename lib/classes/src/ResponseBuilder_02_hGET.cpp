@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/23 11:58:43 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/24 17:08:59 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ std::string	ResponseBuilder::fileResponse(void)
 
 	std::string nl = _config->getNearestLocation(_configIndex, _requestParams[1]);
 	std::string actualFile = _requestParams[1].substr(nl.size());
-	
+
 	if (actualFile.size() == 0)
 		actualFile = "/" + _config->getFile(_configIndex, nl);
 	filePath = _config->getRoot(_configIndex, nl) + actualFile;

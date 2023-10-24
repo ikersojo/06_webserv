@@ -1,23 +1,63 @@
 server:
   servername: ANDONI
   listen:    localhost:80
-  root: "./www/site1"
-  location: /
+  root: "www/site1"
+  location: "/"
     file: "index.html"
     allow: GET POST
     buffer_size: 4096
     error_page: 404 "www/def404.html"
     error_page: 406 "error.page"
+    autoindex: "on"
   location: "/redir"
     redirect: "/"
   location: "/favicon.ico"
     allow: POST GET
     file: "icon1.png"
   location: "/images/sample"
-    file: "images/sample_image1.jpg"
+    file: images/sample_image1.jpg
   location: "/cgi-bin"
     cgi: "sh"
     file: "cgi-bin"
     root: "ROOT"
   location: /ai
+    root: www
     autoindex: "on"
+  location: /post
+    root: "www/todoSite"
+    file: "index.html"
+  location: /api
+    allow: GET POST DELETE
+
+server:
+  servername: SITE1
+  listen: localhost:60001
+  root: www/site1
+  location: "/"
+    file: index.html
+  location: "/images/sample"
+    file: images/sample_image1.jpg
+  location: "/favicon.ico"
+    file: "icon1.png"
+
+server:
+  servername: SITE2
+  listen: localhost:60002
+  root: www/site2
+  location: "/"
+    file: index.html
+  location: "/images/sample"
+    file: images/sample_image2.png
+  location: "/favicon.ico"
+    file: "icon2.png"
+
+server:
+  servername: SITE3
+  listen: localhost:60003
+  root: www/site3
+  location: "/"
+    file: index.html
+  location: "/images/sample"
+    file: images/sample_image3.png
+  location: "/favicon.ico"
+    file: "icon3.png"

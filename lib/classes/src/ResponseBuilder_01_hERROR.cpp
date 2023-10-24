@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/23 09:50:09 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/24 16:28:34 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ std::string	ResponseBuilder::errorResponse(int code)
 	std::string			fileContent;
 
 	errorPages = this->_config->getErrorPage(this->_configIndex, _config->getNearestLocation(_configIndex, this->_requestParams[1]));
-	if (errorPages[code] != "") {
+	if (!errorPages.empty() && errorPages[code] != "") {
 		inFile.open(errorPages[code]);
 		if (!inFile.is_open())
 			error("Requested file not found");

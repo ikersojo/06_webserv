@@ -71,7 +71,7 @@
 <script>
 // Function to fetch and update the task list
 function updateTaskList() {
-	fetch("http://localhost:61003/api")
+	fetch("http://localhost:80/api")
 		.then(response => {
 			if (!response.ok) {
 				throw new Error("Network response was not ok");
@@ -100,7 +100,7 @@ function updateTaskList() {
 // Function to delete a task
 function deleteTask(task) {
 	// Send a DELETE request to the server
-	fetch(`http://localhost:61003/api/${task}`, {
+	fetch(`http://localhost:80/api/${task}`, {
 		method: "DELETE",
 	})
 	.then(response => {
@@ -131,7 +131,7 @@ document.getElementById("todoForm").addEventListener("submit", function(event) {
 	const postData = { task: task };
 
 	// Send a POST request to the server
-	fetch("http://localhost:61003/api", {
+	fetch("http://localhost:80/api", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
