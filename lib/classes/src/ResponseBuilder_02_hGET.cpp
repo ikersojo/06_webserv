@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/24 17:08:59 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/24 17:56:56 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,12 +94,21 @@ std::string	ResponseBuilder::fileResponse(void)
 
 	std::string nl = _config->getNearestLocation(_configIndex, _requestParams[1]);
 	std::string actualFile = _requestParams[1].substr(nl.size());
+	std::string file = _config->getFile(_configIndex, nl);
 
-	if (actualFile.size() == 0)
-		actualFile = "/" + _config->getFile(_configIndex, nl);
+	if (actualFile.size() == 0 && file.size() != 0)
+		actualFile = "/" + file;
 	filePath = _config->getRoot(_configIndex, nl) + actualFile;
+
 	if (DEBUG)
 		std::cout << GREY << "[DEBUG: ...requested file: " << filePath << "]" << DEF_COL << std::endl;
+
+	struct stat statbuf;
+
+	if (stat(filePath.c_str(), &statbuf) == 0 && !S_ISREG(statbuf.st_mode)) {
+		error("Requested file is a directory");
+		return (this->errorResponse(404));
+	}
 
 	inFile.open(filePath);
 	if (!inFile.is_open())
@@ -111,6 +120,8 @@ std::string	ResponseBuilder::fileResponse(void)
 	fileContent = fileContentStream.str();
 	fileSize = fileContent.size();
 	inFile.close();
+
+	std::cout << "file content [" << fileContent << "]\n"; //
 
 	this->_responseStr = "HTTP/1.1 200 OK\r\n";
 
