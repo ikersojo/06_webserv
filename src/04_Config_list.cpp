@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:34:41 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/23 16:45:31 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/25 17:26:22 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,7 @@ bool Allow(std::string &line)
 			{
 				if(option1 == option2)
 				{
-					std::cout << option1;
-					error(" <--- is repeated");
+					std::cout << option1 << " <--- is repeated\n";
 					return false;
 				}
 				if(!option3.empty())
@@ -43,8 +42,7 @@ bool Allow(std::string &line)
 					{
 						if(option3 == option1 || option2 == option3)
 						{
-							std::cout << option3;
-							error(" <---- is repeated");
+							std::cout << option3 << " <---- is repeated\n";
 							return false;
 						}
 						return true;
@@ -63,7 +61,7 @@ bool Allow(std::string &line)
 bool Buffersize(std::string &line)
 {
 	std::string config;
-	int numb;
+	int numb = 0;
 	std::istringstream iss(line);
 	iss >> config >> numb;
 
@@ -93,7 +91,7 @@ bool ErrorPage(std::string &line)
 	std::istringstream iss(line);
 	iss >> config >> num >> str >> null;
 	num = trimChars(num, "\"");
-	str = trimChars(num, "\"");
+	str = trimChars(str, "\"");
 
 	if(!null.empty() || num.empty() || str.empty())
 		return false;

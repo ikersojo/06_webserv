@@ -9,7 +9,7 @@ server:
     error_page: 404 "www/def404.html"
     error_page: 406 "error.page"
   location: "/redir/"
-    redirect: "/"
+    redirect: ""
   location: "/favicon.ico/"
     allow: POST GET
     root: "icons/"

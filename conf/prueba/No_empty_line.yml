@@ -1,5 +1,5 @@
 server:
-  servername: John
+  servername: ANDONI
   listen:    localhost:80
   root: "www/site1"
   location: /
@@ -20,7 +20,6 @@ server:
     cgi: "sh"
     file: "cgi-bin"
     root: "ROOT"
-
 server:
   servername: ANDONI
   listen:    localhost:80

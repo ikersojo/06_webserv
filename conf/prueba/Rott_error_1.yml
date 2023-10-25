@@ -12,7 +12,7 @@ server:
     redirect: "/"
   location: "/favicon.ico/"
     allow: POST GET
-    root: "icons/"
+    root: "./icons/"
     file: "www/site1/icon1.png"
   location: "/images/sample/"
     file: "www/site1/images/sample_image1.jpg"

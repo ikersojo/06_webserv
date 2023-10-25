@@ -2,7 +2,7 @@ server:
   servername: John
   listen:    localhost:80
   root: "www/site1"
-  location: /
+  location: 
     file: "www/site1/index.html"
     allow: GET POST
     buffer_size: 4096

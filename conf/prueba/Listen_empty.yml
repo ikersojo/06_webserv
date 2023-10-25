@@ -1,6 +1,6 @@
 server:
   servername: John
-  listen:    localhost:80
+  listen: 
   root: "www/site1"
   location: /
     file: "www/site1/index.html"

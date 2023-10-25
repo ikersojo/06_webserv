@@ -1,5 +1,5 @@
 server:
-  servername: John
+  servername: 
   listen:    localhost:80
   root: "www/site1"
   location: /

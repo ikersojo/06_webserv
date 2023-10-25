@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 21:34:37 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/23 18:39:19 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/25 17:40:30 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static bool	configOK(void)
 
 static bool	configError(void)
 {
-	error("Error: Config File: the provided file is not valid");
+	error("Config File: the provided file is not valid");
 	return (false);
 }
 
@@ -40,7 +40,7 @@ static bool FirstCheck(std::string &line, int space, int &server_cont)
 	{
 		if(server_cont == 0)
 		{
-			error("Error No server:");
+			error("No server:");
 			return false;
 		}
 		iss >> checkline >> option >> null;
@@ -165,7 +165,7 @@ bool confFileCorrect(const char **argv)
 				{
 					if(listen_cont == 0 || location_cont == 0)
 					{
-						error("Error: Bad configuration");
+						error("Bad configuration");
 						filename.close();
 						return(false);
 					}
