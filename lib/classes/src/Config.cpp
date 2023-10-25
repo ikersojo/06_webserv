@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/25 15:21:29 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/25 15:24:11 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -325,9 +325,9 @@ int							Config::getPort(size_t i) { return (_port[i]); }
 std::string					Config::getAddress(size_t i) { return (_address[i]); }
 
 std::string					Config::getFile(size_t i, std::string req) {
-	if (_file.size() > i && _file[i].find(getNearestLocation(i, req)) != _file[i].end())
-		return (_file[i][getNearestLocation(i, req)]);
-	return (std::string());
+	//if (_file.size() > i && _file[i].find(getNearestLocation(i, req)) != _file[i].end())
+	return (_file[i][getNearestLocation(i, req)]);
+	//return (std::string());
 }
 
 std::string					Config::getRoot(size_t i, std::string req) { return (_root[i][getNearestLocation(i, req)]); }

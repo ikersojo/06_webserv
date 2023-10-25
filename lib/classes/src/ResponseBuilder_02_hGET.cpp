@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/25 14:55:46 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/25 15:30:02 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ std::string	ResponseBuilder::redirResponse(void)
 	return (this->_responseStr);
 }
 
-
 std::string	ResponseBuilder::aiResponse(void)
 {
 	std::string	path = this->_requestParams[1];
@@ -76,13 +75,12 @@ std::string	ResponseBuilder::aiResponse(void)
 			this->_responseStr += "</ul></body></html>";
 			closedir(dir);
 			return (this->_responseStr);
-		} else {
-			return (this->fileResponse());
 		}
 	} else {
 		error("Directory doesn't support autoindex");
 		return (this->errorResponse(403));
 	}
+	return (this->fileResponse());
 }
 
 
