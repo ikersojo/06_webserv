@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/24 18:14:49 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/25 16:55:15 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ std::string	ResponseBuilder::errorResponse(int code)
 	std::ostringstream	fileContentStream;
 	std::string			fileContent;
 
-	errorPages = this->_config->getErrorPage(this->_configIndex, _config->getNearestLocation(_configIndex, this->_requestParams[1]));
+	if (!_requestStr.empty())
+		errorPages = this->_config->getErrorPage(this->_configIndex, _config->getNearestLocation(_configIndex, this->_requestParams[1]));
 	if (!errorPages.empty() && errorPages[code] != "") {
 		inFile.open(errorPages[code]);
 		if (!inFile.is_open())

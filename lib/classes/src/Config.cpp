@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/25 15:24:11 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/25 16:49:53 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -341,9 +341,9 @@ bool						Config::isPOST(size_t i, std::string req) { return (this->_allowedPOST
 bool						Config::isDELETE(size_t i, std::string req) { return (this->_allowedDELETE[i][getNearestLocation(i, req)]); }
 
 std::map<int, std::string>	Config::getErrorPage(size_t i, std::string req) {
-	//if (_errorPage.size() > i && _errorPage[i].find(getNearestLocation(i, req)) != _errorPage[i].end())
-	return (_errorPage[i][getNearestLocation(i, req)]);
-	//return (std::map<int, std::string>());
+	if (_errorPage.size() > i && _errorPage[i].find(getNearestLocation(i, req)) != _errorPage[i].end())
+		return (_errorPage[i][getNearestLocation(i, req)]);
+	return (std::map<int, std::string>());
 }
 
 int							Config::getBufferSize(size_t i, std::string req) { return (_bufferSize[i][getNearestLocation(i, req)]); }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/22 22:51:15 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/25 16:41:14 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,8 +286,8 @@ void	Server::readRequest(int locInClient)
 	FD_SET(this->_clientSocket[locInClient], &this->_sendSet);
 
 	debug("...request received and saved");
-	// if (DEBUG) // remove for prod
-	// 	std::cout << YELLOW << "\n---- Received from client ----\n\n" << this->_requestStr[locInClient] << DEF_COL << std::endl;
+	if (DEBUG) // remove for prod
+		std::cout << YELLOW << "\n---- Received from client ----\n\n" << this->_requestStr[locInClient] << DEF_COL << std::endl;
 }
 
 
