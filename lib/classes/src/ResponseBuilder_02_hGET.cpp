@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/25 15:30:02 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/25 15:51:09 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,12 +119,11 @@ std::string	ResponseBuilder::fileResponse(void)
 	this->_responseStr = "HTTP/1.1 200 OK\r\n";
 
 	this->_responseStr += "Content-Type: ";
-	if (filePath.rfind("."))
+	if (filePath.rfind(".") != std::string::npos)
 	{
 		fileExtension = filePath.substr(filePath.rfind("."), filePath.size());
 		if (DEBUG)
 			std::cout << GREY << "[DEBUG: ...file extension: " << fileExtension << "]" << DEF_COL << std::endl;
-
 		std::map<std::string, std::string>::iterator it = this->_mime.find(fileExtension);
 		if (it != this->_mime.end())
 		{
@@ -137,7 +136,7 @@ std::string	ResponseBuilder::fileResponse(void)
 			this->_responseStr += "text/plain\r\n";
 	}
 	else
-	this->_responseStr += "text/plain\r\n";
+		this->_responseStr += "text/plain\r\n";
 
 	this->_responseStr += "Content-Length: ";
 	this->_responseStr += intToString(fileSize);

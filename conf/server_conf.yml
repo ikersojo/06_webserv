@@ -9,6 +9,10 @@ server:
     error_page: 406 "error.page"
     autoindex: "on"
     file: "index.html"
+  location: "/autoindex"
+    root: www
+    allow: GET
+    autoindex: "on"
   location: "/redir"
     redirect: "/"
   location: "/favicon.ico"
