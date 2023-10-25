@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/23 10:23:04 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/25 12:43:52 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@
 			bool						isValidRequest(size_t i, std::string req);
 
 			void						printConfig(void);
+			std::string					getActualPath(size_t i, std::string req);
 			std::string					getNearestLocation(size_t i, std::string uri);
 
 			void						setAIFile(size_t i, std::string url, std::string path, std::string file);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_04_hDELETE.cpp                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/19 19:43:06 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/25 14:28:57 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,27 +20,23 @@ std::string	ResponseBuilder::deleteResponse(void)
 		error("DELETE is not allowed");
 		return(this->errorResponse(405));
 	}
-	if (this->_config->getHandleDELETE(this->_configIndex, this->_requestParams[1]) == "removeFromList")
-	{
-		std::string	task = this->_config->getFile(this->_configIndex, this->_requestParams[1]);
-		if (DEBUG)
-			std::cout << GREY << "[DEBUG: ...task to be removed identified: " << task << "]" << DEF_COL << std::endl;
 
-		this->removeFromList(task);
+	std::string	task = this->_config->getActualPath(this->_configIndex,this->_requestParams[1]);
+	size_t pos = task.rfind("/");
+	std::string	filePath = task.substr(0, pos);
+	int	index = std::atoi(task.substr(pos+1).c_str());
 
-		this->_requestParams[1] = this->_requestParams[1].substr(0, this->_requestParams[1].rfind("api"));
-		if (DEBUG)
-			std::cout << GREY << "[DEBUG: ...redirecting to " << this->_requestParams[1] << "]" << DEF_COL << std::endl;
-		return(this->fileResponse());
-	}
-	else
-		return(this->errorResponse(500));
+	if (DEBUG)
+		std::cout << GREY << "[DEBUG: ...index task to be removed identified: " << index << "]" << DEF_COL << std::endl;
+
+	this->removeFromList(index, filePath);
+
+	return("HTTP/1.1 200 OK\r\n");
 }
 
 
-void	ResponseBuilder::removeFromList(std::string task)
+void	ResponseBuilder::removeFromList(int taskIndex, std::string filePath)
 {
-	std::string	filePath = this->_config->getFile(this->_configIndex, this->_requestParams[1].substr(0, this->_requestParams[1].rfind("/")));
 	if (DEBUG)
 		std::cout << GREY << "[DEBUG: ...JSON file: " << filePath << "]" << DEF_COL << std::endl;
 	std::ifstream file(filePath);
@@ -50,6 +46,7 @@ void	ResponseBuilder::removeFromList(std::string task)
 		error("Error opening JSON file");
 		return ;
 	}
+
 	std::stringstream buffer;
 	buffer << file.rdbuf();
 	std::string fileContent = buffer.str();
@@ -82,14 +79,16 @@ void	ResponseBuilder::removeFromList(std::string task)
 
 		// Add the string to the vector
 		stringArray.push_back(temp);
+		//stringArray.insert(stringArray.begin(), temp);
 	}
 
 	// Iterate through the vector and print each string
-	size_t i = 0;
-	while(i < stringArray.size())
+	size_t i = stringArray.size() - 1;
+	while(true)
 	{
-		if(task != stringArray[i])
+		if(i != (size_t)taskIndex)
 			writeToJsonFile(stringArray[i], filePath);
-		i++;
+		if (i == 0) break;
+		i--;
 	}
 }

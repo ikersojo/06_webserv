@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/23 12:05:30 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/25 14:17:31 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,44 +20,45 @@ std::string	ResponseBuilder::postResponse(void)
 		error("POST is not allowed");
 		return(this->errorResponse(405));
 	}
-	
-	if (this->_config->getHandlePOST(this->_configIndex, this->_requestParams[1]) == "addToList")
+
+
+	std::string			filePath;
+	std::ifstream		inFile;
+	std::ostringstream	fileContentStream;
+	std::string			fileContent;
+	int					fileSize;
+
+	filePath = _config->getActualPath(_configIndex, this->_requestParams[1]);
+	debug(this->_requestParams[1]);
+	debug(filePath);
+
+	this->addToList(filePath);
+	//this->initJson(filePath);
+
+	if (DEBUG)
+		std::cout << GREY << "[DEBUG: ...requested file: " << filePath << "]" <<DEF_COL << std::endl;
+
+	inFile.open(filePath);
+	if (!inFile.is_open())
 	{
-		this->addToList();
-
-		std::string			filePath;
-		std::ifstream		inFile;
-		std::ostringstream	fileContentStream;
-		std::string			fileContent;
-		int					fileSize;
-
-		filePath = this->_config->getFile(this->_configIndex, this->_requestParams[1]);
-		this->initJson(filePath);
-		if (DEBUG)
-			std::cout << GREY << "[DEBUG: ...requested file: " << filePath << "]" << DEF_COL << std::endl;
-
-		inFile.open(filePath);
-		if (!inFile.is_open())
-		{
-			error("Requested file not found");
-			return (this->errorResponse(404));
-		}
-		fileContentStream << inFile.rdbuf();
-		fileContent = fileContentStream.str();
-		fileSize = fileContent.size();
-
-		this->_responseStr  = "HTTP/1.1 200 OK\r\n";
-		this->_responseStr += "Content-Type: application/json\r\n";
-		this->_responseStr += "Content-Length: ";
-		this->_responseStr += intToString(fileSize);
-		this->_responseStr += "\r\n\r\n";
-		this->_responseStr += fileContent;
-		inFile.close();
-		debug("...post response built");
-		return (this->_responseStr);
+		error("Requested file not found");
+		return (this->errorResponse(404));
 	}
-	else
-		return(this->errorResponse(500));
+
+	fileContentStream << inFile.rdbuf();
+	fileContent = fileContentStream.str();
+	fileSize = fileContent.size();
+
+	this->_responseStr  = "HTTP/1.1 200 OK\r\n";
+	this->_responseStr += "Content-Type: application/json\r\n";
+	this->_responseStr += "Content-Length: ";
+	this->_responseStr += intToString(fileSize);
+	this->_responseStr += "\r\n\r\n";
+	this->_responseStr += fileContent;
+	inFile.close();
+
+	debug("...post response built");
+	return (this->_responseStr);
 }
 
 
@@ -85,7 +86,7 @@ std::string	extractTask(const std::string& str)
 	return (extractedContent);
 }
 
-void	ResponseBuilder::addToList(void)
+void	ResponseBuilder::addToList(std::string filePath)
 {
 	// Find the last line (after a blank line)
 	size_t lastBlankLinePos = this->_requestStr.rfind("\r\n\r\n");
@@ -96,14 +97,10 @@ void	ResponseBuilder::addToList(void)
 		if (DEBUG)
 			std::cout << GREY << "[DEBUG: ...extracted task: " << task << " ]" << DEF_COL << std::endl;
 
-		std::string	filePath = this->_config->getFile(this->_configIndex, this->_requestParams[1]);
 		this->writeToJsonFile(task, filePath);
 
-		std::string url = this->_requestParams[1] + "/" + task;
-		this->_config->setDeletePath(this->_configIndex, url, task);
-		debug("...url with task added to config for deletion");
-		if (DEBUG)
-			this->_config->printConfig();
+		//std::string url = this->_requestParams[1] + "/" + task;
+		//this->_config->setDeletePath(this->_configIndex, url, task);
 	}
 }
 
@@ -218,16 +215,20 @@ void	ResponseBuilder::initJson(std::string filePath)
 		temp = temp.substr(firstNotSpace, lastNotSpace - firstNotSpace + 1);
 
 		// Add the string to the vector
+		//stringArray.insert(stringArray.begin(), temp);
 		stringArray.push_back(temp);
 	}
 
+	std::cout << "file content = " << fileContent << "\n";
 	// Iterate through the vector and print each string
 	size_t i = 0;
 	while(i < stringArray.size())
 	{
+		std::cout << "[" << i << "]" << stringArray[i] << "\n";
+
 		writeToJsonFile(stringArray[i], filePath);
-		std::string url = this->_requestParams[1] + "/" + stringArray[i];
-		this->_config->setDeletePath(this->_configIndex, url, stringArray[i]);
+		//std::string url = this->_requestParams[1] + "/" + stringArray[i];
+		//this->_config->setDeletePath(this->_configIndex, url, stringArray[i]);
 		i++;
 	}
 }

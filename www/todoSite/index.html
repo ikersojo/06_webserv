@@ -69,94 +69,51 @@
 <ul id="taskList"></ul>
 
 <script>
-// Function to fetch and update the task list
+
+const currentPath = window.location.href;
+const todoPath = `${currentPath}/tasks.json`;
+
+console.log(currentPath);
+console.log(todoPath);
+
 function updateTaskList() {
-	fetch("http://localhost:80/api")
-		.then(response => {
-			if (!response.ok) {
-				throw new Error("Network response was not ok");
-			}
-			return response.json();
-		})
-		.then(tasks => {
-			// Update the task list in the HTML
-			const taskListElement = document.getElementById("taskList");
-			taskListElement.innerHTML = tasks.map(task => `<li>${task} <button class="deleteButton" data-task="${task}">Delete</button></li>`).join("");
+        fetch(todoPath)
+            .then(response => response.json())
+            .then(data => {
+                const taskListElement = document.getElementById("taskList");
+                taskListElement.innerHTML = data.map((task, index) =>
+                    `<li>${task} <button onclick="deleteTask(${index})">Delete</button></li>`
+                ).join("");
+            })
+            .catch(error => console.error("Error fetching task list:", error));
+    }
 
-			// Attach event listeners to delete buttons
-			const deleteButtons = document.querySelectorAll('.deleteButton');
-			deleteButtons.forEach(button => {
-				button.addEventListener('click', function() {
-					const taskToDelete = this.getAttribute('data-task');
-					deleteTask(taskToDelete);
-				});
-			});
-		})
-		.catch(error => {
-			console.error("Error fetching task list:", error);
-		});
-}
+    function deleteTask(index) {
+        fetch(`${todoPath}/${index}`, {
+            method: "DELETE"
+        })
+        .then(() => updateTaskList())
+        .catch(error => console.error("Error deleting task:", error));
+    }
 
-// Function to delete a task
-function deleteTask(task) {
-	// Send a DELETE request to the server
-	fetch(`http://localhost:80/api/${task}`, {
-		method: "DELETE",
-	})
-	.then(response => {
-		if (!response.ok) {
-			throw new Error("Network response was not ok");
-		}
-		return response.text();
-	})
-	.then(data => {
-		console.log("DELETE request successful:", data);
-		// Update the task list after a successful DELETE request
-		updateTaskList();
-	})
-	.catch(error => {
-		console.error("Error during DELETE request:", error);
-	});
-}
+    document.getElementById("todoForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const task = document.getElementById("task").value;
+        fetch(todoPath, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ task: task }),
+        })
+        .then(() => {
+            document.getElementById("task").value = "";
+            updateTaskList();
+        })
+        .catch(error => console.error("Error adding task:", error));
+    });
 
-// Attach the submit event listener to the form
-document.getElementById("todoForm").addEventListener("submit", function(event) {
-	event.preventDefault();
-
-	// Get the task from the input field
-	const task = document.getElementById("task").value;
-	const taskInput = document.getElementById("task");
-
-	// Create a JSON object with the task
-	const postData = { task: task };
-
-	// Send a POST request to the server
-	fetch("http://localhost:80/api", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify(postData),
-	})
-	.then(response => {
-		if (!response.ok) {
-			throw new Error("Network response was not ok");
-		}
-		return response.text();
-	})
-	.then(data => {
-		console.log("POST request successful:", data);
-		// Update the task list after a successful POST request
-		updateTaskList();
-		taskInput.value = "";
-	})
-	.catch(error => {
-		console.error("Error during POST request:", error);
-	});
-});
-
-// Initial update of the task list
-updateTaskList();
+    updateTaskList();
 </script>
 
 </body>

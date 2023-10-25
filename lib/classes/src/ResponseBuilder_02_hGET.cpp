@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/24 18:00:37 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/25 13:53:43 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,13 +92,7 @@ std::string	ResponseBuilder::fileResponse(void)
 	std::string			fileExtension;
 	int					fileSize;
 
-	std::string nl = _config->getNearestLocation(_configIndex, _requestParams[1]);
-	std::string actualFile = _requestParams[1].substr(nl.size());
-	std::string file = _config->getFile(_configIndex, nl);
-
-	if (actualFile.size() == 0 && file.size() != 0)
-		actualFile = "/" + file;
-	filePath = _config->getRoot(_configIndex, nl) + actualFile;
+	filePath = _config->getActualPath(_configIndex, _requestParams[1]);
 
 	if (DEBUG)
 		std::cout << GREY << "[DEBUG: ...requested file: " << filePath << "]" << DEF_COL << std::endl;
@@ -133,8 +127,8 @@ std::string	ResponseBuilder::fileResponse(void)
 		std::map<std::string, std::string>::iterator it = this->_mime.find(fileExtension);
 		if (it != this->_mime.end())
 		{
-			if (fileExtension == ".json")
-				this->initJson(filePath);
+			//if (fileExtension == ".json")
+			//	this->initJson(filePath);
 			this->_responseStr += this->_mime[fileExtension];
 			this->_responseStr += "\r\n";
 		}
@@ -142,7 +136,7 @@ std::string	ResponseBuilder::fileResponse(void)
 			this->_responseStr += "text/plain\r\n";
 	}
 	else
-		this->_responseStr += "text/plain\r\n";
+	this->_responseStr += "text/plain\r\n";
 
 	this->_responseStr += "Content-Length: ";
 	this->_responseStr += intToString(fileSize);

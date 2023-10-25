@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/24 16:28:34 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/24 18:14:49 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,6 @@ std::string	ResponseBuilder::errorResponse(int code)
 	this->_responseStr += "<html><head><title>Error " + intToString(code) + "</title></head><body>";
 	this->_responseStr +=  "<h1>Error " + intToString(code) + "</h1>";
 	debug("...error response built");
+	std::cout << "error response:\n" << _responseStr;
 	return (this->_responseStr);
 }
