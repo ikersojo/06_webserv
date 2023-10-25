@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/25 14:32:10 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/25 15:21:29 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -362,8 +362,6 @@ std::string					Config::getActualPath(size_t i, std::string req) {
 	std::string nl = getNearestLocation(i, req);
 	std::string actualFile = req.substr(nl.size());
 	std::string file = getFile(i, nl);
-
-	std::cout << "nl = " << nl << " actualFile " << actualFile << " file " << file << "\n";
 
 	if (actualFile.size() == 0 && file.size() != 0)
 		actualFile = "/" + file;

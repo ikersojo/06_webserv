@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/25 13:53:43 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/25 14:55:46 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,13 @@ std::string	ResponseBuilder::redirResponse(void)
 std::string	ResponseBuilder::aiResponse(void)
 {
 	std::string	path = this->_requestParams[1];
+	std::string	actualPath = _config->getActualPath(_configIndex, path);
+
+	if (!path.empty() && path[path.size()-1] != '/')
+		path += "/";
 
 	if (_config->isAutoIndex(_configIndex, path)) {
-		std::cout << (_config->getRoot(_configIndex, path) + (path.substr(_config->getNearestLocation(_configIndex, path).size()))).c_str() << std::endl;
-		DIR* dir = opendir((_config->getRoot(_configIndex, path) + (path.substr(_config->getNearestLocation(_configIndex, path).size()))).c_str());
+		DIR* dir = opendir(actualPath.c_str());
 		if (dir != NULL) {
 			this->_responseStr = "HTTP/1.1 200 OK\r\n";
 			this->_responseStr += "Content-Type: text/html\r\n\r\n";
@@ -69,7 +72,7 @@ std::string	ResponseBuilder::aiResponse(void)
 
 			struct dirent *	entry;
 			while ((entry = readdir(dir)) != NULL)
-				this->_responseStr += "<li><a href=\"" + path + "/" + entry->d_name + "\">" + entry->d_name + "</a></li>";
+				this->_responseStr += "<li><a href=\"" + path + entry->d_name + "\">" + entry->d_name + "</a></li>";
 			this->_responseStr += "</ul></body></html>";
 			closedir(dir);
 			return (this->_responseStr);
