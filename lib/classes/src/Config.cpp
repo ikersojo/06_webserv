@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/25 16:49:53 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/25 17:03:49 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -324,11 +324,7 @@ int							Config::getPort(size_t i) { return (_port[i]); }
 
 std::string					Config::getAddress(size_t i) { return (_address[i]); }
 
-std::string					Config::getFile(size_t i, std::string req) {
-	//if (_file.size() > i && _file[i].find(getNearestLocation(i, req)) != _file[i].end())
-	return (_file[i][getNearestLocation(i, req)]);
-	//return (std::string());
-}
+std::string					Config::getFile(size_t i, std::string req) { return (_file[i][getNearestLocation(i, req)]); }
 
 std::string					Config::getRoot(size_t i, std::string req) { return (_root[i][getNearestLocation(i, req)]); }
 
@@ -340,11 +336,7 @@ bool						Config::isPOST(size_t i, std::string req) { return (this->_allowedPOST
 
 bool						Config::isDELETE(size_t i, std::string req) { return (this->_allowedDELETE[i][getNearestLocation(i, req)]); }
 
-std::map<int, std::string>	Config::getErrorPage(size_t i, std::string req) {
-	if (_errorPage.size() > i && _errorPage[i].find(getNearestLocation(i, req)) != _errorPage[i].end())
-		return (_errorPage[i][getNearestLocation(i, req)]);
-	return (std::map<int, std::string>());
-}
+std::map<int, std::string>	Config::getErrorPage(size_t i, std::string req) { return (_errorPage[i][getNearestLocation(i, req)]); }
 
 int							Config::getBufferSize(size_t i, std::string req) { return (_bufferSize[i][getNearestLocation(i, req)]); }
 
