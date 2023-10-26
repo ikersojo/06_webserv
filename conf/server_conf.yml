@@ -28,6 +28,7 @@ server:
     root: www
     autoindex: "on"
   location: /post
+    allow: GET POST
     root: "www/todoSite"
     file: "index.html"
 

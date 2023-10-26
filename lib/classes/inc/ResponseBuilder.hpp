@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:00 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/26 13:52:37 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/26 15:12:53 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,6 @@
 			void	removeFromList(int taskIndex, std::string filePath);
 			void	writeToJsonFile(std::string task, std::string filePath);
 			void	clearJsonFile(std::string filePath);
-			void	initJson(std::string filePath);
 
 	};
 

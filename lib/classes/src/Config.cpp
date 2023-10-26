@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/26 13:05:12 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/26 15:09:42 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,46 +52,6 @@ std::vector<std::string>	getServerNames(const std::string & configFile) {
 	inFile.close();
 	debug("server names identified");
 	return (serverNames);
-}
-
-void    Config::setAIFile(size_t i, std::string url, std::string dir, std::string file)
-{
-	this->_autoindex[i][url] = false;
-	this->_redir[i][url] = false;
-	this->_cgi[i][url] = false;
-	this->_root[i][url] = dir;
-	this->_file[i][url] = file;
-	this->_allowedGET[i][url] = true;
-	this->_allowedPOST[i][url] = false;
-	this->_allowedDELETE[i][url] = false;
-	//this->_errorPage[i][url] = “./www/def404.html”;
-	this->_bufferSize[i][url] = 4096;
-}
-void    Config::setAIDir(size_t i, std::string url, std::string dir)
-{
-	this->_autoindex[i][url] = true;
-	this->_redir[i][url] = false;
-	this->_cgi[i][url] = false;
-	this->_root[i][url] = dir;
-	this->_file[i][url] = dir;
-	this->_allowedGET[i][url] = true;
-	this->_allowedPOST[i][url] = false;
-	this->_allowedDELETE[i][url] = false;
-	//this->_errorPage[i][url] = “./www/def404.html”;
-	this->_bufferSize[i][url] = 4096;
-}
-void    Config::setDeletePath(size_t i, std::string url, std::string task)
-{
-	this->_autoindex[i][url] = false;
-	this->_redir[i][url] = false;
-	this->_cgi[i][url] = false;
-	this->_file[i][url] = task;
-	this->_allowedGET[i][url] = false;
-	this->_allowedPOST[i][url] = false;
-	this->_allowedDELETE[i][url] = true;
-	//this->_errorPage[i][url] = “./www/def404.html”;
-	this->_bufferSize[i][url] = 4096;
-	this->_handleDELETE[i][url] = "removeFromList";
 }
 
 // Returns all address:port pairs in each server.
@@ -362,28 +322,6 @@ std::string					Config::getActualPath(size_t i, std::string req) {
 	return(getRoot(i, nl) + actualFile);
 }
 
-std::string					Config::getFullPath(size_t i, std::string req) {
-	std::string	fullPath, root, file;
-
-	root = this->getRoot(i, req);
-	if (root[root.size() - 1] == '/')
-		root = root.substr(0, root.rfind("/"));
-	file = this->getFile(i, req);
-	if (file[file[0]] == '.')
-		file = file.substr(2, file.size());
-	fullPath = root + "/" + file;
-	return (fullPath);
-}
-
-
-bool	Config::isValidRequest(size_t i, std::string req) {
-	std::map < std::string, std::string >::iterator it;
-
-	it = this->_file[i].find(req);
-	if (it != this->_file[i].end())
-		return (true);
-	return (false);
-}
 
 void	Config::printConfig(void) {
 	debug("Printing config...");

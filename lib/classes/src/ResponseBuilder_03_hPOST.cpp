@@ -3,14 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_03_hPOST.cpp                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/26 13:52:37 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/26 15:13:05 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ResponseBuilder.hpp"
+
+std::string	extractTask(const std::string& str)
+{
+	size_t quoteStart = 0;
+	size_t quoteEnd = str.rfind("\"");
+	size_t count = 0;
+
+	while (count < 3)
+	{
+		quoteStart = str.find("\"", quoteStart);
+		++count;
+		if (count < 3)
+			quoteStart++;
+	}
+	std::string extractedContent = str.substr(quoteStart + 1, quoteEnd - quoteStart - 1);
+	size_t i = 0;
+	while(i < extractedContent.size())
+	{
+		if (extractedContent[i] == ' ')
+			extractedContent[i] = '_';
+		i++;
+	}
+	return (extractedContent);
+}
 
 void	ResponseBuilder::writeToJsonFile(std::string task, std::string filePath)
 {
@@ -130,35 +154,6 @@ std::string	ResponseBuilder::postResponse(void)
 	return (this->_responseStr);
 }
 
-
-std::string	extractTask(const std::string& str)
-{
-	size_t quoteStart = 0;
-	size_t quoteEnd = str.rfind("\"");
-	size_t count = 0;
-
-	while (count < 3)
-	{
-		quoteStart = str.find("\"", quoteStart);
-		++count;
-		if (count < 3)
-			quoteStart++;
-	}
-	std::string extractedContent = str.substr(quoteStart + 1, quoteEnd - quoteStart - 1);
-	size_t i = 0;
-	while(i < extractedContent.size())
-	{
-		if (extractedContent[i] == ' ')
-			extractedContent[i] = '_';
-		i++;
-	}
-	return (extractedContent);
-}
-
-
-
-
-
 void	ResponseBuilder::clearJsonFile(std::string filePath)
 {
 	std::ofstream outFile(filePath);
@@ -169,65 +164,4 @@ void	ResponseBuilder::clearJsonFile(std::string filePath)
 	}
 	outFile << "[]";
 	outFile.close();
-}
-
-
-void	ResponseBuilder::initJson(std::string filePath)
-{
-	if (DEBUG)
-		std::cout << GREY << "[DEBUG: ...Initializing JSON file: " << filePath << "]" << DEF_COL << std::endl;
-	std::ifstream file(filePath);
-
-	if (!file.is_open())
-	{
-		error("Error opening JSON file");
-		return ;
-	}
-	std::stringstream buffer;
-	buffer << file.rdbuf();
-	std::string fileContent = buffer.str();
-	file.close();
-	this->clearJsonFile(filePath);
-
-	// Find the start and end of the array
-	size_t start = fileContent.find("[");
-	size_t end = fileContent.rfind("]");
-
-	// Extract the content of the array
-	std::string arrayContent = fileContent.substr(start + 1, end - start - 1);
-
-	// Initialize a string stream to parse the array content
-	std::stringstream arrayStream(arrayContent);
-
-	// Vector to store individual strings
-	std::vector<std::string> stringArray;
-
-	// Temporary variable to store each string
-	std::string temp;
-
-	// Iterate through the array content and extract individual strings
-	while (std::getline(arrayStream, temp, ','))
-	{
-		// Remove leading and trailing whitespaces
-		size_t firstNotSpace = temp.find_first_not_of(" \t\n\r\"");
-		size_t lastNotSpace = temp.find_last_not_of(" \t\n\r\"");
-		temp = temp.substr(firstNotSpace, lastNotSpace - firstNotSpace + 1);
-
-		// Add the string to the vector
-		//stringArray.insert(stringArray.begin(), temp);
-		stringArray.push_back(temp);
-	}
-
-	std::cout << "file content = " << fileContent << "\n";
-	// Iterate through the vector and print each string
-	size_t i = 0;
-	while(i < stringArray.size())
-	{
-		std::cout << "[" << i << "]" << stringArray[i] << "\n";
-
-		writeToJsonFile(stringArray[i], filePath);
-		//std::string url = this->_requestParams[1] + "/" + stringArray[i];
-		//this->_config->setDeletePath(this->_configIndex, url, stringArray[i]);
-		i++;
-	}
 }

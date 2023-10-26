@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_00_main.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/26 12:41:49 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/26 15:10:00 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,15 +103,6 @@ std::string		ResponseBuilder::computeResponse(void)
 		error("webserv only work with HTTP/1.1 requests");
 		return (this->errorResponse(505));
 	}
-	//if (this->_ok && !this->_config->isValidRequest(this->_configIndex, this->_requestParams[1]))
-	//{
-	//	this->checkLocation(this->_requestParams[1]);
-	//	if (this->_ok && !this->_config->isValidRequest(this->_configIndex, this->_requestParams[1]))
-	//	{
-	//		error("Not valid url");
-	//		return (this->errorResponse(404));
-	//	}
-	//}
 
 	// Checks ok, build response based on the request type:
 	if (this->_ok && this->_requestParams[0] == "GET")
@@ -140,50 +131,3 @@ std::string		ResponseBuilder::computeResponse(void)
 		return (this->errorResponse(500));
 	}
 }
-
- // <---- REVISAR: COMENTADO, no se usa
-// void	ResponseBuilder::checkLocation(std::string trimmedURL)
-// {
-// 	std::string	requestedDir = "";
-// 	std::string	remainder = "";
-// 	size_t 		max = countOccurrences(trimmedURL, '/');
-
-// 	size_t i = 0;
-// 	while (i < max)
-// 	{
-// 		if (DEBUG)
-// 			std::cout << GREY << "[DEBUG: ...location not found. Iterating over the full path: "
-// 				<< i << " / " << max << "]" << DEF_COL << std::endl;
-// 		trimmedURL = this->_requestParams[1];
-// 		while (trimmedURL.find("/") != std::string::npos)
-// 		{
-// 			if (trimmedURL[trimmedURL.size() - 1] == '/')
-// 				trimmedURL = trimmedURL.substr(0, trimmedURL.rfind("/"));
-// 			remainder = trimmedURL.substr(trimmedURL.rfind("/") + 1, trimmedURL.size());
-// 			trimmedURL = trimmedURL.substr(0, trimmedURL.rfind("/") + 1);
-// 			if (this->_config->isValidRequest(this->_configIndex, trimmedURL))
-// 				requestedDir = this->_config->getRoot(this->_configIndex, trimmedURL);
-
-// 			DIR* dir = opendir(requestedDir.c_str());
-// 			if (dir != NULL)
-// 			{
-// 				struct dirent *	entry;
-// 				while ((entry = readdir(dir)) != NULL)
-// 				{
-// 					if (entry->d_type == DT_DIR)
-// 					{
-// 						std::string url = trimmedURL + remainder;
-// 						this->_config->setAIDir(this->_configIndex, url, requestedDir + remainder);
-// 					}
-// 					else if (entry->d_type == DT_REG)
-// 					{
-// 						std::string url = trimmedURL + entry->d_name;
-// 						this->_config->setAIFile(this->_configIndex, url, requestedDir, entry->d_name);
-// 					}
-// 				}
-// 				closedir(dir);
-// 			}
-// 		}
-// 		i++;
-// 	}
-// }
