@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:34:41 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/26 16:00:13 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/26 16:50:20 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,5 +116,10 @@ bool location(std::string &line)
 	c = str[0];
 	if(str.empty())
 		return false;
- 	return c == '/';	
+	else if(str.size() > 1 && str[0] == '/')
+	{
+		if(str[str.length() - 1] == '/')
+			return false;
+	}
+ 	return c == '/';	 
 }
