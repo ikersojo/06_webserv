@@ -13,7 +13,7 @@
 			padding: 0;
 			display: flex;
 			align-items: center;
-			justify-content: center;
+			justify-content: flex-start;
 			flex-direction: column;
 			height: 100vh;
 		}
@@ -35,7 +35,7 @@
 		}
 
 		#photoGallery {
-			display: flex;
+			display: block;
 			flex-wrap: wrap;
 			justify-content: center;
 		}
@@ -56,32 +56,42 @@
 <div id="photoGallery"></div>
 
 <script>
+
+const currentPath = window.location.href;
+const todoPath = `${currentPath}/photos.json`;
+
+console.log(currentPath);
+console.log(todoPath);
+
 // Function to fetch and update the photo gallery
 function updatePhotoGallery() {
-	fetch("http://localhost:61004/photos")
-		.then(response => {
-			if (!response.ok) {
-				throw new Error("Network response was not ok");
-			}
-			return response.json();
-		})
-		.then(photos => {
+	fetch(todoPath)
+		.then(response => response.json())
+		.then(data => {
 			// Update the photo gallery in the HTML
 			const photoGalleryElement = document.getElementById("photoGallery");
-			photoGalleryElement.innerHTML = photos.map(photo => `
-				<div class="photo">
-					<img src="${photo.url}" alt="${photo.name}" width="150" height="150">
-				</div>
-			`).join("");
+			photoGalleryElement.innerHTML = data.map((item, index) =>
+			`<div style="display: block;">
+				<img src="${item}">
+				<button onclick="deletePhoto(${index})">Delete</button>
+			</div>`
+			).join("");
 		})
-		.catch(error => {
-			console.error("Error fetching photo gallery:", error);
-		});
+		.catch(error => console.error("Error fetching photo gallery:", error));
 }
 
+function deletePhoto(index) {
+        fetch(`${todoPath}/${index}`, {
+            method: "DELETE"
+        })
+        .then(() => updatePhotoGallery())
+		
+        .catch(error => console.error("Error deleting photo:", error));
+    }
 // Attach event listener to the file input for photo upload
-document.getElementById("fileInput").addEventListener("change", function() {
-	const fileInput = this;
+document.getElementById("fileInput").addEventListener("change", function(event) {
+	event.preventDefault();
+	const fileInput = event.target;
 	const file = fileInput.files[0];
 
 	if (file) {
@@ -90,7 +100,7 @@ document.getElementById("fileInput").addEventListener("change", function() {
 		formData.append("photo", file);
 
 		// Send a POST request to the server for photo upload
-		fetch("http://localhost:61004/upload", {
+		fetch(todoPath, {
 			method: "POST",
 			body: formData,
 		})
