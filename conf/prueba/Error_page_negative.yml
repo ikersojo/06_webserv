@@ -1,0 +1,46 @@
+server:
+  servername: John
+  listen:    localhost:80
+  root: "www/site1"
+  location: /
+    file: "www/site1/index.html"
+    allow: GET POST
+    buffer_size: 4096
+    error_page: -404 "www/def404.html"
+    error_page: 406 "error.page"
+  location: "/redir/"
+    redirect: "/"
+  location: "/favicon.ico/"
+    allow: POST GET
+    root: "icons/"
+    file: "www/site1/icon1.png"
+  location: "/images/sample/"
+    file: "www/site1/images/sample_image1.jpg"
+  location: "/cgi-bin/"
+    cgi: "sh"
+    file: "cgi-bin"
+    root: "ROOT"
+
+server:
+  servername: ANDONI
+  listen:    localhost:80
+  root: "www/site1"
+  location: /
+    file: "www/site1/index.html"
+    allow: GET POST
+    buffer_size: 4096
+    error_page: 404 "www/def404.html"
+    error_page: 406 "error.page"
+  location: "/redir/"
+    redirect: "/"
+  location: "/favicon.ico/"
+    allow: POST GET
+    root: "icons/"
+    file: "www/site1/icon1.png"
+  location: "/images/sample/"
+    file: "www/site1/images/sample_image1.jpg"
+  location: "/cgi-bin/"
+    cgi: "sh"
+    file: "cgi-bin"
+    root: "ROOT"
+    
