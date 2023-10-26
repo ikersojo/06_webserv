@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/26 15:10:00 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/26 16:59:26 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	ResponseBuilder::assessRequest(void)
 			return ;
 		}
 		else if (i == 1 && this->_requestParams[i].size() > 1 && this->_requestParams[i][this->_requestParams[i].size() - 1] == '/')
-			this->_requestParams[i] = this->_requestParams[i].substr(0, this->_requestParams[i].size() - 2);
+			this->_requestParams[i] = this->_requestParams[i].substr(0, this->_requestParams[i].size() - 1);
 		if (DEBUG)
 			std::cout << GREY << "[DEBUG: ...param " << i << ": "
 					<< this->_requestParams[i] << "]" << DEF_COL << std::endl;

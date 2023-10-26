@@ -15,7 +15,7 @@ server:
     autoindex: "on"
   location: "/redir"
     redirect: "/"
-  location: "/favicon.ico/"
+  location: "/favicon.ico"
     allow: POST GET
     file: "icon1.png"
   location: "/images/sample"
