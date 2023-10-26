@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_02_hGET.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/26 13:17:17 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/26 17:15:39 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 std::string	ResponseBuilder::getResponse(void)
 {
+	std::cout << "is redir = " << this->_config->isRedir(this->_configIndex, this->_requestParams[1]) << "\n";
 	if (!this->_config->isGET(this->_configIndex, this->_requestParams[1]))
 	{
 		error("GET is not allowed");
@@ -46,7 +47,7 @@ std::string	ResponseBuilder::getResponse(void)
 std::string	ResponseBuilder::redirResponse(void)
 {
 	this->_responseStr = "HTTP/1.1 308 Permanent Redirect\r\n";
-	this->_responseStr += "Location: ";
+	this->_responseStr += "Location: https://";
 	this->_responseStr += this->_config->getFile(this->_configIndex, this->_requestParams[1]);
 	this->_responseStr += "\r\n\r\n";
 	debug("...redirect response built");

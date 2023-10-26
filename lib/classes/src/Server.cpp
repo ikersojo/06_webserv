@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/26 12:37:09 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/26 17:09:58 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -294,8 +294,8 @@ void	Server::readRequest(int locInClient)
 void	Server::sendResponse(int locInClient)
 {
 	debug("Sending response...");
-	// if (DEBUG) // remove for prod
-	// 	std::cout << YELLOW << "\n---- Response to client ----\n\n" << this->_responseStr[locInClient] << DEF_COL << std::endl;
+	 if (DEBUG) // remove for prod
+	 	std::cout << YELLOW << "\n---- Response to client ----\n\n" << this->_responseStr[locInClient] << DEF_COL << std::endl;
 
 	ssize_t bytesSent = send(this->_clientSocket[locInClient], this->_responseStr[locInClient].c_str(), this->_responseStr[locInClient].size(), 0);
 	if (bytesSent == 0)
