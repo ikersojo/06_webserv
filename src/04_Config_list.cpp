@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:34:41 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/25 17:26:22 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/10/26 15:53:08 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,20 +109,19 @@ bool location(std::string &line)
 {
 	std::string config, str;
 	std::istringstream iss(line);
-	char lastchar = '\0';
+	char c = '\0';
 	iss >> config >> str;
 	
 	str = trimChars(str, "\"");
-	lastchar = str[0];
+	c = str[0];
 	if(str.empty())
-		return false;
-	if (str.length() == 1 && lastchar != '/')
 		return false;
 	else if (str.length() > 1)
 	{
 		if(str[0] != '/')
+		{
 			return false;
-		lastchar = str[str.length() - 1];
+		}
 	}
-	return lastchar == '/';	
+ 	return c == '/';	
 }
