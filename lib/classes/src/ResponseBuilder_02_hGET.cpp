@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_02_hGET.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/25 15:51:09 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/26 13:17:17 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ std::string	ResponseBuilder::getResponse(void)
 	}
 	else if (this->_config->isCgi(this->_configIndex, this->_requestParams[1]))
 	{
-		debug("..CGI requested");
+		debug("...CGI requested");
 		return (this->cgiGETResponse());
 	}
 	else if (this->_config->isAutoIndex(this->_configIndex, this->_requestParams[1]))
@@ -102,7 +102,7 @@ std::string	ResponseBuilder::fileResponse(void)
 
 	if (stat(filePath.c_str(), &statbuf) == 0 && !S_ISREG(statbuf.st_mode)) {
 		error("Requested file is a directory");
-		return (this->errorResponse(404));
+		return (this->errorResponse(404)); // <---- REVISAR: Deberiamos permitir acceder aqui si hay autoindex en el dir padre?
 	}
 
 	inFile.open(filePath);
@@ -117,7 +117,6 @@ std::string	ResponseBuilder::fileResponse(void)
 	inFile.close();
 
 	this->_responseStr = "HTTP/1.1 200 OK\r\n";
-
 	this->_responseStr += "Content-Type: ";
 	if (filePath.rfind(".") != std::string::npos)
 	{
@@ -129,15 +128,13 @@ std::string	ResponseBuilder::fileResponse(void)
 		{
 			//if (fileExtension == ".json")
 			//	this->initJson(filePath);
-			this->_responseStr += this->_mime[fileExtension];
-			this->_responseStr += "\r\n";
+			this->_responseStr += (this->_mime[fileExtension] + "\r\n");
 		}
 		else
 			this->_responseStr += "text/plain\r\n";
 	}
 	else
 		this->_responseStr += "text/plain\r\n";
-
 	this->_responseStr += "Content-Length: ";
 	this->_responseStr += intToString(fileSize);
 	this->_responseStr += "\r\n\r\n";

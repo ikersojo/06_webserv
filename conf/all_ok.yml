@@ -1,5 +1,5 @@
 server:
-  servername: site1_1.com
+  servername: site1_1.com_onlyFileResponse
   listen: 127.0.0.1:61001
   root: "./www/site1"
   location: / 
@@ -8,8 +8,6 @@ server:
     file: "icon1.png"
   location: "/images/sample"
     file: "images/sample_image1.jpg"
-  location: "/goto42"
-    redirect: "www.42urduliz.com"
 
 server:
   servername: site1_2.com
@@ -24,12 +22,12 @@ server:
   location: "/images/sample"
     file: "images/sample_image1.jpg"
   location: "/cgi-bin/print.out"
-    file: "./cgi-bin/print.out"
-  location: "/vault"
+    file: "cgi-bin/print.out"
+  location: "/ai"
     file: "vault"
     autoindex: on
   location: "/goto42"
-    redirect: "www.42urduliz.com"
+    redirect: "http://www.42urduliz.com"
 
 server:
   servername: site1_3.com
@@ -45,10 +43,21 @@ server:
     file: "icon1.png"
   location: "/images/sample"
     file: "images/sample_image1.jpg"
-  location: "/cgi-bin/print.out"
-    file: "/cgi-bin/print.out"
+  location: "/cgi-bin"
+    root: "./www/cgi-bin"
+    file: "print.out"
+    cgi: on
   location: "/vault"
     file: "vault"
     autoindex: on
   location: "/goto42"
     redirect: "www.42urduliz.com"
+
+server:
+  servername: xxxx.com
+  listen: 127.0.0.1:61004
+  root: "./www/site1"
+  location: "/"
+    file: icon1.png
+  location: "/ai"
+    autoindex: on

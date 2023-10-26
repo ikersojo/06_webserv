@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_05_hCGI.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/19 22:25:55 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/26 13:24:47 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ std::string	ResponseBuilder::cgiGETResponse(void)
 	int			status;
 	int			exitStatus = 0;
 	std::string	response = "";
-	std::string	execFile = this->_config->getFile(this->_configIndex, this->_requestParams[1]).c_str();
+	std::string	execFile = this->_config->getActualPath(this->_configIndex, this->_requestParams[1]).c_str();
 
 	signal(SIGALRM, handleTimeout);
 
@@ -62,6 +62,7 @@ std::string	ResponseBuilder::cgiGETResponse(void)
 		alarm(timeoutSeconds);
 		exitStatus = execve(argv[0], argv, envp);
 		error("Execve failed");
+		perror("ERROR_INFO");
 		exit(exitStatus);
 	}
 	else // Parent process
@@ -82,10 +83,13 @@ std::string	ResponseBuilder::cgiGETResponse(void)
 				buffer[bytesRead] = '\0';
 				response += buffer;
 			}
+			close(fd[0]);
 		}
 		else
+		{
+			close(fd[0]);
 			return(this->errorResponse(500));
-		close(fd[0]);
+		}
 		return response;
 	}
 }

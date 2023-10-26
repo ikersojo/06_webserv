@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:00 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/25 13:21:37 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/26 13:52:37 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@
 
 			std::string					_requestStr;
 			std::vector < std::string >	_requestParams;
+			std::vector < std::string >	_cgiArgs;
 			std::string					_responseStr;
 
 			std::map < std::string, std::string >	_mime;

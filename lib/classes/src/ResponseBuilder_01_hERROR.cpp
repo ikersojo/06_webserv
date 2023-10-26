@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_01_hERROR.cpp                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/25 16:55:15 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/26 12:54:19 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ std::string	ResponseBuilder::errorResponse(int code)
 	std::ifstream		inFile;
 	std::ostringstream	fileContentStream;
 	std::string			fileContent;
+	int					fileSize;
 
 	if (!_requestStr.empty())
 		errorPages = this->_config->getErrorPage(this->_configIndex, _config->getNearestLocation(_configIndex, this->_requestParams[1]));
@@ -40,9 +41,14 @@ std::string	ResponseBuilder::errorResponse(int code)
 		else {
 			fileContentStream << inFile.rdbuf();
 			fileContent = fileContentStream.str();
+			fileSize = fileContent.size();
+			inFile.close();
 
 			this->_responseStr = "HTTP/1.1 " + std::to_string(code) + " " + resolveErrorCode(code) + "\r\n";
-			this->_responseStr += "Content-Type: text/html\r\n\r\n";
+			this->_responseStr += "Content-Type: text/html\r\n";
+			this->_responseStr += "Content-Length: ";
+			this->_responseStr += intToString(fileSize);
+			this->_responseStr += "\r\n\r\n";
 			this->_responseStr += fileContent;
 			return (this->_responseStr);
 		}
@@ -50,9 +56,8 @@ std::string	ResponseBuilder::errorResponse(int code)
 
 	this->_responseStr = "HTTP/1.1 " + std::to_string(code) + " " + resolveErrorCode(code) + "\r\n";
 	this->_responseStr += "Content-Type: text/html\r\n\r\n";
-	this->_responseStr += "<html><head><title>Error " + intToString(code) + "</title></head><body>";
-	this->_responseStr +=  "<h1>Error " + intToString(code) + "</h1>";
+	this->_responseStr += "<html><head><title>Error " + intToString(code) + " " + resolveErrorCode(code) + "</title></head><body>";
+	this->_responseStr +=  "<h1>Error " + intToString(code) + " " + resolveErrorCode(code) + "</h1>";
 	debug("...error response built");
-	std::cout << "error response:\n" << _responseStr;
 	return (this->_responseStr);
 }
