@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/26 17:15:39 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/26 17:18:33 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 std::string	ResponseBuilder::getResponse(void)
 {
-	std::cout << "is redir = " << this->_config->isRedir(this->_configIndex, this->_requestParams[1]) << "\n";
 	if (!this->_config->isGET(this->_configIndex, this->_requestParams[1]))
 	{
 		error("GET is not allowed");
