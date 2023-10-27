@@ -70,50 +70,51 @@
 
 <script>
 
-const currentPath = window.location.href;
+let currentPath = window.location.href;
+currentPath = window.location.href.endsWith('/') ? window.location.href : window.location.href + '/';
 const todoPath = `${currentPath}tasks.json`;
 
 console.log(currentPath);
 console.log(todoPath);
 
 function updateTaskList() {
-        fetch(todoPath)
-            .then(response => response.json())
-            .then(data => {
-                const taskListElement = document.getElementById("taskList");
-                taskListElement.innerHTML = data.map((task, index) =>
-                    `<li>${task} <button onclick="deleteTask(${index})">Delete</button></li>`
-                ).join("");
-            })
-            .catch(error => console.error("Error fetching task list:", error));
-    }
-
-    function deleteTask(index) {
-        fetch(`${todoPath}/${index}`, {
-            method: "DELETE"
+    fetch(todoPath)
+        .then(response => response.json())
+        .then(data => {
+            const taskListElement = document.getElementById("taskList");
+            taskListElement.innerHTML = data.map((task, index) =>
+                `<li>${task} <button onclick="deleteTask(${index})">Delete</button></li>`
+            ).join("");
         })
-        .then(() => updateTaskList())
-        .catch(error => console.error("Error deleting task:", error));
-    }
+        .catch(error => console.error("Error fetching task list:", error));
+}
 
-    document.getElementById("todoForm").addEventListener("submit", function(event) {
-        event.preventDefault();
-        const task = document.getElementById("task").value;
-        fetch(todoPath, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ task: task }),
-        })
-        .then(() => {
-            document.getElementById("task").value = "";
-            updateTaskList();
-        })
-        .catch(error => console.error("Error adding task:", error));
-    });
+function deleteTask(index) {
+    fetch(`${todoPath}/${index}`, {
+        method: "DELETE"
+    })
+    .then(() => updateTaskList())
+    .catch(error => console.error("Error deleting task:", error));
+}
 
-    updateTaskList();
+document.getElementById("todoForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    const task = document.getElementById("task").value;
+    fetch(todoPath, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ task: task }),
+    })
+    .then(() => {
+        document.getElementById("task").value = "";
+        updateTaskList();
+    })
+    .catch(error => console.error("Error adding task:", error));
+});
+
+ updateTaskList();
 </script>
 
 </body>

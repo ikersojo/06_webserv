@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   00_main.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:53:16 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/27 12:27:01 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/27 16:37:09 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/webserv.hpp"
 
-int		main(int argc, const char ** argv)
+int		main(int argc, const char ** argv, char ** envp)
 {
 	signal(SIGPIPE, SIG_IGN);
 	echoOff();
@@ -24,7 +24,7 @@ int		main(int argc, const char ** argv)
 		debug("syntax and config file are valid");
 		std::string configFile(argv[1]);
 
-		Config* config = new Config(configFile);
+		Config* config = new Config(configFile, envp);
 		if (DEBUG)
 			config->printConfig();
 		Server	webserv(config);

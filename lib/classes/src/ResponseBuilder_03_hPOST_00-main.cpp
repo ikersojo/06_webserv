@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_03_hPOST_00-main.cpp               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/27 15:04:33 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/27 16:41:06 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ std::string	ResponseBuilder::postResponse(void)
 		return(this->errorResponse(405));
 	}
 
-	// if (this->_config->isCgi(this->_configIndex, this->_requestParams[1]))
-	// {
-	// 	debug("...CGI requested");
-	// 	return (this->cgiPOSTResponse());
-	// }
+	if (this->_config->isCgi(this->_configIndex, this->_requestParams[1]))
+	{
+		debug("...CGI requested");
+		return (this->cgiPOSTResponse());
+	}
 
 	this->_handlePOST = this->_config->getHandlePOST(this->_configIndex, this->_requestParams[1]);
 	if (this->_config->getHandlePOST(this->_configIndex, this->_requestParams[1]) == "addToList")

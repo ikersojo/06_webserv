@@ -20,10 +20,9 @@ server:
     file: "icon1.png"
   location: "/images/sample"
     file: images/sample_image1.jpg
-  location: "/cgi-bin"
+  location: "/cgi"
     cgi: "sh"
-    file: "cgi-bin"
-    root: "ROOT"
+    root: "www/cgi-bin"
   location: /ai
     root: www
     autoindex: "on"
@@ -65,6 +64,6 @@ server:
   location: "/"
     file: index.html
   location: "/images/sample"
-    file: images/sample_image3.png
+    file: images/sample_image3.jpg
   location: "/favicon.ico"
     file: "icon3.png"

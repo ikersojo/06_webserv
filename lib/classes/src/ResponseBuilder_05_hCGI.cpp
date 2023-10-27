@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_05_hCGI.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/26 13:24:47 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/27 18:08:11 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,46 @@ void handleTimeout(int signum)
 	exit(EXIT_FAILURE);
 }
 
+std::string	ResponseBuilder::cgiPOSTResponse(void)
+{
+	error("POST cgiArgs still not captured");
+	return (cgiResponse());
+}
 
 std::string	ResponseBuilder::cgiGETResponse(void)
+{
+	std::string	args, arg;
+	size_t	pos;
+
+	if (_requestParams[1].find("?") != std::string::npos) {
+		debug("CGI arguments received");
+
+		args = _requestParams[1].substr(_requestParams[1].find("?")+1);
+		_requestParams[1] = _requestParams[1].substr(0, _requestParams[1].find("?"));
+
+		while (true) {
+			pos = args.find("?");
+			arg = args.substr(0, pos);
+
+			if (arg.size() < 3 || arg.find("=") == std::string::npos || arg.find("=") == arg.size()-1 || arg.find("=") == 0)
+				error("Invalid argument");
+			else
+				_cgiArgs.push_back(args.substr(0, pos));
+			if (pos == std::string::npos)
+				break;
+			args = args.substr(pos+1);
+		}
+		debug("CGI arguments saved in config");
+
+		debug("...CAPTURED ARGS:");
+		for (std::vector<std::string>::iterator it = _cgiArgs.begin(); it != _cgiArgs.end(); it++)
+			debug(*it);
+	}
+
+	return (cgiResponse());
+}
+
+std::string	ResponseBuilder::cgiResponse(void)
 {
 	int			timeoutSeconds = 3;
 	pid_t		pid;

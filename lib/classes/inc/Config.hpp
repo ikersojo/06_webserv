@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/26 15:09:26 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/27 16:39:41 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,10 @@
 	class Config
 	{
 		public:
-			Config(const std::string & configFile);
+			Config(const std::string & configFile, char ** envp);
 			~Config(void);
 
+			char **						getEnvp(void);
 			size_t						getMaxPorts(void);
 			std::string					getServerName(size_t i);
 			int							getPort(size_t i);
@@ -101,6 +102,7 @@
 		private:
 			Config(void);
 
+			char **																	_envp;
 			size_t																	_maxPorts;
 			std::vector < std::string >												_servername;
 			std::vector < int >														_port;
