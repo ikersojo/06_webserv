@@ -56,51 +56,56 @@
 <div id="photoGallery"></div>
 
 <script>
+const photoGalleryElement = document.getElementById("photoGallery");
 
-const currentPath = window.location.href;
-const todoPath = `${currentPath}/photos.json`;
+// Array de rutas de imágenes
+const images = [
+    "gallerySite/photos/webserv.png",
+    // Agrega más rutas de imágenes aquí
+];
 
-console.log(currentPath);
-console.log(todoPath);
-
-// Function to fetch and update the photo gallery
 function updatePhotoGallery() {
-	fetch(todoPath)
-		.then(response => response.json())
-		.then(data => {
-			// Update the photo gallery in the HTML
-			const photoGalleryElement = document.getElementById("photoGallery");
-			photoGalleryElement.innerHTML = data.map((item, index) =>
-			`<div style="display: block;">
-				<img src="${item}">
-				<button onclick="deletePhoto(${index})">Delete</button>
-			</div>`
-			).join("");
-		})
-		.catch(error => console.error("Error fetching photo gallery:", error));
+    photoGalleryElement.innerHTML = images.map((image, index) =>
+	`<div style="display: block;">
+		<img src="${image}">
+		<button onclick="deletePhoto(${index})">Delete</button>
+	</div>`
+    ).join("");
+} 
+
+// Función para eliminar una foto
+function deletePhoto(index) {
+  fetch(`/delete-photo/${index}`, {
+    method: 'DELETE',
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.text();
+    })
+    .then(data => {
+      console.log('Foto eliminada exitosamente:', data);
+      // Actualiza la galería de fotos después de eliminar una foto
+      updatePhotoGallery();
+    })
+    .catch(error => {
+      console.error('Error al eliminar la foto:', error);
+    });
 }
 
-function deletePhoto(index) {
-        fetch(`${todoPath}/${index}`, {
-            method: "DELETE"
-        })
-        .then(() => updatePhotoGallery())
-		
-        .catch(error => console.error("Error deleting photo:", error));
-    }
-// Attach event listener to the file input for photo upload
+// Adjuntar un evento al campo de entrada de archivo para cargar una nueva foto
 document.getElementById("fileInput").addEventListener("change", function(event) {
 	event.preventDefault();
 	const fileInput = event.target;
 	const file = fileInput.files[0];
 
 	if (file) {
-		// Create a FormData object and append the file to it
 		const formData = new FormData();
 		formData.append("photo", file);
 
-		// Send a POST request to the server for photo upload
-		fetch(todoPath, {
+		// Realizar una solicitud POST al servidor para cargar la imagen
+		fetch(`/upload-image`, {
 			method: "POST",
 			body: formData,
 		})
@@ -112,7 +117,7 @@ document.getElementById("fileInput").addEventListener("change", function(event) 
 		})
 		.then(data => {
 			console.log("Photo upload successful:", data);
-			// Update the photo gallery after a successful upload
+			// Actualizar la galería de fotos después de una carga exitosa
 			updatePhotoGallery();
 		})
 		.catch(error => {
@@ -121,7 +126,6 @@ document.getElementById("fileInput").addEventListener("change", function(event) 
 	}
 });
 
-// Initial update of the photo gallery
 updatePhotoGallery();
 </script>
 
