@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/27 11:41:43 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/27 14:35:57 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ std::string	ResponseBuilder::postResponse(void)
 	// 	debug("...CGI requested");
 	// 	return (this->cgiPOSTResponse());
 	// }
-	else if (this->_handlePOST == "addToList")
+	else if (this->_config->getHandlePOST(this->_configIndex, this->_requestParams[1]) == "addToList")
 	{
 		debug("...addToList Built-in Functionality Requested");
 		return (this->addToList());

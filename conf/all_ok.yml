@@ -48,5 +48,7 @@ server:
     allow: GET POST DELETE
     autoindex: on
     error_page: "404" "customErrors/404.html"
+    handle_post: "addToList"
+    handle_delete: "removeFromList"
   location: "/favicon.ico"
     file: "icon1.png"
