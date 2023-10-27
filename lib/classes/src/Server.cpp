@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/27 16:13:41 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/27 16:22:21 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -303,7 +303,7 @@ void	Server::sendResponse(int locInClient)
 
 	std::string	pendingString = this->_responseStr[locInClient];
 	ssize_t totalBytesSent = 0;
-	while (totalBytesSent != (ssize_t)this->_responseStr[locInClient].size())
+	while (totalBytesSent < (ssize_t)this->_responseStr[locInClient].size())
 	{
 		ssize_t bytesSent = send(this->_clientSocket[locInClient], pendingString.c_str(), this->_responseStr[locInClient].size(), 0);
 		if (bytesSent == 0)
@@ -321,7 +321,8 @@ void	Server::sendResponse(int locInClient)
 			if (DEBUG)
 				std::cout << GREY << "[DEBUG: ..." << bytesSent << " bytes succesfully sent]" << DEF_COL << std::endl;
 			totalBytesSent += bytesSent;
-			pendingString = pendingString.substr(bytesSent + 1, pendingString.size());
+			if (totalBytesSent < (ssize_t)this->_responseStr[locInClient].size())
+				pendingString = pendingString.substr(bytesSent, pendingString.size());
 		}
 	}
 	this->closeClient(locInClient, &this->_sendSet);
