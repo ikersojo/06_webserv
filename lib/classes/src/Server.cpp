@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/27 12:31:11 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/27 16:13:41 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,15 +301,28 @@ void	Server::sendResponse(int locInClient)
 		this->_responseStr[locInClient].substr(0, this->_responseStr[locInClient].find("\n"))
 		<< DEF_COL << std::endl;
 
-	ssize_t bytesSent = send(this->_clientSocket[locInClient], this->_responseStr[locInClient].c_str(), this->_responseStr[locInClient].size(), 0);
-	if (bytesSent == 0)
-		debug("Client terminated conection");
-	else if (bytesSent == -1)
-		error("Failed to send response");
-	else if (bytesSent > 0)
+	std::string	pendingString = this->_responseStr[locInClient];
+	ssize_t totalBytesSent = 0;
+	while (totalBytesSent != (ssize_t)this->_responseStr[locInClient].size())
 	{
-		if (DEBUG)
-			std::cout << GREY << "[DEBUG: ..." << bytesSent << " bytes succesfully sent]" << DEF_COL << std::endl;
+		ssize_t bytesSent = send(this->_clientSocket[locInClient], pendingString.c_str(), this->_responseStr[locInClient].size(), 0);
+		if (bytesSent == 0)
+		{
+			debug("Client terminated conection");
+			break ;
+		}
+		else if (bytesSent == -1)
+		{
+			error("Failed to send response");
+			break ;
+		}
+		else if (bytesSent > 0)
+		{
+			if (DEBUG)
+				std::cout << GREY << "[DEBUG: ..." << bytesSent << " bytes succesfully sent]" << DEF_COL << std::endl;
+			totalBytesSent += bytesSent;
+			pendingString = pendingString.substr(bytesSent + 1, pendingString.size());
+		}
 	}
 	this->closeClient(locInClient, &this->_sendSet);
 }
