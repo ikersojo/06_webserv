@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   00_main.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:53:16 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/26 13:52:37 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/27 12:27:01 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int		main(int argc, const char ** argv)
 	printLogo();
 	debug("starting main program");
 	(void)argc;
-	if (syntaxCorrect(argc, argv) && confFileCorrect(argv))
+	// if (syntaxCorrect(argc, argv) && confFileCorrect(argv))
 	{
 		debug("syntax and config file are valid");
 		std::string configFile(argv[1]);
