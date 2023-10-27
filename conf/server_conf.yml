@@ -31,6 +31,8 @@ server:
     allow: GET POST DELETE
     root: "www/todoSite"
     file: "index.html"
+    handle_post: "addToList"
+    handle_delete: "removeFromList"
 
 server:
   servername: SITE1
@@ -61,6 +63,6 @@ server:
   location: "/"
     file: index.html
   location: "/images/sample"
-    file: images/sample_image3.png
+    file: images/sample_image3.jpg
   location: "/favicon.ico"
     file: "icon3.png"
