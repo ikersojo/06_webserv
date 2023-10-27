@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/26 15:09:42 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/27 16:38:54 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,10 +236,11 @@ std::vector< std::vector<Location> >	getAllServerLocs(const std::string & config
 //   - Saves number of ports
 //   - Gets all listen points and saves them in corresponding vector position
 //   - Gets and saves all individual location directive values
-Config::Config(const std::string & configFile)
+Config::Config(const std::string & configFile, char ** envp)
 {
 	std::cout << "Loading " << configFile << "..." << std::endl << std::endl;
 
+	_envp = envp;
 	_maxPorts = getNumberOfPorts(configFile);
 	_servername = getServerNames(configFile);
 	std::vector< std::vector< std::pair<std::string, std::string> > > listenPoints = getListenPoints(configFile);
@@ -276,6 +277,9 @@ Config::Config(const std::string & configFile)
 Config::~Config(void) {
 	debug("Config Object Destroyed");
 }
+
+char **						Config::getEnvp(void) { return (_envp); }
+
 size_t						Config::getMaxPorts(void) { return (_maxPorts); }
 
 std::string					Config::getServerName(size_t i) { return (_servername[i]); }
