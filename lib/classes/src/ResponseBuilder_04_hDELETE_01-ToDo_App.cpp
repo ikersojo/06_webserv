@@ -1,56 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ResponseBuilder_04_hDELETE.cpp                     :+:      :+:    :+:   */
+/*   ResponseBuilder_04_hDELETE_01-ToDo_App.cpp         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/25 14:28:57 by aarrien-         ###   ########.fr       */
+/*   Created: 2023/10/27 11:35:51 by isojo-go          #+#    #+#             */
+/*   Updated: 2023/10/27 12:25:33 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ResponseBuilder.hpp"
 
-
-std::string	ResponseBuilder::deleteResponse(void)
+std::string ResponseBuilder::removeFromList(void)
 {
-	if (!this->_config->isDELETE(this->_configIndex, this->_requestParams[1]))
-	{
-		error("DELETE is not allowed");
-		return(this->errorResponse(405));
-	}
-
+	// Find the task index to be removed:
 	std::string	task = this->_config->getActualPath(this->_configIndex,this->_requestParams[1]);
-	size_t pos = task.rfind("/");
-	std::string	filePath = task.substr(0, pos);
-	int	index = std::atoi(task.substr(pos+1).c_str());
-
-	if (DEBUG)
-		std::cout << GREY << "[DEBUG: ...index task to be removed identified: " << index << "]" << DEF_COL << std::endl;
-
-	this->removeFromList(index, filePath);
-
-	return("HTTP/1.1 200 OK\r\n");
-}
-
-
-void	ResponseBuilder::removeFromList(int taskIndex, std::string filePath)
-{
+	std::string	filePath = task.substr(0, task.rfind("/"));
 	if (DEBUG)
 		std::cout << GREY << "[DEBUG: ...JSON file: " << filePath << "]" << DEF_COL << std::endl;
-	std::ifstream file(filePath);
+	int	index = std::atoi(task.substr(task.rfind("/") + 1).c_str());
+	if (DEBUG)
+		std::cout << GREY << "[DEBUG: ...index of task to be removed identified: " << index << "]" << DEF_COL << std::endl;
 
-	if (!file.is_open())
-	{
-		error("Error opening JSON file");
-		return ;
-	}
-
-	std::stringstream buffer;
-	buffer << file.rdbuf();
-	std::string fileContent = buffer.str();
-	file.close();
+	// Get Json File Content and delete it
+	std::string fileContent = this->readFromJsonFile(filePath);
+	if (fileContent == "")
+		return (this->errorResponse(404));
 	this->clearJsonFile(filePath);
 
 	// Find the start and end of the array
@@ -86,9 +62,24 @@ void	ResponseBuilder::removeFromList(int taskIndex, std::string filePath)
 	size_t i = stringArray.size() - 1;
 	while(true)
 	{
-		if(i != (size_t)taskIndex)
+		if(i != (size_t)index)
 			writeToJsonFile(stringArray[i], filePath);
 		if (i == 0) break;
 		i--;
 	}
+
+	return("HTTP/1.1 200 OK\r\n");
+}
+
+
+void	ResponseBuilder::clearJsonFile(std::string filePath)
+{
+	std::ofstream outFile(filePath);
+	if (!outFile.is_open())
+	{
+		error("Unable to open the JSON file for writing");
+		return;
+	}
+	outFile << "[]";
+	outFile.close();
 }

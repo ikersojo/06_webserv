@@ -1,5 +1,5 @@
 server:
-  servername: site1_1.com_onlyFileResponse
+  servername: site1.com
   listen: 127.0.0.1:61001
   root: "./www/site1"
   location: / 
@@ -10,54 +10,45 @@ server:
     file: "images/sample_image1.jpg"
 
 server:
-  servername: site1_2.com
+  servername: site2.com
   listen: 127.0.0.1:61002
-  root: "./www/site1"
+  root: "./www/site2"
   location: / 
     file: "index.html"
-    allow: GET POST DELETE
-    buffer_size: 4096
   location: "/favicon.ico"
-    file: "icon1.png"
+    file: "icon2.png"
   location: "/images/sample"
-    file: "images/sample_image1.jpg"
-  location: "/cgi-bin/print.out"
-    file: "cgi-bin/print.out"
-  location: "/ai"
-    file: "vault"
-    autoindex: on
-  location: "/goto42"
-    redirect: "http://www.42urduliz.com"
+    file: "images/sample_image2.png"
 
 server:
-  servername: site1_3.com
+  servername: site3.com
   listen: 127.0.0.1:61003
-  root: "./www/site1"
+  root: "./www/site3"
+  location: / 
+    file: "index.html"
+  location: "/favicon.ico"
+    file: "icon3.png"
+  location: "/images/sample"
+    file: "images/sample_image3.jpg"
+
+server:
+  servername: stresstestsite.com
+  listen: 127.0.0.1:61004
+  root: "./www/stressTestSite"
   location: / 
     file: "index.html"
     allow: GET POST DELETE
-    buffer_size: 4096
-    autoindex: on
-    error_page: "404" "404.html"
-  location: "/favicon.ico"
-    file: "icon1.png"
-  location: "/images/sample"
-    file: "images/sample_image1.jpg"
-  location: "/cgi-bin"
-    root: "./www/cgi-bin"
-    file: "print.out"
-    cgi: on
-  location: "/vault"
-    file: "vault"
-    autoindex: on
-  location: "/goto42"
-    redirect: "www.42urduliz.com"
 
 server:
-  servername: xxxx.com
-  listen: 127.0.0.1:61004
-  root: "./www/site1"
-  location: "/"
-    file: icon1.png
-  location: "/ai"
+  servername: todosite.com
+  listen: 127.0.0.1:61005
+  root: "./www/todoSite"
+  location: / 
+    file: "index.html"
+    allow: GET POST DELETE
     autoindex: on
+    error_page: "404" "customErrors/404.html"
+    handle_post: "addToList"
+    handle_delete: "removeFromList"
+  location: "/favicon.ico"
+    file: "icon1.png"

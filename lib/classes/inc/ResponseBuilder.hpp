@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:00 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/26 15:12:53 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/27 11:50:05 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@
 			ResponseBuilder(void);
 
 			static bool	_shutdownRequested;
+			std::map < std::string, std::string >	_mime;
 
 			Config * 	_config;
 			int			_configIndex;
@@ -52,8 +53,7 @@
 			std::vector < std::string >	_cgiArgs;
 			std::string					_responseStr;
 
-			std::map < std::string, std::string >	_mime;
-
+			// Generic Response Methods of a Web Server:
 			void		assessRequest(void);
 			void		checkLocation(std::string trimmedURL);
 			std::string	getResponse(void);
@@ -68,11 +68,19 @@
 			std::string	cgiGETResponse(void);
 			std::string	cgiPOSTResponse(void);
 
-			// TODO App
-			void	addToList(std::string filePath);
-			void	removeFromList(int taskIndex, std::string filePath);
-			void	writeToJsonFile(std::string task, std::string filePath);
-			void	clearJsonFile(std::string filePath);
+
+			// Backend Functionality Built-in into the server:
+			std::string					_handlePOST;
+			std::string					_handleDELETE;
+
+				// TODO App:
+				std::string		addToList(void);
+				std::string		readFromJsonFile(std::string filePath);
+				void			writeToJsonFile(std::string task, std::string filePath);
+				std::string		removeFromList(void);
+				void			clearJsonFile(std::string filePath);
+
+				// Photo Gallery App:
 
 	};
 
