@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/27 14:36:23 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/27 15:04:11 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,14 @@ std::string	ResponseBuilder::deleteResponse(void)
 		error("DELETE is not allowed");
 		return(this->errorResponse(405));
 	}
-	if (this->_config->getHandleDELETE(this->_configIndex, this->_requestParams[1]) == "removeFromList")
+
+	this->_handleDELETE = this->_config->getHandleDELETE(this->_configIndex, this->_requestParams[1]);
+	if (this->_handleDELETE == "removeFromList")
 	{
 		debug("...removeFromList Built-in Functionality Requested");
 		return (this->removeFromList());
 	}
+	// ... all additional functionality ...
 	else
 	{
 		error("No DELETE functionality implemented");

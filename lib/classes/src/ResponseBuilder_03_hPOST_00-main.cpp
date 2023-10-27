@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/27 14:35:57 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/27 15:04:33 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,20 @@ std::string	ResponseBuilder::postResponse(void)
 		error("POST is not allowed");
 		return(this->errorResponse(405));
 	}
+
 	// if (this->_config->isCgi(this->_configIndex, this->_requestParams[1]))
 	// {
 	// 	debug("...CGI requested");
 	// 	return (this->cgiPOSTResponse());
 	// }
-	else if (this->_config->getHandlePOST(this->_configIndex, this->_requestParams[1]) == "addToList")
+
+	this->_handlePOST = this->_config->getHandlePOST(this->_configIndex, this->_requestParams[1]);
+	if (this->_config->getHandlePOST(this->_configIndex, this->_requestParams[1]) == "addToList")
 	{
 		debug("...addToList Built-in Functionality Requested");
 		return (this->addToList());
 	}
+	// ... all additional functionality ...
 	else
 	{
 		error("No POST functionality implemented");
