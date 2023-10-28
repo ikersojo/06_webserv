@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/27 17:26:15 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/28 09:58:33 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ Server::Server(Config * config)
 	this->_maxSocket = -1;
 	this->_timeout.tv_sec = 0;
 	this->_timeout.tv_usec = TIMEOUT;
-	this->_maxSocket = -1;
 
 	int	i = -1;
 	while (++i < this->_maxPorts)
