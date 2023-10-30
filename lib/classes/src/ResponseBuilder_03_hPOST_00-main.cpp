@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_03_hPOST_00-main.cpp               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/27 16:41:06 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/30 18:45:44 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,11 @@ std::string	ResponseBuilder::postResponse(void)
 	{
 		debug("...addToList Built-in Functionality Requested");
 		return (this->addToList());
+	}
+	else if (this->_handlePOST == "uploadPhoto")
+	{
+		debug("... deletePhoto  Built-in Functionality Requested");
+		return (this->uploadPhoto());
 	}
 	// ... all additional functionality ...
 	else

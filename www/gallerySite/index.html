@@ -75,7 +75,7 @@ function updatePhotoGallery() {
 
 // Función para eliminar una foto
 function deletePhoto(index) {
-  fetch(`/delete-photo/${index}`, {
+  fetch(`gallerySite/photos`, {
     method: 'DELETE',
   })
     .then(response => {
@@ -103,9 +103,10 @@ document.getElementById("fileInput").addEventListener("change", function(event) 
 	if (file) {
 		const formData = new FormData();
 		formData.append("photo", file);
+		const fileName = file.name;
 
 		// Realizar una solicitud POST al servidor para cargar la imagen
-		fetch(`/upload-image`, {
+		fetch(`gallerySite/photos/${fileName}`, {
 			method: "POST",
 			body: formData,
 		})

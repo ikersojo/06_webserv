@@ -32,6 +32,13 @@ server:
     file: "index.html"
     handle_post: "addToList"
     handle_delete: "removeFromList"
+  location: /gallerySite
+    allow: GET POST DELETE
+    root: "www/gallerySite"
+    file: "index.html"
+    handle_delete: "deletePhoto"
+    handle_post: "uploadPhoto"
+
 
 server:
   servername: SITE1
