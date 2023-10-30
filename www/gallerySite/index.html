@@ -56,9 +56,15 @@
 <div id="photoGallery"></div>
 
 <script>
+
+let currentPath = window.location.href;
+currentPath = window.location.href.endsWith('/') ? window.location.href : window.location.href + '/';
+const photosPath = `${currentPath}photos.json`;
+const uploadPath = `${currentPath}upload`;
+
 // Function to fetch and update the photo gallery
 function updatePhotoGallery() {
-	fetch("http://localhost:61004/photos")
+	fetch(photosPath)
 		.then(response => {
 			if (!response.ok) {
 				throw new Error("Network response was not ok");
@@ -70,7 +76,9 @@ function updatePhotoGallery() {
 			const photoGalleryElement = document.getElementById("photoGallery");
 			photoGalleryElement.innerHTML = photos.map(photo => `
 				<div class="photo">
-					<img src="${photo.url}" alt="${photo.name}" width="150" height="150">
+					<a href="${photo.url}">
+						<img src="${photo.url}" alt="${photo.name}" width="200" >
+					</a>
 				</div>
 			`).join("");
 		})
@@ -90,7 +98,7 @@ document.getElementById("fileInput").addEventListener("change", function() {
 		formData.append("photo", file);
 
 		// Send a POST request to the server for photo upload
-		fetch("http://localhost:61004/upload", {
+		fetch(photosPath, {
 			method: "POST",
 			body: formData,
 		})
