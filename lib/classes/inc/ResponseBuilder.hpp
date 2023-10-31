@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:00 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/30 10:39:46 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/31 12:53:49 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@
 			std::string	redirResponse(void);
 			std::string	aiResponse(void);
 
+			void		pushCgiArgs(std::string args);
 			std::string	cgiGETResponse(void);
 			std::string	cgiPOSTResponse(void);
 			std::string	cgiResponse(void);

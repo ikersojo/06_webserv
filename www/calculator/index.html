@@ -47,10 +47,10 @@
 			const selectedRoute = document.getElementById('routeSelector').value;
 			const selectedMethod = document.getElementById('methodSelector').value;
 
-			const formData = new FormData();
-			formData.append('num1', num1);
-			formData.append('num2', num2);
-			formData.append('operation', operation);
+			const formData = new URLSearchParams();
+			formData.append('NUM1', num1);
+			formData.append('NUM2', num2);
+			formData.append('OPERATOR', operation);
 
 			const url = selectedMethod === 'GET' ?
 				`${selectedRoute}?NUM1=${num1}&NUM2=${num2}&OPERATOR=${operation}` : selectedRoute;
