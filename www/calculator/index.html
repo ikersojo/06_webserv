@@ -32,7 +32,7 @@
             const num1 = document.getElementById('num1').value;
             const num2 = document.getElementById('num2').value;
             const operation = document.getElementById('operation').value;
-            const url = `/cgi/print.out?NUM1=${num1}?NUM2=${num2}?OPERATOR=${operation}`;
+            const url = `/cgi/print.out?NUM1=${num1}&NUM2=${num2}&OPERATOR=${operation}`;
 
             fetch(url)
                 .then(response => response.text())

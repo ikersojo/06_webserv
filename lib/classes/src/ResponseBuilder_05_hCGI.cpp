@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/31 12:11:21 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/31 12:30:05 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ std::string	ResponseBuilder::cgiGETResponse(void)
 		_requestParams[1] = _requestParams[1].substr(0, _requestParams[1].find("?"));
 
 		while (true) {
-			pos = args.find("?");
+			pos = args.find("&");
 			arg = args.substr(0, pos);
 
 			if (arg.size() < 3 || arg.find("=") == std::string::npos || arg.find("=") == arg.size()-1 || arg.find("=") == 0)
