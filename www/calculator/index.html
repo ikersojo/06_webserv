@@ -1,45 +1,70 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Calculadora</title>
+	<title>Calculadora</title>
 	<meta charset="utf-8">
 </head>
 <body>
-    <h1>Calculadora</h1>
-    <form id="calculatorForm">
-        <label for="num1">Número 1:</label>
-        <input type="number" id="num1" name="num1" required><br><br>
+	<h1>Calculadora</h1>
+	<form id="calculatorForm" method="post">
+		<label for="num1">Número 1:</label>
+		<input type="number" id="num1" name="num1" required step="any"><br><br>
 
-        <label for="num2">Número 2:</label>
-        <input type="number" id="num2" name="num2" required><br><br>
+		<label for="num2">Número 2:</label>
+		<input type="number" id="num2" name="num2" required step="any"><br><br>
 
-        <label for="operation">Operación:</label>
-        <select id="operation" name="operation">
-            <option value="add">Sumar</option>
-            <option value="subtract">Restar</option>
-            <option value="multiply">Multiplicar</option>
-            <option value="divide">Dividir</option>
-        </select><br><br>
+		<label for="operation">Operación:</label>
+		<select id="operation" name="operation">
+			<option value="add">Sumar</option>
+			<option value="subtract">Restar</option>
+			<option value="multiply">Multiplicar</option>
+			<option value="divide">Dividir</option>
+		</select><br><br>
 
-        <input type="submit" value="Calcular">
-    </form>
+		<label for="routeSelector">Seleccionar Ruta:</label>
+		<select id="routeSelector" name="routeSelector">
+			<option value="/cgi/print.out">C</option>
+			<option value="/cgi/print.py">Python</option>
+		</select><br><br>
 
-    <p>Resultado: <span id="result"></span></p>
+		<label for="methodSelector">Seleccionar Método:</label>
+		<select id="methodSelector" name="methodSelector">
+			<option value="GET">GET</option>
+			<option value="POST">POST</option>
+		</select><br><br>
 
-    <script>
-        document.getElementById('calculatorForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const num1 = document.getElementById('num1').value;
-            const num2 = document.getElementById('num2').value;
-            const operation = document.getElementById('operation').value;
-            const url = `/cgi/print.out?NUM1=${num1}&NUM2=${num2}&OPERATOR=${operation}`;
+		<input type="submit" value="Calcular">
+	</form>
 
-            fetch(url)
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('result').textContent = data;
-                });
-        });
-    </script>
+	<p>Resultado: <span id="result"></span></p>
+
+	<script>
+		document.getElementById('calculatorForm').addEventListener('submit', function(e) {
+			e.preventDefault();
+			const num1 = document.getElementById('num1').value;
+			const num2 = document.getElementById('num2').value;
+			const operation = document.getElementById('operation').value;
+			const selectedRoute = document.getElementById('routeSelector').value;
+			const selectedMethod = document.getElementById('methodSelector').value;
+
+			const formData = new FormData();
+			formData.append('num1', num1);
+			formData.append('num2', num2);
+			formData.append('operation', operation);
+
+			const url = selectedMethod === 'GET' ?
+				`${selectedRoute}?NUM1=${num1}&NUM2=${num2}&OPERATOR=${operation}` : selectedRoute;
+
+			fetch(url, {
+				method: selectedMethod,
+				body: selectedMethod === 'POST' ? formData : null
+			})
+			.then(response => response.text())
+			.then(data => {
+				document.getElementById('result').textContent = data;
+			});
+		});
+	</script>
 </body>
 </html>
+
