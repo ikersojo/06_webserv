@@ -6,12 +6,13 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/27 18:08:11 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/31 11:39:55 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ResponseBuilder.hpp"
 
+extern char **environ;
 
 void handleTimeout(int signum)
 {
@@ -84,6 +85,12 @@ std::string	ResponseBuilder::cgiResponse(void)
 		setenv("REQUEST_METHOD", this->_requestParams[0].c_str(), 1);
 		setenv("SCRIPT_NAME", execFile.c_str(), 1);
 
+		for (std::vector<std::string>::iterator it = _cgiArgs.begin(); it != _cgiArgs.end(); it++) {
+			std::string key = it->substr(0, it->find("="));
+			std::string value = it->substr(it->find("=")+1);
+			setenv(key.c_str(), value.c_str(), 1);
+		}
+
 		if (DEBUG)
 		{
 			std::cout << GREY << "[DEBUG: ...REQUEST_METHOD: " << this->_requestParams[0] << "]" << DEF_COL << std::endl;
@@ -92,13 +99,12 @@ std::string	ResponseBuilder::cgiResponse(void)
 
 		// Execute the CGI script
 		char* const argv[] = {const_cast<char*>(execFile.c_str()), NULL};
-		char* const envp[] = {NULL};
 
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
 		close(fd[1]);
 		alarm(timeoutSeconds);
-		exitStatus = execve(argv[0], argv, envp);
+		exitStatus = execve(argv[0], argv, environ);
 		error("Execve failed");
 		perror("ERROR_INFO");
 		exit(exitStatus);
