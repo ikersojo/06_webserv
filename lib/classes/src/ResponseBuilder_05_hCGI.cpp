@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/31 13:09:18 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/31 13:12:27 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,11 @@ void		ResponseBuilder::pushCgiArgs(std::string args)
 std::string	ResponseBuilder::cgiPOSTResponse(void)
 {
 	std::string args = _requestStr.substr(_requestStr.rfind("\n")+1);
-	pushCgiArgs(args);
+
+	if (!args.empty())
+		pushCgiArgs(args);
+	else
+		error("Params not sent in CGI POST request");
 
 	debug("CGI arguments saved in config");
 
