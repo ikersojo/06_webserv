@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/31 11:39:55 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/31 12:11:21 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,7 @@ std::string	ResponseBuilder::cgiResponse(void)
 		else
 		{
 			close(fd[0]);
+			error("Child exit status");
 			return(this->errorResponse(500));
 		}
 		return response;
