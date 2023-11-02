@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 17:18:36 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/11/02 19:55:58 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/11/02 20:49:04 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ std::string ResponseBuilder::deletePhoto(void)
 	size_t start = content.find("{");
 	size_t end = content.find("}");
 	std::string arrayContent = content.substr(start + 1, end - start - 1);
-
-	std::string dbFilePath = this->_config->getActualPath(this->_configIndex, this->_requestParams[1]);
+	std::cout << " ====== " << arrayContent << "\n";
+ 	std::string dbFilePath = this->_config->getActualPath(this->_configIndex, this->_requestParams[1]);
 	std::string	filePath = dbFilePath.substr(dbFilePath.rfind("/") + 1);
 	if (DEBUG)
 		std::cout << GREY << "[DEBUG: ...JSON file: " << filePath << "]" << DEF_COL << std::endl;
@@ -46,8 +46,12 @@ std::string ResponseBuilder::deletePhoto(void)
 
 	while(std::getline(ss, line, ','))
 	{
-		if(!(line.find(deletePhoto)))
+		if(!(line.find(deletePhoto) != std::string::npos))
+		{
+			std::cout << line ;
 			this->writeToJsonFile(line, dbFilePath);
+		}
+
 	}
 	
 	
