@@ -78,7 +78,8 @@ function updatePhotoGallery() {
 				<div class="photo">
 					<a href="${photo.url}">
 						<img src="${photo.url}" alt="${photo.name}" width="200" >
-					</a>
+						</a>
+						<button onclick="deletePhoto('${photo.name}')">Delete</button>
 				</div>
 			`).join("");
 		})
@@ -119,6 +120,30 @@ document.getElementById("fileInput").addEventListener("change", function(event) 
 		});
 	}
 });
+
+function deletePhoto(photoName) {
+  fetch(photosPath, {
+    method: 'DELETE',
+	body: JSON.stringify({ photo: photoName }), // Enviar el nombre de la foto que se eliminará
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.text();
+    })
+    .then(data => {
+      console.log('Foto eliminada exitosamente:', data);
+      // Actualiza la galería de fotos después de eliminar una foto
+      updatePhotoGallery();
+    })
+    .catch(error => {
+      console.error('Error al eliminar la foto:', error);
+    });
+}
 
 updatePhotoGallery();
 </script>

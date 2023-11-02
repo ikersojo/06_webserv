@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ResponseBuilder_03_hPOST_02-PhotoGallery_Ap        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/02 16:22:46 by jdasilva          #+#    #+#             */
+/*   Updated: 2023/11/02 16:25:47 by jdasilva         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/ResponseBuilder.hpp"
 
 std::string		extractFileName(std::string request)
@@ -32,7 +44,7 @@ std::string		ResponseBuilder::uploadPhoto(void)
 		std::string lastLine = this->_requestStr.substr(lastBlankLinePos + 4);
 		if (DEBUG)
 			std::cout << GREY << "[DEBUG: ...extracted info: " << this->_requestStr << " ]" << DEF_COL << std::endl;
-		std::string	photo = "{\"url\": \"photos/" + name + "\", \"name\": \"" + name + "\"}";
+		std::string	photo = "{\"url\": \"gallerySite/photos/" + name + "\", \"name\": \"" + name + "\"}";
 		this->writeToJsonFile(photo, dbFilePath);
 
 		// Open the file in output mode to write the updated content
