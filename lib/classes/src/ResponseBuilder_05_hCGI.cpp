@@ -6,12 +6,13 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/27 18:08:11 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/31 13:12:27 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ResponseBuilder.hpp"
 
+extern char **environ;
 
 void handleTimeout(int signum)
 {
@@ -20,45 +21,60 @@ void handleTimeout(int signum)
 	exit(EXIT_FAILURE);
 }
 
+// Separates the string that it gets into valid variables (those separated by '&')
+// and pushes them into _cgiArgs.
+void		ResponseBuilder::pushCgiArgs(std::string args)
+{
+	std::string	arg;
+	size_t	pos;
+
+	while (true) {
+		pos = args.find("&");
+		arg = args.substr(0, pos);
+
+		if (arg.size() < 3 || arg.find("=") == std::string::npos || arg.find("=") == arg.size()-1 || arg.find("=") == 0)
+			error("Invalid argument");
+		else
+			_cgiArgs.push_back(args.substr(0, pos));
+		if (pos == std::string::npos)
+			break;
+		args = args.substr(pos+1);
+	}
+}
+
+// Correctly captures POST request variables
 std::string	ResponseBuilder::cgiPOSTResponse(void)
 {
-	error("POST cgiArgs still not captured");
+	std::string args = _requestStr.substr(_requestStr.rfind("\n")+1);
+
+	if (!args.empty())
+		pushCgiArgs(args);
+	else
+		error("Params not sent in CGI POST request");
+
+	debug("CGI arguments saved in config");
+
 	return (cgiResponse());
 }
 
+// Correctly captures GET request variables
 std::string	ResponseBuilder::cgiGETResponse(void)
 {
-	std::string	args, arg;
-	size_t	pos;
-
 	if (_requestParams[1].find("?") != std::string::npos) {
 		debug("CGI arguments received");
 
-		args = _requestParams[1].substr(_requestParams[1].find("?")+1);
+		std::string args = _requestParams[1].substr(_requestParams[1].find("?")+1);
 		_requestParams[1] = _requestParams[1].substr(0, _requestParams[1].find("?"));
+		pushCgiArgs(args);
 
-		while (true) {
-			pos = args.find("?");
-			arg = args.substr(0, pos);
-
-			if (arg.size() < 3 || arg.find("=") == std::string::npos || arg.find("=") == arg.size()-1 || arg.find("=") == 0)
-				error("Invalid argument");
-			else
-				_cgiArgs.push_back(args.substr(0, pos));
-			if (pos == std::string::npos)
-				break;
-			args = args.substr(pos+1);
-		}
 		debug("CGI arguments saved in config");
-
-		debug("...CAPTURED ARGS:");
-		for (std::vector<std::string>::iterator it = _cgiArgs.begin(); it != _cgiArgs.end(); it++)
-			debug(*it);
-	}
+	} else
+		error("Params not sent in CGI GET request");
 
 	return (cgiResponse());
 }
 
+// General purpose CGI response generator
 std::string	ResponseBuilder::cgiResponse(void)
 {
 	int			timeoutSeconds = 3;
@@ -84,6 +100,16 @@ std::string	ResponseBuilder::cgiResponse(void)
 		setenv("REQUEST_METHOD", this->_requestParams[0].c_str(), 1);
 		setenv("SCRIPT_NAME", execFile.c_str(), 1);
 
+		debug("...CAPTURED ARGS:");
+		for (std::vector<std::string>::iterator it = _cgiArgs.begin(); it != _cgiArgs.end(); it++)
+			debug(*it);
+
+		for (std::vector<std::string>::iterator it = _cgiArgs.begin(); it != _cgiArgs.end(); it++) {
+			std::string key = it->substr(0, it->find("="));
+			std::string value = it->substr(it->find("=")+1);
+			setenv(key.c_str(), value.c_str(), 1);
+		}
+
 		if (DEBUG)
 		{
 			std::cout << GREY << "[DEBUG: ...REQUEST_METHOD: " << this->_requestParams[0] << "]" << DEF_COL << std::endl;
@@ -92,13 +118,12 @@ std::string	ResponseBuilder::cgiResponse(void)
 
 		// Execute the CGI script
 		char* const argv[] = {const_cast<char*>(execFile.c_str()), NULL};
-		char* const envp[] = {NULL};
 
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
 		close(fd[1]);
 		alarm(timeoutSeconds);
-		exitStatus = execve(argv[0], argv, envp);
+		exitStatus = execve(argv[0], argv, environ);
 		error("Execve failed");
 		perror("ERROR_INFO");
 		exit(exitStatus);
@@ -126,6 +151,7 @@ std::string	ResponseBuilder::cgiResponse(void)
 		else
 		{
 			close(fd[0]);
+			error("Child exit status");
 			return(this->errorResponse(500));
 		}
 		return response;

@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:00 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/30 18:30:26 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/11/02 15:55:38 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@
 			std::string	redirResponse(void);
 			std::string	aiResponse(void);
 
+			void		pushCgiArgs(std::string args);
 			std::string	cgiGETResponse(void);
 			std::string	cgiPOSTResponse(void);
 			std::string	cgiResponse(void);

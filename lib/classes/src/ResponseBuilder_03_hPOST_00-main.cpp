@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/30 18:45:44 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/11/02 15:55:02 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,14 @@ std::string	ResponseBuilder::postResponse(void)
 	}
 
 	this->_handlePOST = this->_config->getHandlePOST(this->_configIndex, this->_requestParams[1]);
-	if (this->_config->getHandlePOST(this->_configIndex, this->_requestParams[1]) == "addToList")
+	if (this->_handlePOST == "addToList")
 	{
 		debug("...addToList Built-in Functionality Requested");
 		return (this->addToList());
 	}
 	else if (this->_handlePOST == "uploadPhoto")
 	{
-		debug("... deletePhoto  Built-in Functionality Requested");
+		debug("...uploadPhoto Built-in Functionality Requested");
 		return (this->uploadPhoto());
 	}
 	// ... all additional functionality ...

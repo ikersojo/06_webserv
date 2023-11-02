@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 11:18:03 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/27 11:59:06 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/10/30 16:21:05 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ std::string	ResponseBuilder::addToList(void)
 		std::string	task = extractTask(lastLine);
 		if (DEBUG)
 			std::cout << GREY << "[DEBUG: ...extracted task: " << task << " ]" << DEF_COL << std::endl;
-		this->writeToJsonFile(task, filePath);
+		this->writeToJsonFile("\"" + task + "\"", filePath);
 	}
 	else
 		error("Task to be added not found");
@@ -69,7 +69,7 @@ std::string	ResponseBuilder::addToList(void)
 	this->_responseStr += "\r\n\r\n";
 	this->_responseStr += fileContent;
 
-	debug("...post addToList completeed and response built");
+	debug("...post addToList completed and response built");
 	return (this->_responseStr);
 }
 
@@ -109,9 +109,9 @@ void	ResponseBuilder::writeToJsonFile(std::string task, std::string filePath)
 
 	// Insert the new task at the position after the first "[" character
 	if (countOccurrences(fileContent, '\"') > 0)
-		fileContent.insert(position + 1, "\"" + task + "\", ");
+		fileContent.insert(position + 1,  task + ", ");
 	else
-		fileContent.insert(position + 1, "\"" + task + "\"");
+		fileContent.insert(position + 1, task);
 
 	// Open the file in output mode to write the updated content
 	std::ofstream outFile(filePath);
