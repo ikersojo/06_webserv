@@ -1,4 +1,6 @@
 [ 
-	{"url": "gallerySite/photos/webserv.png", "name": "webserv.png"},
-	{"url": "gallerySite/photos/large.jpg", "name": "large.jpg"}
+	{"url": "photos/image.png", "name": "image.png"},
+	{"url": "photos/como_lo_ves.png", "name": "como_lo_ves.png"},
+	{"url": "photos/webserv.png", "name": "webserv.png"},
+	{"url": "photos/large.jpg", "name": "large.jpg"}
 ]
