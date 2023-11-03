@@ -1,3 +1,5 @@
+#!/bin/python3
+
 import os
 
 operator = os.environ.get("OPERATOR")
