@@ -6,6 +6,8 @@ operator = os.environ.get("OPERATOR")
 num1 = float(os.environ.get("NUM1"))
 num2 = float(os.environ.get("NUM2"))
 
+print("HTTP/1.1 200 OK\r\n\r\n")
+
 if operator:
 	if operator == "add":
 		print("{:.2f}".format(num1 + num2))
@@ -22,4 +24,3 @@ if operator:
 		print("operator not found")
 else:
 	print("no operator set")
-

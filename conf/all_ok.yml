@@ -2,7 +2,7 @@ server:
   servername: site1.com
   listen: 127.0.0.1:61001
   root: "./www/site1"
-  location: / 
+  location: /
     file: "index.html"
   location: "/favicon.ico"
     file: "icon1.png"
@@ -13,7 +13,7 @@ server:
   servername: site2.com
   listen: 127.0.0.1:61002
   root: "./www/site2"
-  location: / 
+  location: /
     file: "index.html"
   location: "/favicon.ico"
     file: "icon2.png"
@@ -24,7 +24,7 @@ server:
   servername: site3.com
   listen: 127.0.0.1:61003
   root: "./www/site3"
-  location: / 
+  location: /
     file: "index.html"
   location: "/favicon.ico"
     file: "icon3.png"
@@ -35,7 +35,7 @@ server:
   servername: stresstestsite.com
   listen: 127.0.0.1:61004
   root: "./www/stressTestSite"
-  location: / 
+  location: /
     file: "index.html"
     allow: GET POST DELETE
 
@@ -43,7 +43,7 @@ server:
   servername: todosite.com
   listen: 127.0.0.1:61005
   root: "./www/todoSite"
-  location: / 
+  location: /
     file: "index.html"
     allow: GET POST DELETE
     autoindex: on
@@ -57,7 +57,7 @@ server:
   servername: gallery.com
   listen: 127.0.0.1:61006
   root: "./www/gallerySite"
-  location: / 
+  location: /
     file: "index.html"
     allow: GET POST DELETE
     autoindex: on
@@ -70,11 +70,24 @@ server:
   servername: chunker.com
   listen: 127.0.0.1:61007
   root: "./www/chunkerSite"
-  location: / 
+  location: /
     file: "index.html"
     allow: GET POST DELETE
     autoindex: on
     error_page: "404" "customErrors/404.html"
     handle_post: "dechunk"
+  location: "/favicon.ico"
+    file: "icon1.png"
+
+server:
+  servername: calculator.com
+  listen: 127.0.0.1:61008
+  root: "./www/calculator"
+  location: /
+    file: "index.html"
+    allow: GET POST DELETE
+  location: "/cgi"
+    cgi: "sh"
+    root: "www/cgi-bin"
   location: "/favicon.ico"
     file: "icon1.png"

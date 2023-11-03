@@ -4,6 +4,8 @@ operator="$OPERATOR"
 num1="$NUM1"
 num2="$NUM2"
 
+printf "HTTP/1.1 200 OK\r\n\r\n"
+
 if [ -n "$operator" ]; then
 	if [ "$operator" = "add" ]; then
 		result=$(echo "scale=2; $num1 + $num2" | bc)
