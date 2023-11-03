@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_03_hPOST_01-ToDo_App.cpp           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 11:18:03 by isojo-go          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2023/11/03 13:01:43 by isojo-go         ###   ########.fr       */
-=======
-/*   Updated: 2023/11/03 13:11:47 by aarrien-         ###   ########.fr       */
->>>>>>> refs/remotes/origin/main
+/*   Updated: 2023/11/03 15:02:54 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +51,8 @@ std::string	ResponseBuilder::addToList(void)
 		std::string	task = extractTask(lastLine);
 		if (DEBUG)
 			std::cout << GREY << "[DEBUG: ...extracted task: " << task << " ]" << DEF_COL << std::endl;
-<<<<<<< HEAD
 		if (task != "")
 			this->writeToJsonFile("\"" + task + "\"", filePath);
-=======
-		this->writeToJsonFile(task, filePath);
->>>>>>> refs/remotes/origin/main
 	}
 	else
 		error("Task to be added not found");

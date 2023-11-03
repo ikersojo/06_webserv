@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:00 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/03 10:29:55 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/11/03 15:02:54 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@
 			std::string	redirResponse(void);
 			std::string	aiResponse(void);
 
+			void		cgiExecute(std::string execFile);
 			void		pushCgiArgs(std::string args);
 			std::string	cgiGETResponse(void);
 			std::string	cgiPOSTResponse(void);
