@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/03 16:02:35 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/11/03 16:26:19 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void handleTimeout(int signum)
 void		ResponseBuilder::cgiExecute(std::string execFile)
 {
 	std::string executableExt = execFile.substr(execFile.rfind("."));
-	char* argv[] = {nullptr, nullptr, nullptr};
+	char* argv[] = {nullptr, nullptr};
 	if (DEBUG)
 		std::cerr << GREY << "[FILE EXTENSION: " << executableExt << "]\n" << DEF_COL;
 
@@ -34,8 +34,7 @@ void		ResponseBuilder::cgiExecute(std::string execFile)
 	else if (executableExt == ".sh")
 		argv[0] = const_cast<char*>(execFile.c_str());
 	else if (executableExt == ".py") {
-		argv[0] = const_cast<char*>("/usr/bin/python3");
-		argv[1] = const_cast<char*>(execFile.c_str());
+		argv[0] = const_cast<char*>(execFile.c_str());
 	}
 
 	int exitStatus = execve(argv[0], argv, environ);
