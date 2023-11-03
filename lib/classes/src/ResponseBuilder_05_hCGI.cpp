@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/03 14:37:55 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/11/03 15:39:15 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void		ResponseBuilder::cgiExecute(std::string execFile)
 	if (executableExt == ".out")
 		argv[0] = const_cast<char*>(execFile.c_str());
 	else if (executableExt == ".py") {
-		argv[0] = const_cast<char*>("/Library/Frameworks/Python.framework/Versions/3.7/bin/python3");
+		argv[0] = const_cast<char*>("/usr/bin/python3");
 		argv[1] = const_cast<char*>(execFile.c_str());
 	}
 
