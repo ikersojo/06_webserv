@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/31 13:12:27 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/10/31 18:13:09 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@ std::string	ResponseBuilder::cgiGETResponse(void)
 	return (cgiResponse());
 }
 
+
+
 // General purpose CGI response generator
 std::string	ResponseBuilder::cgiResponse(void)
 {
@@ -115,6 +117,9 @@ std::string	ResponseBuilder::cgiResponse(void)
 			std::cout << GREY << "[DEBUG: ...REQUEST_METHOD: " << this->_requestParams[0] << "]" << DEF_COL << std::endl;
 			std::cout << GREY << "[DEBUG: ...SCRIPT_NAME: " << execFile << "]" << DEF_COL << std::endl;
 		}
+
+		std::string executableExt = execFile.substr(execFile.rfind("."));
+		std::cout << "FILE EXTENSION: " << executableExt << "\n";
 
 		// Execute the CGI script
 		char* const argv[] = {const_cast<char*>(execFile.c_str()), NULL};
