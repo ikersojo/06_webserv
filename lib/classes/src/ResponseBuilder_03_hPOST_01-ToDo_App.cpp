@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 11:18:03 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/30 16:21:05 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/11/03 15:06:18 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ std::string	ResponseBuilder::addToList(void)
 		std::string	task = extractTask(lastLine);
 		if (DEBUG)
 			std::cout << GREY << "[DEBUG: ...extracted task: " << task << " ]" << DEF_COL << std::endl;
-		this->writeToJsonFile("\"" + task + "\"", filePath);
+		if (task != "")
+			this->writeToJsonFile("\"" + task + "\"", filePath);
 	}
 	else
 		error("Task to be added not found");
@@ -109,7 +110,7 @@ void	ResponseBuilder::writeToJsonFile(std::string task, std::string filePath)
 
 	// Insert the new task at the position after the first "[" character
 	if (countOccurrences(fileContent, '\"') > 0)
-		fileContent.insert(position + 1,  task + ", ");
+		fileContent.insert(position + 1, task + ", ");
 	else
 		fileContent.insert(position + 1, task);
 

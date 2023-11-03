@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/31 13:12:27 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/11/03 16:26:19 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,28 @@ void handleTimeout(int signum)
 	(void)signum;
 	error("Child process timed out");
 	exit(EXIT_FAILURE);
+}
+
+void		ResponseBuilder::cgiExecute(std::string execFile)
+{
+	std::string executableExt = execFile.substr(execFile.rfind("."));
+	char* argv[] = {nullptr, nullptr};
+	if (DEBUG)
+		std::cerr << GREY << "[FILE EXTENSION: " << executableExt << "]\n" << DEF_COL;
+
+	// Execute the CGI script
+	if (executableExt == ".out")
+		argv[0] = const_cast<char*>(execFile.c_str());
+	else if (executableExt == ".sh")
+		argv[0] = const_cast<char*>(execFile.c_str());
+	else if (executableExt == ".py") {
+		argv[0] = const_cast<char*>(execFile.c_str());
+	}
+
+	int exitStatus = execve(argv[0], argv, environ);
+	error("Execve failed");
+	perror("ERROR_INFO");
+	exit(exitStatus);
 }
 
 // Separates the string that it gets into valid variables (those separated by '&')
@@ -74,6 +96,8 @@ std::string	ResponseBuilder::cgiGETResponse(void)
 	return (cgiResponse());
 }
 
+
+
 // General purpose CGI response generator
 std::string	ResponseBuilder::cgiResponse(void)
 {
@@ -81,7 +105,6 @@ std::string	ResponseBuilder::cgiResponse(void)
 	pid_t		pid;
 	int			fd[2];
 	int			status;
-	int			exitStatus = 0;
 	std::string	response = "";
 	std::string	execFile = this->_config->getActualPath(this->_configIndex, this->_requestParams[1]).c_str();
 
@@ -116,17 +139,11 @@ std::string	ResponseBuilder::cgiResponse(void)
 			std::cout << GREY << "[DEBUG: ...SCRIPT_NAME: " << execFile << "]" << DEF_COL << std::endl;
 		}
 
-		// Execute the CGI script
-		char* const argv[] = {const_cast<char*>(execFile.c_str()), NULL};
-
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
 		close(fd[1]);
 		alarm(timeoutSeconds);
-		exitStatus = execve(argv[0], argv, environ);
-		error("Execve failed");
-		perror("ERROR_INFO");
-		exit(exitStatus);
+		cgiExecute(execFile);
 	}
 	else // Parent process
 	{
@@ -156,4 +173,5 @@ std::string	ResponseBuilder::cgiResponse(void)
 		}
 		return response;
 	}
+	return response; // error return?
 }

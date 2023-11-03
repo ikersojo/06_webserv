@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/02 15:55:02 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/11/03 17:08:55 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ std::string	ResponseBuilder::postResponse(void)
 		error("POST is not allowed");
 		return(this->errorResponse(405));
 	}
+	std::cout << this->_requestStr << std::endl;
+	this->decodeChuncked();
 
 	if (this->_config->isCgi(this->_configIndex, this->_requestParams[1]))
 	{
@@ -43,4 +45,23 @@ std::string	ResponseBuilder::postResponse(void)
 		error("No POST functionality implemented");
 		return(this->errorResponse(500));
 	}
+}
+
+
+void	ResponseBuilder::decodeChuncked(void)
+{
+	if (this->_requestStr.find("Transfer-Encoding: chunked") != std::string::npos)
+	{
+		debug("...chunked body identified.");
+		size_t endOfHeaderPos = this->_requestStr.find("\r\n\r\n");
+		if (endOfHeaderPos != std::string::npos)
+		{
+			std::string body = this->_requestStr.substr(endOfHeaderPos + 4);
+			////
+			if (DEBUG)
+				std::cout << GREY << "[DEBUG: ...chuncked content: " << body << " ]" << DEF_COL << std::endl;
+		}
+		else
+			error("Body is empty");
+		}
 }

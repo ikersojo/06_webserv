@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Chunked POST Request</title>
+</head>
+<body>
+	<h1>Chunked POST Request</h1>
+	<textarea id="textInput" placeholder="Enter your text here">MozillaDeveloperNetwork</textarea>
+	<input type="number" id="chunkSize" placeholder="Chunk Size (1-9)" value="7">
+	<button onclick="sendChunkedRequest()">Send POST Request</button>
+
+	<script>
+		let currentPath = window.location.href;
+		currentPath = window.location.href.endsWith('/') ? window.location.href : window.location.href + '/';
+		const api = `${currentPath}chunckedText`;
+
+		function chunkText(text, chunkSize) {
+			const chunks = [];
+			for (let i = 0; i < text.length; i += chunkSize) {
+				chunks.push(text.slice(i, i + chunkSize));
+			}
+			return chunks;
+		}
+
+		async function sendChunkedRequest() {
+			const text = document.getElementById("textInput").value;
+			const chunkSize = parseInt(document.getElementById("chunkSize").value);
+
+			if (!text || isNaN(chunkSize) || chunkSize < 1 || chunkSize > 9) {
+				alert("Please enter valid text and chunk size (1-9).");
+				return;
+			}
+
+			const textChunks = chunkText(text, chunkSize);
+
+			const url = api
+
+			for (let i = 0; i < textChunks.length; i++) {
+				const chunk = textChunks[i];
+
+				const headers = {
+					"Content-Type": "application/octet-stream",
+					"Transfer-Encoding": "chunked",
+				};
+
+				const body = new Blob([`${chunk.length.toString(16)}\r\n${chunk}\r\n`], {
+					type: "application/octet-stream",
+				});
+
+				try {
+					await fetch(url, {
+						method: "POST",
+						headers: headers,
+						body: body,
+					});
+					console.log(`Sent chunk ${i + 1}/${textChunks.length}`);
+				} catch (error) {
+					console.error("Error sending chunk:", error);
+				}
+			}
+
+			console.log("All chunks sent.");
+		}
+	</script>
+</body>
+</html>
