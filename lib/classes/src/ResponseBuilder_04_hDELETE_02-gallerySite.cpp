@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 17:18:36 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/11/02 20:49:04 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/11/03 18:43:43 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ std::string ResponseBuilder::deletePhoto(void)
 		}
 
 	}
+	
 	
 	
 	

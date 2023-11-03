@@ -58,11 +58,12 @@ server:
   listen: 127.0.0.1:61006
   root: "./www/gallerySite"
   location: /
-    file: "index.html"
+    file: "index3.html"
     allow: GET POST DELETE
     autoindex: on
     error_page: "404" "customErrors/404.html"
     handle_post: "uploadPhoto"
+    handle_delete: "deletePhoto"
   location: "/favicon.ico"
     file: "icon1.png"
 
