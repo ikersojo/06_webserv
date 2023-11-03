@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 11:18:03 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/03 15:02:54 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/11/03 15:06:18 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,9 +110,9 @@ void	ResponseBuilder::writeToJsonFile(std::string task, std::string filePath)
 
 	// Insert the new task at the position after the first "[" character
 	if (countOccurrences(fileContent, '\"') > 0)
-		fileContent.insert(position + 1, "\"" + task + "\", ");
+		fileContent.insert(position + 1, task + ", ");
 	else
-		fileContent.insert(position + 1, "\"" + task + "\"");
+		fileContent.insert(position + 1, task);
 
 	// Open the file in output mode to write the updated content
 	std::ofstream outFile(filePath);
