@@ -21,6 +21,15 @@ std::string		ResponseBuilder::uploadPhoto(void)
 		std::cout << GREY << "[DEBUG: ...root dir: " << root << "]" <<DEF_COL << std::endl;
 
 	std::string name = extractFileName(this->_requestStr);
+	if (DEBUG)
+		std::cout << GREY << "[DEBUG: ...file name identified: " << name << "]" <<DEF_COL << std::endl;
+	size_t i = 0;
+	while(i < name.size())
+	{
+		if (name[i] == ' ')
+			name[i] = '_';
+		i++;
+	}
 	std::string fileName = root + "/photos/" + name;
 	if (DEBUG)
 		std::cout << GREY << "[DEBUG: ...file name: " << fileName << "]" <<DEF_COL << std::endl;
@@ -29,9 +38,7 @@ std::string		ResponseBuilder::uploadPhoto(void)
 	size_t lastBlankLinePos = this->_requestStr.rfind("\r\n\r\n");
 	if (lastBlankLinePos != std::string::npos)
 	{
-		std::string lastLine = this->_requestStr.substr(lastBlankLinePos + 4);
-		if (DEBUG)
-			std::cout << GREY << "[DEBUG: ...extracted info: " << this->_requestStr << " ]" << DEF_COL << std::endl;
+		std::string body = this->_requestStr.substr(lastBlankLinePos + 4);
 		std::string	photo = "{\"url\": \"photos/" + name + "\", \"name\": \"" + name + "\"}";
 		this->writeToJsonFile(photo, dbFilePath);
 
@@ -42,7 +49,7 @@ std::string		ResponseBuilder::uploadPhoto(void)
 			error("Unable to open the file");
 			return(this->errorResponse(500));
 		}
-		outFile.write(lastLine.c_str(), lastLine.size());
+		outFile.write(body.c_str(), body.size());
 		outFile.close();
 	}
 	else

@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 11:35:51 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/27 12:25:33 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/11/03 12:53:18 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ std::string ResponseBuilder::removeFromList(void)
 	while(true)
 	{
 		if(i != (size_t)index)
-			writeToJsonFile(stringArray[i], filePath);
+			writeToJsonFile("\"" + stringArray[i] + "\"", filePath);
 		if (i == 0) break;
 		i--;
 	}
