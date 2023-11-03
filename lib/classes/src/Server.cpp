@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/03 17:20:26 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/11/03 17:48:25 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -322,7 +322,6 @@ void	Server::sendResponse(int locInClient)
 			totalBytesSent += bytesSent;
 			if (totalBytesSent < (ssize_t)this->_responseStr[locInClient].size())
 				pendingString = pendingString.substr(bytesSent, pendingString.size());
-			usleep(5000);
 		}
 	}
 	this->closeClient(locInClient, &this->_sendSet);
