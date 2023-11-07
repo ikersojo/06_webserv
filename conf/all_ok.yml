@@ -83,6 +83,7 @@ server:
   servername: calculator.com
   listen: 127.0.0.1:61008
   root: "./www/calculator"
+  buffer_size: 30
   location: /
     file: "index.html"
     allow: GET POST DELETE
