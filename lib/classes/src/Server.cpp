@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/07 13:47:47 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/11/07 14:11:30 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,21 +285,23 @@ void	Server::readRequest(int locInClient)
 			std::string	requestString(buffer, bytesRead);
 			this->_requestStr[locInClient] += requestString;
 
-			if ((headerSize += requestString.find("\r\n\r\n")))
-			{
-				bodySize = requestString.size() - headerSize;
-				req = requestString.substr(requestString.find(" ")+1, (requestString.find(" ", requestString.find(" ")+1) - requestString.find(" "))-1);
-				if (requestString.find("\n") != std::string::npos && bodySize > (size_t)_config->getBufferSize(_configIndex[locInClient], req))
+			if (_requestStr[locInClient].find("\n") != std::string::npos) {
+				req = _requestStr[locInClient].substr(_requestStr[locInClient].find(" ")+1, (_requestStr[locInClient].find(" ", _requestStr[locInClient].find(" ")+1) - _requestStr[locInClient].find(" "))-1);
+				if (_config->getBufferSize(_configIndex[locInClient], req) >= 0 && (headerSize += _requestStr[locInClient].find("\r\n\r\n")) != std::string::npos)
 				{
-					debug("Body size limit surpassed");
-					break;
+					bodySize = _requestStr[locInClient].size() - headerSize;
+					if (_requestStr[locInClient].find("\n") != std::string::npos && bodySize > (size_t)_config->getBufferSize(_configIndex[locInClient], req))
+					{
+						debug("Body size limit surpassed");
+						break;
+					}
 				}
-
 			}
 		}
 	}
 	FD_CLR(this->_clientSocket[locInClient], &this->_recvSet);
-	FD_SET(this->_clientSocket[locInClient], &this->_sendSet);
+	if (_requestStr[locInClient].size() != 0)
+		FD_SET(this->_clientSocket[locInClient], &this->_sendSet);
 
 	debug("...request received and saved");
 	if (DEBUG) // remove for prod
