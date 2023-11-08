@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/03 17:48:25 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/11/07 14:11:30 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,6 +261,10 @@ void	Server::readRequest(int locInClient)
 	char	buffer[BUFFSIZE];
 	memset(buffer, 0, BUFFSIZE);
 
+	size_t	headerSize = 4;
+	size_t	bodySize = 0;
+	std::string	req;
+
 	while (bytesRead == BUFFSIZE) // multiple reads if BUFFSIZE is exceeded
 	{
 		debug("...reading request from client");
@@ -268,6 +272,7 @@ void	Server::readRequest(int locInClient)
 		if (DEBUG)
 			std::cout << GREY << "[DEBUG: ...bytes read: " << bytesRead << "]"
 					<< DEF_COL << std::endl;
+
 		if (bytesRead == 0)
 			debug("Client terminated conection");
 		else if (bytesRead == -1)
@@ -279,16 +284,29 @@ void	Server::readRequest(int locInClient)
 		{
 			std::string	requestString(buffer, bytesRead);
 			this->_requestStr[locInClient] += requestString;
+
+			if (_requestStr[locInClient].find("\n") != std::string::npos) {
+				req = _requestStr[locInClient].substr(_requestStr[locInClient].find(" ")+1, (_requestStr[locInClient].find(" ", _requestStr[locInClient].find(" ")+1) - _requestStr[locInClient].find(" "))-1);
+				if (_config->getBufferSize(_configIndex[locInClient], req) >= 0 && (headerSize += _requestStr[locInClient].find("\r\n\r\n")) != std::string::npos)
+				{
+					bodySize = _requestStr[locInClient].size() - headerSize;
+					if (_requestStr[locInClient].find("\n") != std::string::npos && bodySize > (size_t)_config->getBufferSize(_configIndex[locInClient], req))
+					{
+						debug("Body size limit surpassed");
+						break;
+					}
+				}
+			}
 		}
 	}
 	FD_CLR(this->_clientSocket[locInClient], &this->_recvSet);
-	FD_SET(this->_clientSocket[locInClient], &this->_sendSet);
+	if (_requestStr[locInClient].size() != 0)
+		FD_SET(this->_clientSocket[locInClient], &this->_sendSet);
 
 	debug("...request received and saved");
 	if (DEBUG) // remove for prod
 		std::cout << YELLOW << "\n---- Received from client ----\n\n" <<
-		this->_requestStr[locInClient].substr(0, this->_requestStr[locInClient].find("\n"))
-		<< DEF_COL << std::endl;
+		this->_requestStr[locInClient] << DEF_COL << std::endl;
 }
 
 

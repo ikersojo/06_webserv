@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/26 16:59:26 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/11/07 13:39:40 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ ResponseBuilder::ResponseBuilder(Config * config, int configIndex, std::string r
 	this->_configIndex = configIndex;
 	this->_ok = true;
 	this->_requestStr = requestStr;
+	this->_bodySize = _requestStr.substr(_requestStr.find("\r\n\r\n")+4).size();
 	this->_responseStr = "";
 
 	this->_mime[".html"] = "text/html";
@@ -102,6 +103,11 @@ std::string		ResponseBuilder::computeResponse(void)
 	{
 		error("webserv only work with HTTP/1.1 requests");
 		return (this->errorResponse(505));
+	}
+	if (_bodySize > (size_t)_config->getBufferSize(_configIndex, _requestParams[1]))
+	{
+		error("request body size limit exceeded");
+		return (this->errorResponse(413));
 	}
 
 	// Checks ok, build response based on the request type:

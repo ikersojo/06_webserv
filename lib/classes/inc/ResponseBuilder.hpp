@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:00 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/03 17:08:49 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/11/08 16:23:16 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,13 @@
 			bool		_ok;
 
 			std::string					_requestStr;
+			size_t						_bodySize;
 			std::vector < std::string >	_requestParams;
 			std::vector < std::string >	_cgiArgs;
 			std::string					_responseStr;
 
 			// Generic Response Methods of a Web Server:
 			void		assessRequest(void);
-			void		checkLocation(std::string trimmedURL);
 			std::string	getResponse(void);
 			std::string	postResponse(void);
 			std::string	deleteResponse(void);

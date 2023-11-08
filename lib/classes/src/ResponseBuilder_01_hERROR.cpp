@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_01_hERROR.cpp                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/26 12:54:19 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/11/07 13:37:34 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ std::string	resolveErrorCode(int code)
 		case 400: return ("Bad Request");
 		case 404: return ("Not Found");
 		case 405: return ("Method Not Allowed");
+		case 413: return ("Request Entity Too Large");
 		case 500: return ("Internal Server Error");
 		case 505: return ("HTTP Version Not Supported");
 		default:  return ("Unknown Error");
