@@ -151,12 +151,47 @@
     border-color: #454cad;
     cursor: pointer;
   }
+  .hidden .btn {
+    display: inline-block;
+    margin: 0.5rem 0.5rem 1rem 0.5rem;
+    clear: both;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    text-transform: initial;
+    border: none;
+    border-radius: 0.2rem;
+    outline: none;
+    padding: 0 1rem;
+    height: 36px;
+    line-height: 36px;
+    color: #fff;
+    transition: all 0.2s ease-in-out;
+    box-sizing: border-box;
+    background: #454cad;
+    border-color: #454cad;
+    cursor: pointer;
+  }
+
+  #delete-button
+  {
+
+    display:none;
+  }
 
 </style>
 
 
 <h1>gallerySite</h1>
 <p class="lead">No Plugins <b>Just Javascript</b></p>
+
+<div id="image-preview" class="hidden">
+  <img id="file-image" src="#" alt="file-image">
+  <div>
+    <button id="delete-button" class="btn btn-danger" onclick="deletefile()">Delete</button>
+  </div>
+</div>
 
 <!-- Upload  -->
 <form id="file-upload-form" class="uploader" method="post" enctype="multipart/form-data" >
@@ -181,7 +216,7 @@
 
 <script>
   // File Upload
-  // 
+  //
   function ekUpload(){
     function Init() {
     
@@ -252,6 +287,8 @@
       // Thumbnail Preview
       document.getElementById('file-image').classList.remove("hidden");
       document.getElementById('file-image').src = URL.createObjectURL(file);
+      document.getElementById('file-image').alt = imageName;
+      document.getElementById('delete-button').style.display='inline-block';
       }
       else {
       document.getElementById('file-image').classList.add("hidden");
@@ -319,5 +356,34 @@
       document.getElementById('file-drag').style.display = 'none';
     }
     }
+
+    function deletefile() {
+      const fileInfo = document.getElementById('file-image').alt;
+      if (fileInfo) {
+        fetch(fileInfo, {
+          method: 'DELETE',
+          headers: {
+            'filename': fileInfo,
+          },
+        })
+          .then((response) => {
+            if (response.ok) {
+              // Eliminación exitosa, puedes realizar alguna acción adicional si es necesario
+              // Ocultar la vista previa y el botón de eliminación
+              recargarPagina();
+            } else {
+              console.error('Error al eliminar la imagen');
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    }
+    
+    function recargarPagina() {
+      location.reload();
+    }  
     ekUpload();
+
 </script>

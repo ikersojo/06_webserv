@@ -6,56 +6,72 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 17:18:36 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/11/03 18:43:43 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/11/08 19:14:58 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ResponseBuilder.hpp"
 
+std::string		FileName(std::string request)
+{
+	std::string	res;
+
+	res = request.substr(request.find("filename") + 10, request.size());
+	res = res.substr(0, res.find("\n") - 1);
+	return (res);
+}
+
+
 std::string ResponseBuilder::deletePhoto(void)
 {
 	std:: string content = this->_requestStr;
-	size_t start = content.find("{");
-	size_t end = content.find("}");
-	std::string arrayContent = content.substr(start + 1, end - start - 1);
-	std::cout << " ====== " << arrayContent << "\n";
- 	std::string dbFilePath = this->_config->getActualPath(this->_configIndex, this->_requestParams[1]);
-	std::string	filePath = dbFilePath.substr(dbFilePath.rfind("/") + 1);
-	if (DEBUG)
-		std::cout << GREY << "[DEBUG: ...JSON file: " << filePath << "]" << DEF_COL << std::endl;
-	
-	size_t startPos = arrayContent.find(":\"") + 2;
-    size_t endPos = arrayContent.rfind("\"");
 
-	std::string deletePhoto = arrayContent.substr(startPos, endPos - startPos);
+	std::string root = _config->getRoot(_configIndex, this->_requestParams[1]);
 	if (DEBUG)
-		std::cout << GREY << "[DEBUG: ...the deleted photo is: " << deletePhoto  <<DEF_COL << std::endl;
+		std::cout << GREY << "[DEBUG: ...root dir: " << root << "]" <<DEF_COL << std::endl;
+
+	std::string name = FileName(this->_requestStr);
+	if (DEBUG)
+		std::cout << GREY << "[DEBUG: ...file name identified: " << name << "]" <<DEF_COL << std::endl;
+
+	std::string fileName = root + "/photos/" + name;
+	if (DEBUG)
+		std::cout << GREY << "[DEBUG: ...file name: " << fileName << "]" <<DEF_COL << std::endl;
+
+
+
+	if (std::remove(fileName.c_str()) == 0) {
+		if(DEBUG)
+        	std::cout << GREY << "[DEBUG: ...delete file name: " << fileName << "]" <<DEF_COL << std::endl;
+    } else {
+         error("I cannot delete the file");
+    }
+
+	std::string folderRemoveSTR = root + "/photos"; 
+	const char* folderRemove = folderRemoveSTR.c_str();
+
+    DIR* directorio = opendir(folderRemove);
+    if (directorio) {
+        struct dirent* entrada;
+        bool hasFiles = false;
 		
-	std::string filecontent = this->readFromJsonFile(dbFilePath);
-	if (filecontent == "")
-		return(this->errorResponse(404));
-	this->clearJsonFile(dbFilePath);
-	
- 	size_t json_start = filecontent.find("[");
-	size_t json_end = filecontent.find("]");
-	std::string json_content = filecontent.substr(json_start + 1, json_end - json_start - 1); 
-	
-	std::stringstream ss(json_content);
-	std::string line;
-	std::cout << " ========== \n" << json_content << "\n" << " ======== " << "\n";
+        while ((entrada = readdir(directorio)) && !hasFiles) {
+            if (std::strcmp(entrada->d_name, ".") != 0 && std::strcmp(entrada->d_name, "..") != 0) {
+                hasFiles = true;
+            }
+        }
 
-	while(std::getline(ss, line, ','))
-	{
-		if(!(line.find(deletePhoto) != std::string::npos))
-		{
-			std::cout << line ;
-			this->writeToJsonFile(line, dbFilePath);
-		}
+        closedir(directorio);
 
-	}
-	
-	
-	
+        if (!hasFiles) {
+            if (rmdir(folderRemove) == 0) {
+				if(DEBUG)
+        		std::cout << GREY << "[DEBUG: ...delete folder]" <<DEF_COL << std::endl;
+            } else {
+                error("Error deleting the directory.");
+            }
+        }
+    }
 	
 	return("HTTP/1.1 200 OK\r\n");
 }
