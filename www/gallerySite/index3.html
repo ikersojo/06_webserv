@@ -184,7 +184,6 @@
 
 
 <h1>gallerySite</h1>
-<p class="lead">No Plugins <b>Just Javascript</b></p>
 
 <div id="image-preview" class="hidden">
   <img id="file-image" src="#" alt="file-image">
@@ -288,6 +287,7 @@
       document.getElementById('file-image').classList.remove("hidden");
       document.getElementById('file-image').src = URL.createObjectURL(file);
       document.getElementById('file-image').alt = imageName;
+      document.getElementById('file-upload-form').style.display='none';
       document.getElementById('delete-button').style.display='inline-block';
       }
       else {
