@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 11:57:48 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/23 18:47:48 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/11/09 20:15:50 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,10 @@ bool doesNotStartWithDot(std::string &line)
 	dir = trimChars(dir, "\"");
 	if(dir.empty())
 		return false;
-	if(dir.length() >= 1 && (dir[0] == '/' || (dir[0] == '.' && dir[1] == '/')))
+	if(dir.length() >= 1 && dir[0] == '/')
+	{
 		return false;
+	}
 	return true;
 }
 
@@ -115,6 +117,8 @@ bool isLocationConfigOf(std::string &line)
 	valiOptions.push_back("error_page:");
 	valiOptions.push_back("cgi:");
 	valiOptions.push_back("root:");
+	valiOptions.push_back("handle_post:");
+	valiOptions.push_back("handle_delete:");
 	
 	iss >> option;
 
@@ -209,6 +213,24 @@ static bool LocationCheckConfig(std::string &line, int &cline)
 			std:: cout << line << " <--- " << "[line: " << cline << "] ";
 			error("root config error");
 			return false;	
+		}
+	}
+	if(config == "handle_post:")
+	{
+		if(!Empty(line))
+		{
+			std:: cout << line << " <--- " << "[line: " << cline << "] ";
+			error("handle_post config error");
+			return false;
+		}
+	}
+	if(config == "handle_delete:")
+	{
+		if(!Empty(line))
+		{
+			std:: cout << line << " <--- " << "[line: " << cline << "] ";
+			error("handle_delete config error");
+			return false;
 		}
 	}
 	return true;

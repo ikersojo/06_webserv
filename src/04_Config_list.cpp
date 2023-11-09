@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:34:41 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/10/26 16:50:20 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/11/09 20:20:30 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,13 @@ bool Allow(std::string &line)
 
 bool Buffersize(std::string &line)
 {
-	std::string config;
+	std::string config, null;
 	int numb = 0;
 	std::istringstream iss(line);
-	iss >> config >> numb;
+	iss >> config >> numb >> null;
 
+	if(!null.empty())
+		return false;
 	if(numb > 0)
 		return true;
 	return false;

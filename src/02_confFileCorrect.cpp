@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 21:34:37 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/25 17:40:30 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/11/09 20:21:15 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,12 @@ static bool FirstCheck(std::string &line, int space, int &server_cont)
 		else if(line.find("servername:") != std::string::npos)
 		{
 			if(checkline != "servername:" || option.empty() || !null.empty())
+				return false;
+			return true;
+		}
+		else if(line.find("buffer_size:") != std::string::npos)
+		{
+			if(checkline != "buffer_size:" || !Buffersize(line))
 				return false;
 			return true;
 		}
