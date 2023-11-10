@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:34:41 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/11/09 20:20:30 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/11/10 16:58:44 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ bool ErrorPage(std::string &line)
 		
 	if(!isInteger(num))
 	{
-		error("Error number");
+		error("is not a number");
 		return false;
 	}
 
