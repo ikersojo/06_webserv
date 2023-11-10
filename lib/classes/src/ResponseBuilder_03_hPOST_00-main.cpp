@@ -6,7 +6,7 @@
 /*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/03 12:29:36 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/11/10 15:50:29 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,11 @@ std::string	ResponseBuilder::postResponse(void)
 		debug("...uploadPhoto Built-in Functionality Requested");
 		return (this->uploadPhoto());
 	}
+	else if (this->_handlePOST == "dechunk")
+	{
+		debug("...deChunck Built-in Functionality Requested");
+		return (this->deChunk());
+	}
 	// ... all additional functionality ...
 	else
 	{
@@ -48,18 +53,29 @@ std::string	ResponseBuilder::postResponse(void)
 }
 
 
+std::string	trimBody(std::string body)
+{
+	// pending...
+	return (body);
+}
+
 void	ResponseBuilder::decodeChuncked(void)
 {
 	if (this->_requestStr.find("Transfer-Encoding: chunked") != std::string::npos)
 	{
 		debug("...chunked body identified.");
 		size_t endOfHeaderPos = this->_requestStr.find("\r\n\r\n");
+		std::string header = this->_requestStr.substr(0, endOfHeaderPos + 4);
+		std::string body = this->_requestStr.substr(endOfHeaderPos + 4);
+		body = trimBody(body);
+
 		if (endOfHeaderPos != std::string::npos)
 		{
-			std::string body = this->_requestStr.substr(endOfHeaderPos + 4);
-			////
 			if (DEBUG)
-				std::cout << GREY << "[DEBUG: ...chuncked content: " << body << " ]" << DEF_COL << std::endl;
+				std::cout << GREY << "[DEBUG: ...chuncked content: \n" << this->_requestStr << "\n]" << DEF_COL << std::endl;
+			this->_requestStr = header + body;
+			if (DEBUG)
+				std::cout << GREY << "[DEBUG: ...de-chuncked content: \n" << this->_requestStr << "\n]" << DEF_COL << std::endl;
 		}
 		else
 			error("Body is empty");

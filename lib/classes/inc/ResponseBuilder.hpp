@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:00 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/07 13:01:46 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/11/10 11:08:11 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,9 @@
 
 				// Photo Gallery App:
 				std::string		uploadPhoto(void);
+
+				// DeChunker App:
+				std::string		deChunk(void);
 	};
 
 #endif // RESPONSEBUILDER_HPP
