@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:00 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/08 16:23:16 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/11/10 18:34:02 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,19 @@
 				void			clearJsonFile(std::string filePath);
 
 				// Photo Gallery App:
+
 				std::string deletePhoto(void);
 				std::string uploadPhoto(void);
 
+				std::string		uploadPhoto(void);
+
+				// Register User App:
+				std::string		setCookie(void);
+				std::string		searchCookie(void);
+				std::string		cookieResponse(std::string cookie);
+
+				// DeChunker App:
+				std::string		deChunk(void);
 	};
 
 #endif // RESPONSEBUILDER_HPP

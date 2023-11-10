@@ -68,12 +68,12 @@ server:
     file: "icon1.png"
 
 server:
-  servername: chunker.com
+  servername: dechunker.com
   listen: 127.0.0.1:61007
   root: "./www/chunkerSite"
   location: /
     file: "index.html"
-    allow: GET POST DELETE
+    allow: POST
     autoindex: on
     error_page: "404" "customErrors/404.html"
     handle_post: "dechunk"
@@ -93,3 +93,11 @@ server:
     root: "www/cgi-bin"
   location: "/favicon.ico"
     file: "icon1.png"
+
+server:
+  servername: register.com
+  listen: 127.0.0.1:61009
+  root: "www/register"
+  location: "/"
+    file: index.html
+    handle_post: "setCookie"
