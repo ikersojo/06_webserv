@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>HARL</title>
+	</head>
+	<body>
+		<div id="content">
+			<h3>Perdona, tengo muy mala memoria, puedes recordarme de 	nuevo tu nombre?</h3>
+			<form id="authForm">
+				<label for="name">Nombre:</label>
+				<input type="text" id="name" placeholder="name" 	required>
+
+				<div id="buttons">
+					<button type="submit" id="send">Enviar</button>
+				</div>
+			</form>
+		</div>
+
+		<script>
+			document.getElementById("authForm").addEventListener	("submit", function (event) {
+				event.preventDefault();
+				const name = document.getElementById("name").	value;
+				const accion = event.submitter.id;
+
+				if (accion === "send") {
+					fetch("/", {
+						method: "POST",
+						body: "name=" + name
+					})
+					.then(response => {
+						return fetch("/");
+					})
+					.then(response => {
+						return response.text();
+					})
+					.then(html => {
+						document.getElementById("content").innerHTML = html;
+					})
+					.catch(error => {
+						console.error("Error en la solicitud GET:", error);
+					});
+				}
+			});
+		</script>
+	</body>
+</html>
+

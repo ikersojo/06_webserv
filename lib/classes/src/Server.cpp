@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/07 14:11:30 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/11/10 18:16:41 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -315,8 +315,7 @@ void	Server::sendResponse(int locInClient)
 	debug("Sending response...");
 	 if (DEBUG) // remove for prod
 	 	std::cout << YELLOW << "\n---- Response to client ----\n\n" <<
-		this->_responseStr[locInClient].substr(0, this->_responseStr[locInClient].find("\n"))
-		<< DEF_COL << std::endl;
+		this->_responseStr[locInClient] << DEF_COL << std::endl;
 
 	std::string	pendingString = this->_responseStr[locInClient];
 	ssize_t totalBytesSent = 0;

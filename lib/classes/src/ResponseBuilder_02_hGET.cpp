@@ -6,12 +6,51 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/26 17:18:33 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/11/10 18:15:49 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ResponseBuilder.hpp"
 
+std::string	ResponseBuilder::searchCookie(void)
+{
+	std::ifstream inFile;
+	std::ostringstream	fileContentStream;
+	std::string	fileContent;
+	size_t pos = _requestStr.find("Cookie:") + 8;
+	std::string cookie = _requestStr.substr(pos, _requestStr.find("\r\n", pos) - pos);
+	if (cookie.find(";")) {
+		size_t nameStartPos = cookie.find("name=");
+		size_t nameEndPos = cookie.find(nameStartPos, cookie.find(";", nameStartPos) - nameStartPos);
+		cookie = cookie.substr(nameStartPos, nameEndPos);
+	}
+
+	if (DEBUG)
+		std::cout << "Received Cookie [" << cookie << "]" << std::endl;
+
+	inFile.open("www/register/cookie");
+	if (!inFile.is_open())
+		error("Cookie file not found");
+
+	fileContentStream << inFile.rdbuf();
+	fileContent = fileContentStream.str();
+
+	if (fileContent.find(cookie + "\n") != std::string::npos) {
+		debug("Cookie found");
+		return (cookie);
+	}
+	return("");
+}
+
+std::string		ResponseBuilder::cookieResponse(std::string cookie) {
+	_responseStr = "HTTP/1.1 200 OK\r\n";
+	_responseStr += "Content-Type: text/html\r\n";
+	_responseStr += "\r\n";
+	_responseStr += "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>HARL</title></head><body>";
+	_responseStr += "<h1>Hola " + cookie.substr(cookie.find("=")+1) + "<h2>";
+	_responseStr += "</body></html>";
+	return (_responseStr);
+}
 
 std::string	ResponseBuilder::getResponse(void)
 {
@@ -37,6 +76,11 @@ std::string	ResponseBuilder::getResponse(void)
 	}
 	else
 	{
+		if (_requestStr.find("Cookie:") != std::string::npos && _config->getHandlePOST(_configIndex, _requestParams[1]) == "setCookie") {
+			std::string	cookie = searchCookie();
+			if (!cookie.empty())
+				return (this->cookieResponse(cookie));
+		}
 		debug("...file requested");
 		return (this->fileResponse());
 	}

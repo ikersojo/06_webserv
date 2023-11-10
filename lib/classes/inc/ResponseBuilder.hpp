@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:00 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/07 13:01:46 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/11/10 17:12:09 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,11 @@
 
 				// Photo Gallery App:
 				std::string		uploadPhoto(void);
+
+				// Register User App:
+				std::string		setCookie(void);
+				std::string		searchCookie(void);
+				std::string		cookieResponse(std::string cookie);
 	};
 
 #endif // RESPONSEBUILDER_HPP

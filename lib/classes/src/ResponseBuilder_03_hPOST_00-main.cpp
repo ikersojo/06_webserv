@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_03_hPOST_00-main.cpp               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isojo-go <isojo-go@student.42urduliz.co    +#+  +:+       +#+        */
+/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/03 12:29:36 by isojo-go         ###   ########.fr       */
+/*   Updated: 2023/11/10 17:03:08 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,11 @@ std::string	ResponseBuilder::postResponse(void)
 	{
 		debug("...uploadPhoto Built-in Functionality Requested");
 		return (this->uploadPhoto());
+	}
+	else if (this->_handlePOST == "setCookie")
+	{
+		debug("...setCookie Built-in Functionality Requested");
+		return (this->setCookie());
 	}
 	// ... all additional functionality ...
 	else
