@@ -6,7 +6,7 @@
 #    By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/01 17:27:17 by isojo-go          #+#    #+#              #
-#    Updated: 2023/11/10 17:02:50 by jdasilva         ###   ########.fr        #
+#    Updated: 2023/11/10 17:59:07 by jdasilva         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -150,5 +150,3 @@ read ans
 clear 
  
 echo "\033[0;92m ====== ☠ All Error tests completed! ☠️ ======"
-
-
