@@ -8,7 +8,7 @@ server:
     buffer_size: 4096
     error_page: 404 "www/def404.html"
     error_page: 406 "error.page"
-  location: "/redir/"
+  location: "/redir"
     redirect: ""
   location: "/favicon.ico/"
     allow: POST GET
