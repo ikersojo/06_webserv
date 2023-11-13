@@ -6,11 +6,18 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 16:22:46 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/11/03 20:16:03 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/11/13 15:58:42 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ResponseBuilder.hpp"
+
+std::string FileExtension(const std::string &file)
+{
+	size_t p = file.find_last_of('.');
+	
+	return file.substr(p + 1);
+}
 
 std::string		extractFileName(std::string request)
 {
@@ -70,8 +77,9 @@ std::string		ResponseBuilder::uploadPhoto(void)
 		error("Info not found");
 
 	// Build response
+	std::string ext = FileExtension(name);
 	this->_responseStr  = "HTTP/1.1 200 OK\r\n";
-	this->_responseStr += "Content-Type: application/json\r\n";
+	this->_responseStr += "Content-Type: image/" + ext + "\r\n";
 	this->_responseStr += "Content-Length: ";
 	this->_responseStr += intToString(fileName.size());
 	this->_responseStr += "\r\n\r\n";
