@@ -352,4 +352,3 @@ else // Parent process
 **6. Capture and Send CGI Output:**
 
 After executing the CGI script, read its output and send it back as an HTTP response.
-∫
