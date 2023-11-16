@@ -100,3 +100,5 @@ server:
   location: "/"
     file: index.html
     handle_post: "setCookie"
+  location: "/favicon.ico"
+    file: "cookie.png"
