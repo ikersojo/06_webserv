@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_02_hGET.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/10 18:15:49 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/11/16 15:23:20 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ std::string	ResponseBuilder::fileResponse(void)
 
 	if (stat(filePath.c_str(), &statbuf) == 0 && !S_ISREG(statbuf.st_mode)) {
 		error("Requested file is a directory");
-		return (this->errorResponse(404)); // <---- REVISAR: Deberiamos permitir acceder aqui si hay autoindex en el dir padre?
+		return (this->errorResponse(404));
 	}
 
 	inFile.open(filePath);
@@ -169,11 +169,7 @@ std::string	ResponseBuilder::fileResponse(void)
 			std::cout << GREY << "[DEBUG: ...file extension: " << fileExtension << "]" << DEF_COL << std::endl;
 		std::map<std::string, std::string>::iterator it = this->_mime.find(fileExtension);
 		if (it != this->_mime.end())
-		{
-			//if (fileExtension == ".json")
-			//	this->initJson(filePath);
 			this->_responseStr += (this->_mime[fileExtension] + "\r\n");
-		}
 		else
 			this->_responseStr += "text/plain\r\n";
 	}

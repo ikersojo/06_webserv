@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:16:52 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/10 18:16:41 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/11/16 15:21:47 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,18 +304,18 @@ void	Server::readRequest(int locInClient)
 		FD_SET(this->_clientSocket[locInClient], &this->_sendSet);
 
 	debug("...request received and saved");
-	if (DEBUG) // remove for prod
-		std::cout << YELLOW << "\n---- Received from client ----\n\n" <<
-		this->_requestStr[locInClient] << DEF_COL << std::endl;
+	// if (DEBUG) // remove for prod
+	// 	std::cout << YELLOW << "\n---- Received from client ----\n\n" <<
+	// 	this->_requestStr[locInClient] << DEF_COL << std::endl;
 }
 
 
 void	Server::sendResponse(int locInClient)
 {
 	debug("Sending response...");
-	 if (DEBUG) // remove for prod
-	 	std::cout << YELLOW << "\n---- Response to client ----\n\n" <<
-		this->_responseStr[locInClient] << DEF_COL << std::endl;
+	//  if (DEBUG) // remove for prod
+	//  	std::cout << YELLOW << "\n---- Response to client ----\n\n" <<
+	// 	this->_responseStr[locInClient] << DEF_COL << std::endl;
 
 	std::string	pendingString = this->_responseStr[locInClient];
 	ssize_t totalBytesSent = 0;
