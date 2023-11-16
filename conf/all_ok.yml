@@ -4,6 +4,11 @@ server:
   root: "./www/site1"
   location: /
     file: "index.html"
+  location: "/goto42"
+    redirect: "www.42urduliz.com"
+  location: "/ai"
+    root: "www"
+    autoindex: on
   location: "/favicon.ico"
     file: "icon1.png"
   location: "/images/sample"
@@ -104,3 +109,16 @@ server:
     handle_post: "setCookie"
   location: "/favicon.ico"
     file: "cookie.png"
+
+server:
+  servername: bufferSize.com
+  listen: 127.0.0.1:61010
+  root: "./www/site1"
+  buffer_size: 10
+  location: /
+    file: "index.html"
+    handle_post: "dechunk"
+  location: "/favicon.ico"
+    file: "icon1.png"
+  location: "/images/sample"
+    file: "images/sample_image1.jpg"

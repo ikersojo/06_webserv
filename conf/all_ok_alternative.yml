@@ -1,0 +1,10 @@
+server:
+  servername: sitex.com
+  listen: 127.0.0.1:61001
+  root: "./www/site3"
+  location: /
+    file: "index.html"
+  location: "/favicon.ico"
+    file: "icon1.png"
+  location: "/images/sample"
+    file: "images/sample_image3.jpg"
