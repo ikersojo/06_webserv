@@ -1,0 +1,106 @@
+server:
+  servername: site1.com
+  listen: 127.0.0.1:61001
+  root: "./www/site1"
+  location: /
+    file: "index.html"
+  location: "/favicon.ico"
+    file: "icon1.png"
+  location: "/images/sample"
+    file: "images/sample_image1.jpg"
+
+server:
+  servername: site2.com
+  listen: 127.0.0.1:61002
+  root: "./www/site2"
+  location: /
+    file: "index.html"
+  location: "/favicon.ico"
+    file: "icon2.png"
+  location: "/images/sample"
+    file: "images/sample_image2.png"
+
+server:
+  servername: site3.com
+  listen: 127.0.0.1:61003
+  root: "./www/site3"
+  location: /
+    file: "index.html"
+  location: "/favicon.ico"
+    file: "icon3.png"
+  location: "/images/sample"
+    file: "images/sample_image3.jpg"
+
+server:
+  servername: stresstestsite.com
+  listen: 127.0.0.1:61004
+  root: "./www/stressTestSite"
+  location: /
+    file: "index.html"
+    allow: GET POST DELETE
+
+server:
+  servername: todosite.com
+  listen: 127.0.0.1:61005
+  root: "./www/todoSite"
+  location: /
+    file: "index.html"
+    allow: GET POST DELETE
+    autoindex: on
+    error_page: "404" "customErrors/404.html"
+    handle_post: "addToList"
+    handle_delete: "removeFromList"
+  location: "/favicon.ico"
+    file: "icon1.png"
+
+server:
+  servername: gallery.com
+  listen: 127.0.0.1:61006
+  root: "./www/gallerySite"
+  location: /
+    file: "index.html"
+    allow: GET POST DELETE
+    autoindex: on
+    error_page: "404" "customErrors/404.html"
+    upload: ""
+    handle_post: "uploadPhoto"
+    handle_delete: "deletePhoto"
+  location: "/favicon.ico"
+    file: "icon1.png"
+
+server:
+  servername: dechunker.com
+  listen: 127.0.0.1:61007
+  root: "./www/chunkerSite"
+  location: /
+    file: "index.html"
+    allow: POST
+    autoindex: on
+    error_page: "404" "customErrors/404.html"
+    handle_post: "dechunk"
+  location: "/favicon.ico"
+    file: "icon1.png"
+
+server:
+  servername: calculator.com
+  listen: 127.0.0.1:61008
+  root: "./www/calculator"
+  buffer_size: 30
+  location: /
+    file: "index.html"
+    allow: GET POST DELETE
+  location: "/cgi"
+    cgi: "sh"
+    root: "www/cgi-bin"
+  location: "/favicon.ico"
+    file: "icon1.png"
+
+server:
+  servername: register.com
+  listen: 127.0.0.1:61009
+  root: "www/register"
+  location: "/"
+    file: index.html
+    handle_post: "setCookie"
+  location: "/favicon.ico"
+    file: "cookie.png"

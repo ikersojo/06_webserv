@@ -6,7 +6,7 @@
 #    By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/01 17:27:17 by isojo-go          #+#    #+#              #
-#    Updated: 2023/11/10 18:57:34 by jdasilva         ###   ########.fr        #
+#    Updated: 2023/11/16 14:50:21 by jdasilva         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -109,10 +109,11 @@ echo "\033[0;93m ---------- La direccion root mal configurada ----------\033[0;3
 ./bin/webserv conf/prueba/Servername_empty.yml >> tests/test.logs
 echo "\033[0;93m ---------- Servername: vacio ----------\033[0;39m"
 
+./bin/webserv conf/prueba/Upload_empty.yml >> tests/test.logs
+echo "\033[0;93m ---------- Upload vacio ----------\033[0;39m"
+
 ./bin/webserv conf/prueba/Wrong_space.yml >> tests/test.logs
 echo "\033[0;93m ---------- La linea tiene un error de espacio o tabulacion ----------\033[0;39m"
 
-
-#Limpio la pantalla
  
 echo "\033[0;92m ====== ☠ All Error tests completed! ☠️ ======"

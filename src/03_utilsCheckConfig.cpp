@@ -6,7 +6,7 @@
 /*   By: jdasilva <jdasilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 11:57:48 by jdasilva          #+#    #+#             */
-/*   Updated: 2023/11/09 20:15:50 by jdasilva         ###   ########.fr       */
+/*   Updated: 2023/11/16 14:46:07 by jdasilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ bool isLocationConfigOf(std::string &line)
 	valiOptions.push_back("root:");
 	valiOptions.push_back("handle_post:");
 	valiOptions.push_back("handle_delete:");
+	valiOptions.push_back("upload:");
 	
 	iss >> option;
 
@@ -230,6 +231,15 @@ static bool LocationCheckConfig(std::string &line, int &cline)
 		{
 			std:: cout << line << " <--- " << "[line: " << cline << "] ";
 			error("handle_delete config error");
+			return false;
+		}
+	}
+	if(config == "upload:")
+	{  
+		if(!Empty(line))
+		{
+			std:: cout << line << " <--- " << "[line: " << cline << "] ";
+			error("upload config error");
 			return false;
 		}
 	}
