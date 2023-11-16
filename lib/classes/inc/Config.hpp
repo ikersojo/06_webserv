@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:17:18 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/07 14:01:31 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/11/16 14:35:14 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 	#define D_ALLOW					"allow:"
 	#define D_ERROR_PAGE			"error_page:"
 	#define D_BUFFER_SIZE			"buffer_size:"
+	#define D_UPLOAD				"upload:"
 	#define D_CGI					"cgi:"
 	#define D_REDIR					"redirect:"
 	#define D_HANDLE_POST			"handle_post:"
@@ -50,6 +51,7 @@
 		bool						allowedPOST;
 		bool						allowedDELETE;
 		std::map<int, std::string>	errorPage;
+		std::string					upload;
 		int							bufferSize;
 		bool						cgi;
 		std::string					cgiExt;
@@ -62,6 +64,7 @@
 			allowedGET(true), \
 			allowedPOST(true), \
 			allowedDELETE(true), \
+			upload("upload"), \
 			bufferSize(-1), \
 			cgi(false), \
 			redir(false) {}
@@ -85,6 +88,7 @@
 			bool						isPOST(size_t i, std::string req);
 			bool						isDELETE(size_t i, std::string req);
 			std::map<int, std::string>	getErrorPage(size_t i, std::string req);
+			std::string					getUpload(size_t i, std::string req);
 			int							getBufferSize(size_t i, std::string req);
 			bool						isRedir(size_t i, std::string req);
 			bool						isCgi(size_t i, std::string req);
@@ -116,6 +120,7 @@
 			std::vector < std::map < std::string, bool > >							_redir;
 			std::vector < std::map < std::string, std::map < int, std::string > > >	_errorPage;
 			std::vector < std::map < std::string, int > >							_bufferSize;
+			std::vector < std::map < std::string, std::string > >					_upload;
 
 			std::vector < std::map < std::string, std::string > >					_handlePOST;
 			std::vector < std::map < std::string, std::string > >					_handleDELETE;

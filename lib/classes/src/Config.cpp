@@ -6,7 +6,7 @@
 /*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 21:33:58 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/10/27 16:38:54 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/11/16 14:34:37 by aarrien-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,7 @@ std::map<std::string, std::string>	createMapString(std::vector<Location> allServ
 		else if (directive == D_CGI) Map[allServerLocs[i].path] = allServerLocs[i].cgiExt;
 		else if (directive == D_HANDLE_POST) Map[allServerLocs[i].path] = allServerLocs[i].handlePOST;
 		else if (directive == D_HANDLE_DELETE) Map[allServerLocs[i].path] = allServerLocs[i].handleDELETE;
+		else if (directive == D_UPLOAD) Map[allServerLocs[i].path] = allServerLocs[i].upload;
 	}
 
 	return (Map);
@@ -189,6 +190,8 @@ void	setLocation(std::ifstream& inFile, std::string& line, Location& location) {
 			location.handlePOST = EXTRACT_CLEAN_VALUE(line);
 		if (STRING_CONTAINS(line, D_HANDLE_DELETE))
 			location.handleDELETE = EXTRACT_CLEAN_VALUE(line);
+		if (STRING_CONTAINS(line, D_UPLOAD))
+			location.upload = EXTRACT_CLEAN_VALUE(line);
 	}
 }
 
@@ -268,6 +271,7 @@ Config::Config(const std::string & configFile, char ** envp)
 			_bufferSize.push_back(createMapInt(*it, D_BUFFER_SIZE));
 			_handlePOST.push_back(createMapString(*it, D_HANDLE_POST));
 			_handleDELETE.push_back(createMapString(*it, D_HANDLE_DELETE));
+			_upload.push_back(createMapString(*it, D_UPLOAD));
 		}
 		nServer++;
 	}
@@ -301,6 +305,8 @@ bool						Config::isPOST(size_t i, std::string req) { return (this->_allowedPOST
 bool						Config::isDELETE(size_t i, std::string req) { return (this->_allowedDELETE[i][getNearestLocation(i, req)]); }
 
 std::map<int, std::string>	Config::getErrorPage(size_t i, std::string req) { return (_errorPage[i][getNearestLocation(i, req)]); }
+
+std::string					Config::getUpload(size_t i, std::string req) { return (_upload[i][getNearestLocation(i, req)]); }
 
 int							Config::getBufferSize(size_t i, std::string req) { return (_bufferSize[i][getNearestLocation(i, req)]); }
 
@@ -354,6 +360,7 @@ void	Config::printConfig(void) {
 			std::cout << "      errorPage :\n";
 			for (std::map<int, std::string>::iterator ite = _errorPage[i][it->first].begin(); ite != _errorPage[i][it->first].end(); ite++)
 				std::cout << "        - " << ite->first << " => (" << ite->second << ")" << std::endl;
+			std::cout << "      uploadDir  : " << _upload[i][it->first] << std::endl;
 			std::cout << "      bufferSize : " << _bufferSize[i][it->first] << std::endl;
 			std::cout << "      cgi :        " << (_cgi[i][it->first] ? (" on => " + _cgiExt[i][it->first]) : " off") << std::endl;
 			std::cout << "      redir :      " << (_redir[i][it->first] ? " on" : " off") << std::endl;
