@@ -11,6 +11,28 @@ std::string		extractFileName(std::string request)
 
 std::string		ResponseBuilder::uploadPhoto(void)
 {
+	std::string	uploadDir = _config->getUpload(_configIndex, this->_requestParams[1]);
+	std::string	uploadDirFullPath = _config->getRoot(_configIndex, this->_requestParams[1]) + "/" + _config->getUpload(_configIndex, this->_requestParams[1]);
+
+	if (access(uploadDirFullPath.c_str(), 0) != 0)
+	{
+		if (mkdir(uploadDirFullPath.c_str(), 0755) != 0)
+		{
+			error("Unable to create upload dir");
+			return(this->errorResponse(500));
+		}
+		else
+		{
+			if (DEBUG)
+				std::cout << GREY << "[DEBUG: ...upload dir created: " << uploadDirFullPath << "]" <<DEF_COL << std::endl;
+		}
+	}
+	else
+	{
+		if (DEBUG)
+			std::cout << GREY << "[DEBUG: ...upload dir already existis]" <<DEF_COL << std::endl;
+	}
+
 	// Locate DB:
 	std::string dbFilePath = _config->getActualPath(_configIndex, this->_requestParams[1]);
 	if (DEBUG)
@@ -30,7 +52,7 @@ std::string		ResponseBuilder::uploadPhoto(void)
 			name[i] = '_';
 		i++;
 	}
-	std::string fileName = root + "/photos/" + name;
+	std::string fileName = root + "/" + uploadDir + "/" + name;
 	if (DEBUG)
 		std::cout << GREY << "[DEBUG: ...file name: " << fileName << "]" <<DEF_COL << std::endl;
 
@@ -39,7 +61,7 @@ std::string		ResponseBuilder::uploadPhoto(void)
 	if (lastBlankLinePos != std::string::npos)
 	{
 		std::string body = this->_requestStr.substr(lastBlankLinePos + 4);
-		std::string	photo = "{\"url\": \"photos/" + name + "\", \"name\": \"" + name + "\"}";
+		std::string	photo = "{\"url\": \"" + uploadDir + "/" + name + "\", \"name\": \"" + name + "\"}";
 		this->writeToJsonFile(photo, dbFilePath);
 
 		// Open the file in output mode to write the updated content
