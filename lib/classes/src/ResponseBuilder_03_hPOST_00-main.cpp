@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseBuilder_03_hPOST_00-main.cpp               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aarrien- <aarrien-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: isojo-go <isojo-go@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 09:16:19 by isojo-go          #+#    #+#             */
-/*   Updated: 2023/11/10 18:30:39 by aarrien-         ###   ########.fr       */
+/*   Updated: 2023/11/16 09:11:54 by isojo-go         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,24 @@ std::string	ResponseBuilder::postResponse(void)
 
 std::string	trimBody(std::string body)
 {
-	// pending...
-	return (body);
+	std::string res = "";
+	size_t pos = 0;
+	size_t length = body.length();
+	int chunkNumber = 0;
+
+	while (pos < length)
+	{
+		size_t end = body.find("\r\n", pos);
+
+		if (end == std::string::npos)
+			break;
+		if (chunkNumber % 2 == 1)
+			res += body.substr(pos, end - pos);
+		pos = end + 2;
+		++chunkNumber;
+	}
+	res += "\r\n\r\n";
+	return (res);
 }
 
 void	ResponseBuilder::decodeChuncked(void)
@@ -71,7 +87,7 @@ void	ResponseBuilder::decodeChuncked(void)
 		debug("...chunked body identified.");
 		size_t endOfHeaderPos = this->_requestStr.find("\r\n\r\n");
 		std::string header = this->_requestStr.substr(0, endOfHeaderPos + 4);
-		std::string body = this->_requestStr.substr(endOfHeaderPos + 4);
+		std::string body = this->_requestStr.substr(endOfHeaderPos + 4, this->_requestStr.length());
 		body = trimBody(body);
 
 		if (endOfHeaderPos != std::string::npos)
