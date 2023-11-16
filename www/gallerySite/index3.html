@@ -216,6 +216,20 @@
 <script>
   // File Upload
   //
+  document.addEventListener('DOMContentLoaded', function () {
+    // Verificar si hay un nombre de archivo almacenado en el almacenamiento local
+    var uploadedFileName = localStorage.getItem('uploadedFileName');
+
+    if (uploadedFileName) {
+      // Mostrar la foto correspondiente
+      document.getElementById('file-image').classList.remove("hidden");
+      document.getElementById('file-image').src = 'photos/'+ uploadedFileName;
+      document.getElementById('file-image').alt = uploadedFileName;
+      document.getElementById('file-upload-form').style.display = 'none';
+      document.getElementById('delete-button').style.display = 'inline-block';
+    }
+  });
+
   function ekUpload(){
     function Init() {
     
@@ -332,6 +346,10 @@
         // File received / failed
         xhr.onreadystatechange = function(e) {
         if (xhr.readyState == 4) {
+          if (xhr.status == 200) {
+          // Almacenar el nombre del archivo en el almacenamiento local
+          localStorage.setItem('uploadedFileName', file.name);
+          }
           // Everything is good!
     
           // progress.className = (xhr.status == 200 ? "success" : "failure");
@@ -368,8 +386,7 @@
         })
           .then((response) => {
             if (response.ok) {
-              // Eliminación exitosa, puedes realizar alguna acción adicional si es necesario
-              // Ocultar la vista previa y el botón de eliminación
+              localStorage.removeItem('uploadedFileName');
               recargarPagina();
             } else {
               console.error('Error al eliminar la imagen');
